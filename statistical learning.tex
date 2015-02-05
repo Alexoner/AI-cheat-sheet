@@ -80,6 +80,76 @@ Penalized(regularized) error function
 \widetilde{E}(\textbf{w}) = \frac{1}{2}\sum_{n=1}^{N}\{y(x_n,\textbf{w}-t_n\}^2 + \frac{1}{2} \parallel \textbf{w} \parallel^2
 where \parallel \textbf{w} \parallel^2 \equiv \textbf{w}^T\textbf{w}=w_0^2+w_1^2+...+w_M^2
 
+Loss functions for regression
+\mathbb{E}[\mathit{L}] = \int\int\mathit{L}(t,y(\textbf{x}))p(\textbf{x},t)d\textbf{x}dt
+A common choice of loss function in squared loss given by 
+                                  \mathit(L)(t,y(\textbf{x})) = \{y(\textbf{x}) - t\}^2
+                        \mathbb{E}[\mathit{L}] = \int\int\{y(\textbf{x}) - t\}^2 p(\textbf{x},t)d\textbf{x}dt.
+Minimize \mathbb{E}[\mathit{L}] by using the calculus of variations to give 
+\frac{\delta\mathbb{E}[\mathit{L}]}{\delta y\(\textbf{x}))} = 2 \int\{ y(\textbf{x} -t) \}p(\textbf{x},t)dt = 0
+Solving for y(\textbf{x}) and using the sum and product rules of probability,we obtain
+y(\textbf{x}) = \frac{\int tp(\textbf{x},t)dt}{p(\textbf{x})} = \int tp(t|\textbf{x})dt = \mathbb{E}[t|\textbf{x}]
+Let's derive this result in a slightly different way.Armed with knowledge that the optimal solution is the 
+conditional expectation,we can expand the square term as follows
+  \{y(\textbf{x} -t)\}^2
+= \{y(\textbf{x} - \mathbb{E}[t|\textbf{x}] + \mathbb{E}[t|\textbf{x}] - t )\}^2 
+= \{ y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] \}^2 + 2\{ y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] \}\{ \mathbb{E}[t|\textbf{x}]-t \} + \{ \mathbb{E}[t|\textbf{x}] -t \}^2
+where,\mathbb{E}[t|\textbf{x}] denote \mathbb{E}_{t}[t|\textbf{x}].Substitute into the loss function and perform the
+integral over t,we see the cross-term vanishes
+\mathbb{E}[\mathit{L}]                                                            \\
+= \int\int\{y(\textbf{x}) - t\}^2 p(\textbf{x},t)d\textbf{x}dt                    \\
+= \int \{ y(\textbf{x}) -\mathbb{E}[t|\textbf{x}] \}^2 p(\textbf{x})d\textbf{x} + 
+  \int\{ \mathbb{E}[t|\textbf{x}] - t \}^2 p(\textbf{x})d\textbf{x}               \\
+= \int \{ y(\textbf{x}) -h(\textbf{x}) \}^2 p(\textbf{x})d\textbf{x} +            
+  \int\{ h(\textbf{x}) - t \}^2 p(\textbf{x})d\textbf{x}                          \\
+= \int \{ y(\textbf{x}) -h(\textbf{x}) \}^2 p(\textbf{x})d\textbf{x} +            
+  \int\{ h(\textbf{x}) - t \}^2 p(\textbf{x},t)d\textbf{x}dt                      \\
+  
+For a popular choice,the squared loss function,for which the optimal prediction is given by the conditional
+expectation,which we denote by h(\textbf{x}) and which is given by 
+   h(\textbf{x}) = \mathbb{E}[t|\textbf{x}] = \int tp(t|\textbf{x})dt
+  
+Consider the integrand of the first term,which for particular data set D takes the form
+  \{ y(\textbf{x};D) - h(\textbf{x}) \} ^2
+This quantity will be dependent on the particular data set D,so we take its average over the ensemble of data sets.
+If we add and substract the quantity \mathbb{E_D}[y(\textbf{x};D)] inside the braces,and then expand,we obtain
+\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] + \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
+= \{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2 + \{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2 +
+  2\{ y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)]\}\{ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})\} \\
+= \underbrace{\{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2} + \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}   \\
+=                    \color{red}{variance}                 +   \color{blue}{(bias)^2}  + (irreducible error)
+The decomposition of the expected squared loss
+                                  expected loss = (bias)^2 + variance + noise
+where
+                                  (bias)^2 = ...
+                                  variance = ...
+                                  noise = ...
+  
+The function y(\textbf{x}) we seek to determine enters only the first term,which will be minized when y(\textbf{x}) 
+is equal to \mathbb{E}[t|\textbf{x}],in which case this term will vanish.The second term is the variance of 
+distribution of t,averaged over \textbf{x},representing the intrinsic variablility of the target data and can be 
+regarded as noise.It's the irreducible minimum value of the loss function.
+More sophisticated loss function,Minkowski loss
+\mathbb{E}[\mathit{L_q}] = \int\int| y(\textbf{x}) - t |^q p(\textbf{x},t)d\textbf{x}dt
+
+
+
+
+Bias-variance decomposition of squared error
+                                  y_i = f(x_i) + \epsilon 
+where the noise \epsilon has zero mean and variance \sigma^2.
+Find a function \hat{f}(x) that approximates the true function y = f(x) as well as possible.Make "as well as possible"
+
+precise  by measuring the mean squared error between y and \hat{f}(x),we want (y - \hat{f}(x))^2 to be minimal.
+
+
+
+
+
+
+
+
+
 
 Support Vector Machine:
 Lagrange Multiplier of SVM loss function:
