@@ -33,7 +33,7 @@ variance of f(x) is defined by
 convariance 
                                   cov[x,y] = \mathbb{E}_{x,y}[\{x- \mathbb{E}[x]\}\{y-\mathbb{E}[y]\}]
 In the case of two vectors of random variables \textbf{x} and \textbf{y}
-cov[\textbf{x},\textbf{y}] = \mathbb{E}_{x,y}[\{\textbf{x}-\mathbb{E}[\textbf{x}]\} \{ \textbf{y}^T - \mathbb{E}[\textbf{y}^T ]\}]
+cov[\textbf{x},\textbf{y}] = \mathbb{E}_{x,y}[\{\textbf{x}-\mathbb{E}[\textb                          f{x}]\} \{ \textbf{y}^T - \mathbb{E}[\textbf{y}^T ]\}]
 cov[\textbf{x},\textbf{y}] = \mathbb{E}_{x,y}[\textbf{x}\textbf{y}^T] - \mathbb{E}[\textbf{x}] \mathbb{E}[\textbf{y}^T]
 
 Bayesian probabilities
@@ -154,3 +154,107 @@ precise  by measuring the mean squared error between y and \hat{f}(x),we want (y
 Support Vector Machine:
 Lagrange Multiplier of SVM loss function:
 "\L(w,b,\alpha) = \frac{1}{2}\parallel \mathbf w \parallel + \sum_{i=1}^{m}[\alpha_iy_i(\mathbf w^Tx+b) -1]"
+
+
+
+
+
+Adaptive basis function models
+Kernel methods prediction takes the form 
+                                  f(\textbf{x}) = \textbf{w}^T\phi (\textbf{x})
+where we define
+                                  \mathbf{\phi}(x) = [ k(\mathbf{x,\mu_1}),...,k(\mathbf{x,\mu_N})].
+and where \mu_k are either all the training data or some subset.Models of this form essentially perform a form of
+template matching,whereby they compare the input x to the stored prototypes \mu_k.
+Adaptive basis-functional model(ABM),which is a model of the form
+                                  f(\mathbf{x}) = w_0 + \sum_{m=1}^{M}{w_m\phi_m(\mathbf{x})}
+where \phi_m(\mathbf{x}) is the m'th basis function,which is learned from data.Typically the basis functions are 
+parametric,so we can write \phi_m(\mathbf{x}) = \phi(\mathbf{x;v_m}),whiere \mathbf{v_m} are the parameters of the 
+basis function itself.
+
+Classification and regression trees(CART)
+Also called decision trees.The result of these axis parallel splits  is to partition feature space into several 
+regions.We can write the model in the following form
+f(\mathbf{x}) = \mathbb{E}[y|\mathbf{x}] = \sum_{m=1}^{M}\mathbb{I}(\mathbf{x}\in R_m)= \sum_{m=1}^{M}\phi (\mathbf{x;v_m})
+where R_m is the m'th region,w_m is the mean response in this region,and \mathbf{v_m} encodes the choice of variable
+to split on,and the threshold value,on the path from the root to the m'th leaf.
+                                  Growing a tree
+Finding the optimal partitioning of the data is NP-complete,so it is common to use the greedy prodecure to compute 
+a locally optimal MLE.The split function chooses the best feature,and the best value for that feature,as follows:
+(j^*,t^*) = arg\min_{j\in {1,...,D}}\min_{t \in \mathit{T_j}}cost(\{ \mathbf{x_i},y_i:x_{ij} \leq t\}) + cost(\{\mathbf{x_i},y_i:x_{ij} > t  \})
+where x_{ij} means a feature,the t is the threshold.
+  Grow a classification/regression tree in a recursive procedure.
+Regression cost:
+  cost(D) = \sum_{i\in D}{(y_i-\bar{y})^2}
+Classification cost:
+  \hat\pi= \frac{1}{|D|}\sum_{i\in D}{\mathbb{I}(y_i = c)}.
+Given this,there several common error measurs for evaluating proposed partition:
+\mathbf{Misclassification rate} = \frac{1}{|D|} = \sum_{i\in D}{\mathbb{I}(y_i\neq \hat{y})} = 1 - \hat\pi_\hat{y}
+\mathbf{entropy}=-\sum_{c=1}^{C}\hat\pi_clog\hat\pi_c,equivalent to maximizing the information gain.
+\mathbf{Gini index}=\sum_{c=1}^{C}{\hat\pi_c}(1-\hat\pi_c) = \sum_{c}{\hat\pi_c} - \sum_{c}{\hat\pi_c}^2 = 1- \sum_{c}{\hat\pi_c}^2
+                                  Pruning a tree
+                                  Random forests
+One way to reduce the variance of an estimate is to average together many estimates.Train M differenct trees on 
+different subsets of the data,chosen randomly with replacement,and then compute the ensemble.
+                                  f(\mathbf{x}) = \sum_{m=1}^{M}\frac{1}{M}f_m(\mathbf{x})
+
+                                  Generalized additive models
+                                  f(\mathbf{x}) = \alpha + f_1(x_1) + ... + f_D(x_D)                                  
+
+
+Boosting
+  Boosting is a greedy algorithm for fitting adaptive basis-function models of the form 
+  
+  
+  
+  
+  
+  
+ \chapter{Principal Component Analysis}
+ \section{Introduction}
+    Principal Component Analysis is widely used for applications such as dimensionality reduction,lossy data 
+  compression,feature extraction,and data visualization.Also known as the Karhunen-Loeve transfrom.There are 
+  two definitions giving rise to the same algorithm.PCA can be defined as the orthogonal projection of the data 
+  onto a lower dimensional linear space,known as the principal subspace,such that the variance of the projected data
+  is maximized.Equivalently,it can be defined as the linear projection the minimizes the average projection cost,
+  defined as  the linear projection taht minimizes the average projection cost,defined as the mean squared distance
+  between the data points and their projections.
+\section{Maximum variance formulation}
+    Consider a data set of observations \{x_n\} where n = 1,...,N,and x_n is a Euclidean variable wih dimensionality D.
+Our goal is to project the data onto a space having dimensionality M < D while maxmizing the variance of the projected
+data.We define the direction of this space using a D-dimensional unit vector \mathbf{u_1^T}\mathbf{u_1} = 1.Each 
+data point \mathbf{x_n} is then projected onto a scalar value \mathbf{u_1^T}\mathbf{x_n}.The mean of the projected 
+data is \mathbf{u_1^T}\bar{\mathbf{x}} where the \bar{\mathbf{x}} is the sample set mean given by
+                                  \bar{\mathbf{x}} = \frac{1}{N}\sum_{n=1}^{N}{\mathbf{x_n}}
+and the variance of the projected data is given by
+\frac{1}{N}\sum_{n=1}^{N}\{\mathbf{u_1^T}\mathbf{x_n} - \mathbf{u_1^T}\bar{\mathbf{x}}\}^2 \\
+= \frac{1}{N}\sum_{n=1}^{N}{\{\mathbf{u_1^T}(\mathbf{x_n} - \bar{\mathbf{x}})\}^2} \\
+= \frac{1}{N}\sum_{n=1}^{N}{\{\mathbf{u_1^T(\mathbf{x_n - \bar{\mathbf{x}}})(\mathbf{x_n -\bar{x}})^T\mathbf{u_1^T} }  \}} \\
+= \mathbf{u_1^T}\mathbf{S}\mathbf{u_1}
+where \mathbf{S} is the data covariance matrix defined by
+\mathbf{S} = \frac{1}{N}\sum_{n=1}^{N}(\mathbf{x_n}-\bar{\mathbf{x}})(\mathbf{x_n}-\mathbf{\bar{x}})^T
+We now maximize the projected variance \mathbf{u_1^T}\mathbf{S}\mathbf{u_1} with respect to \mathbf{u_1},which is a
+constrained maximization to prevent \parallel\mathbf{u_1}\parallel\rightarrow \infty .The appropriate constraint 
+comes from the normalization condition \mathbf{u_1^T}\mathbf{u_1}=1.To enforce this constraint,we introduce a 
+Lagrange multiplier that we shall denote by \lambda_1,and then make an unconstrained maximization of
+\begin{equation}
+\mathbf{u_1^T}\mathbf{S}\mathbf{u_1} + \lambda_1(1-\mathbf{u_1^T}\mathbf{u_1})
+\end{equation}
+By setting the derivative with respect to \mathbf{u_1} equal to zero,we see that this quantity will have a stationayr
+point when
+\begin{equation}
+\mathbf{S}\mathbf{u_1} = \lambda_1\mathbf{u_1}
+\end{equation
+which says that \mathbf{u_1} must be an eigenvector of \mathbf{S}.If we left-mutiply by \mathbf{u_1^T} and make use
+of \mathbf{u_1^T}{u_1} = 1,we see that the variance is given by
+\begin{equation}
+\mathbf{u_1^TSu_1} = \lambda_1
+\end{equation}
+and so the variance will be a maximum when we set \mathbf{u_1} equal to the eigenvactor having the largest 
+eigenvalue \lambda_1.This eigenvector is known as the first principal component.
+
+\section{Minimum-error formulation}
+
+
+\section{Applications of PCA}
+
