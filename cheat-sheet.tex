@@ -8,11 +8,25 @@
 
 
 % RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[graybox, envcountchap]{svmult}
+%\documentclass[graybox, envcountchap, twocolumn]{styles/svmult}
+\documentclass[graybox, envcountchap]{styles/svmult}
+% general metadata:
+\author{onerhao@gmail.com}
+\title{Artificial Intelligence Cheat Sheet}
+\subtitle{Inference,equations, diagrams and tricks in machine learning,data mining,control}
 
 % choose options for [] as required from the list
 % in the Reference Guide
 
+\usepackage{amssymb,amsmath,bm}
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{textcomp}
+\newcommand\abs[1]{\left\lvert#1\right\rvert}
+\usepackage{longtable}
+\usepackage{algorithm2e}
+\usepackage{tocbibind}
+\usepackage[toc]{multitoc}
+\renewcommand{\bibname}{References}
 \usepackage{mathptmx}        % selects Times Roman as basic font
 \usepackage{helvet}          % selects Helvetica as sans-serif font
 \usepackage{courier}         % selects Courier as typewriter font
@@ -22,8 +36,20 @@
 \usepackage{makeidx}         % allows index generation
 \usepackage{graphicx}        % standard LaTeX graphics tool
                              % when including figure files
+\usepackage[justification=centering]{caption}
+\usepackage{subfig}
 \usepackage{multicol}        % used for the two-column index
+\usepackage{multirow}
 \usepackage[bottom]{footmisc}% places footnotes at page bottom
+\usepackage[bookmarksnumbered=true,
+            bookmarksopen=true,
+            colorlinks=true,
+            linkcolor=blue,
+            anchorcolor=blue,
+            citecolor=blue
+           ]{hyperref}
+
+\graphicspath{{figures/}}
 
 % see the list of further useful packages in the Reference Guide
 
@@ -37,24 +63,54 @@
 
 \frontmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\include{dedic}
-\include{foreword}
+\include{titlepage}
+%\include{dedic}
+%\include{foreword}
 \include{preface}
-\include{acknow}
+%\include{acknow}
 
 \tableofcontents
 \include{cblist}
 \include{acronym}
+\include{ml/notation}
 
 
 \mainmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\include{part}
-\include{author}
+%\include{part}
+\include{ml/Introduction}
+\include{ml/ProbabilityAndStatistics}
+%\include{chapterProbability}
+%\include{chapterGenerativeModels}
+%\include{chapterMVN}
+%\include{chapterBayesianStatistics}
+%\include{chapterFrequentistStatistics}
+%\include{chapterLinearRegression}
+%\include{chapterLogisticRegression}
+%\include{chapterGLM}
+%\include{chapterDGM}
+%\include{chapterEM}
+%\include{chapterLatentLinearModels}
+%\include{chapterSparseLinearModels}
+%\include{chapterKernels}
+%\include{chapterGP}
+%\include{chapterABM}
+%\include{chapterHMM}
+%\include{chapterSSM}
+%\include{chapterUGM}
+%\include{chapterExactInferenceForGraphicalModels}
+%\include{chapterVariationalInference}
+%\include{chapterMoreVariationalInference}
+%\include{chapterMonteCarloInference}
+%\include{chapterMCMC}
+%\include{chapterClustering}
+%\include{chapterStructureLearning}
+%\include{chapterLVM}
+%\include{chapterDeepLearning}
 %
 
 \backmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
-\include{appendix}
+\include{chapterOptimization}
 \include{glossary}
 \printindex
 

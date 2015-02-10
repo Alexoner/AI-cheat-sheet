@@ -228,14 +228,14 @@ passing it to article class \MessageBreak
 
 % various sizes and settings for contributed works
 
-\setlength{\textwidth}{117mm}
-%\setlength{\textheight}{12pt}\multiply\textheight by 45\relax
-\setlength{\textheight}{191mm}
-\setlength{\topmargin}{0cm}
-\setlength\oddsidemargin   {63\p@}
-\setlength\evensidemargin  {63\p@}
-\setlength\marginparwidth{90\p@}
-\setlength\headsep   {12\p@}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{0in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{5mm}
+%\setlength{\topsep}{0in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
 
 \newdimen\svparindent
 \setlength{\svparindent}{12\p@}
@@ -323,7 +323,8 @@ passing it to article class \MessageBreak
 \newcommand{\secsize}{\large}
 \newcommand{\secstyle}{\bfseries\boldmath}
 \newcommand{\subsecsize}{\large}
-\newcommand{\subsecstyle}{\bfseries\itshape\boldmath}
+%\newcommand{\subsecstyle}{\bfseries\itshape\boldmath}
+\newcommand{\subsecstyle}{\bfseries\boldmath}
 \newcommand{\subsubsecstyle}{\bfseries\boldmath}
 %
 \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
@@ -468,7 +469,7 @@ passing it to article class \MessageBreak
 \newif\if@mainmatter \@mainmattertrue
 \newcommand\frontmatter{\startnewpage
             \@mainmatterfalse\pagenumbering{roman}
-            \setcounter{page}{5}}
+            \setcounter{page}{1}}
 %
 \newcommand\mainmatter{\clearemptydoublepage
             \@mainmattertrue
@@ -494,7 +495,7 @@ passing it to article class \MessageBreak
         \@restonecolfalse\newpage
       \fi
       \thispagestyle{empty}%
-      \addtocounter{page}\m@ne
+      %\addtocounter{page}\m@ne
   \def\and{\unskip, }
   \parindent=\z@
   \pretolerance=10000
@@ -518,7 +519,7 @@ passing it to article class \MessageBreak
     \vskip 1.5em            % Vertical space after date.
   \fi
  \vfill
- {\Large\bfseries Springer\par}
+% {\Large\bfseries Springer\par}
 %\vskip 3pt
 %\itshape
 %  Berlin\enspace Heidelberg\enspace New\kern0.1em York\\
@@ -632,10 +633,10 @@ passing it to article class \MessageBreak
   \processchapsubtit
   \processchapauthor
   \processmotto
-  \ifdim\pagetotal>167\p@
+  \ifdim\pagetotal>67\p@
      \vskip 11\p@
   \else
-     \@tempdima=167\p@\advance\@tempdima by-\pagetotal
+     \@tempdima=67\p@\advance\@tempdima by-\pagetotal
      \vskip\@tempdima
   \fi}}
 
@@ -646,10 +647,10 @@ passing it to article class \MessageBreak
   \chapsize\chapstyle
   \ignorespaces#1\par\nobreak
   \processmotto
-  \ifdim\pagetotal>167\p@
+  \ifdim\pagetotal>67\p@
      \vskip 11\p@
   \else
-     \@tempdima=168\p@\advance\@tempdima by-\pagetotal
+     \@tempdima=67\p@\advance\@tempdima by-\pagetotal
      \vskip\@tempdima
   \fi}}
 %
@@ -1008,10 +1009,10 @@ passing it to article class \MessageBreak
 \ifx\vec@style\fig@type\else
 \@ifundefined{vec@style}{%
  \def\vec#1{\ensuremath{\mathchoice
-                     {\mbox{\boldmath$\displaystyle\mathbf{#1}$}}
-                     {\mbox{\boldmath$\textstyle\mathbf{#1}$}}
-                     {\mbox{\boldmath$\scriptstyle\mathbf{#1}$}}
-                     {\mbox{\boldmath$\scriptscriptstyle\mathbf{#1}$}}}}%
+                     {\mbox{\boldmath$\displaystyle\boldsymbol{#1}$}}
+                     {\mbox{\boldmath$\textstyle\boldsymbol{#1}$}}
+                     {\mbox{\boldmath$\scriptstyle\boldsymbol{#1}$}}
+                     {\mbox{\boldmath$\scriptscriptstyle\boldsymbol{#1}$}}}}%
 }
 {\def\vec#1{\ensuremath{\mathchoice
                      {\mbox{\boldmath$\displaystyle#1$}}

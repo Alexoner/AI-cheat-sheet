@@ -1,0 +1,11 @@
+# exclude everything except directory foo/bar
+!/*
+!/foo
+/foo/*
+!/foo/bar
+
+*.aux
+*.log
+*.out
+*.idx
+*.toc
