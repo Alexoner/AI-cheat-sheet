@@ -8,7 +8,33 @@
 \text{Reinforcement Learning}
 \end{cases}
 \end{equation}
+In the \textbf{predictive} or \textbf{supervised learning} approach,the goal is to learn a \textbf{mapping} from \textbf{inputs} $\mathbf{x}$ to \textbf{outputs} $y$,given a labeled set of input-output paris $D=\{(\mathbf{x_i},y_i)\}_{i=1}{N}$.Here $D$ is called the \textbf{training set},and N is the number of training examples.
+In the simplest setting,each training input $\mathbf{x_i}$ is a D-dimensional vector of numbers,representing,say,the height and weight of a person,which are called \textbf{features,attributes,or covariates}.
 
+\section{Supervised learning}
+  Similarly the form of the output or \textbf{response variable} can in principle be anything,but most methods assume that $y_i$ is \textbf{categorical or nominal} variable from some finite set,$y_i \in \{1,...,C\}$.When $y_i$ is categorical,the problem is known as \textbf{classification or pattern recognition},and when real-valued,known as \textbf{regression}.
+\subsection{Classification}
+  Here the goal is to learn a mapping from inputs $x$ to outputs $y$,where $y \in \{1,...,C\}$,with $C$ being the number of classes.If $C=2$,this is called \textbf{binary classification};if $C>2$,this is called \textbf{multiclass classification}.if the class labels are not mutually exclusive,we call it \textbf{multi-label classification},but this is best viewed as predicting multiple related binary class labels(a so-called \textbf{multiple output model}).
+  One way to formalize the problem is as \textbf{function approximation}:assume $y=f(\mathbf{x})$ for some unknown function $f$,and the goal of learning is to estimate the function $f$ given a labeled training set,and then to make predictions(estimate) using $\hat{y} =\hat{f}(\mathbf{x})$.Our main goal is to make predictions on novel inputs,meaning ones that we have not seen before(\textbf{generalization}.
+\subsubsection{Probabilistic predictions}
+Given a probabilistic output,we can always compute out "best guess" as to the "true label" using
+\begin{equation}
+\hat{y} = \hat{f}(\mathbf{x}) = \arg\max\limits_{c=1}^{C} p(y=c|\mathbf{x},D)
+\end{equation}
+This corresponds to a \textbf{MAP estimate}(MAP stands for\textbf{maximum a posteriori}).
+\subsubsection{Applications}
+
+\section{Unsupervised learning}
+  \textbf{Descriptive or unsupervised learning} approach is sometimes called \textbf{knowledge discovery}.We will formalize out task as one of \textbf{density estimation},that is we want to build models of the form $p(\mathbf{x_i|\theta})$,instead of $p(y_i|\mathbf{x_i,\theta})$.
+\subsection{Discovering clusters}
+Let $z_i \in \{1,...,K\}$ represent the cluster to which data point $i$ is assigned.($z_i$ is an exmaple of \textbf{hidden or latent} variable).
+\subsection{Discovering latent factors}
+Although the data may appear high dimensional,there may only be a small number of degrees of variability,corresponding to \textbf{latent factors}.The most common approach to dimensionality reduction is called \textbf{principal components analysis or PCA}.
+\subsection{Discovering graph structure}
+\subsection{Matrix completion}
+\subsubsection{Image inpainting}
+\subsubsection{Collaborative filtering}
+\subsubsection{Market basket analysis}
 
 \section{Three elements of a machine learning model}
 
@@ -45,7 +71,8 @@ Name & Loss & Derivative & $f^*$ & Algorithm                                    
 Squared error & $\frac{1}{2}(y_i-f(\mathbf{x_i}))^2$ & $y_i - f(\mathbf{x_i})$ & $\mathbb{E}[y|\mathbf{x_i}]$ & L2Boosting \\
 Absolute error & $|y_i-f(\mathbf{x_i})|$ & $sgn(y_i-f(\mathbf{x_i}))$ & $median(y|\mathbf{x_i})$ & Gradient boosting \\
 Exponential loss & $exp(-\hat{y_i}f(\mathbf{x_i}))$ & $-\hat{y_i}exp(-\hat{y_i}f(\mathbf{x_i}))$ & $\frac{1}{2}log\frac{\pi_i}{1-\pi_i}$ & AdaBoost \\
-Logloss & $log(1+e^{-\hat{y_i}f_i})$ & $y_i-\pi_i$ & $\frac{1}{2}log\frac{\pi_i}{1-\pi_i•}$ & LogitBoost
+Logloss & $log(1+e^{-\hat{y_i}f_i})$ & $y_i-\pi_i$ & $\frac{1}{2}log\frac{\pi_i}{1-\pi_i•}$ & LogitBoost \\
+\hline
 \end{tabular}
 
 \begin{definition}

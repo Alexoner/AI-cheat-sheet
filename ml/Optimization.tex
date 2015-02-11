@@ -1,0 +1,190 @@
+\chapter{Optimization methods}
+\label{chap:Optimization-methods}
+
+
+\section{Convexity}
+\label{sec:Convexity}
+
+\begin{definition}
+(\textbf{Convex set}) We say aset $\mathcal{S}$ is convex if for any $\vec{x}_1, \vec{x}_2 \in \mathcal{S}$, we have
+\begin{equation}
+\lambda\vec{x}_1+(1-\lambda)\vec{x}_2 \in \mathcal{S}, \forall \lambda \in [0,1]
+\end{equation}
+\end{definition}
+
+\begin{definition}
+(\textbf{Convex function}) A function $f(\vec{x})$ is called convex if its \textbf{epigraph}(the set of points above the function) defines a convex set. Equivalently, a function $f(\vec{x})$ is called convex if it is defined on a convex set and if, for any $\vec{x}_1, \vec{x}_2 \in \mathcal{S}$, and any $\lambda \in [0,1]$, we have
+\begin{equation}
+f(\lambda\vec{x}_1+(1-\lambda)\vec{x}_2) \leq \lambda f(\vec{x}_1)+(1-\lambda)f(\vec{x}_2)
+\end{equation}
+\end{definition}
+
+\begin{definition}
+A function $f(\vec{x})$ is said to be \textbf{strictly convex} if the inequality is strict
+\begin{equation}
+f(\lambda \vec{x}_1 + (1 - \lambda)\vec{x}_2) < \lambda f(\vec{x}_1) + (1 - \lambda)f(\vec{x}_2)
+\end{equation}
+\end{definition}
+
+\begin{definition}
+A function $f(\vec{x})$ is said to be (strictly) \textbf{concave} if $-f(\vec{x})$ is (strictly) convex.
+\end{definition}
+
+\begin{theorem}
+If $f(x)$ is twice differentiable on $[a, b]$ and $f''(x) \geq 0$ on $[a, b]$ then $f(x)$ is convex on $[a, b]$.
+\end{theorem}
+
+\begin{proposition}
+$\log(x)$ is strictly convex on $(0, \infty)$.
+\end{proposition}
+
+Intuitively, a (strictly) convex function has a “bowl shape”, and hence has a unique global minimum $x^*$ corresponding to the bottom of the bowl. Hence its second derivative must be positive everywhere, $\frac{\mathrm{d}^2}{\mathrm{d}x^2}f(x)>0$. A twice-continuously differentiable, multivariate function $f$ is convex iff its Hessian is positive definite for all $\vec{x}$. In the machine learning context, the function $f$ often corresponds to the NLL.
+
+Models where the NLL is convex are desirable, since this means we can always find the globally optimal MLE. We will see many examples of this later in the book. However, many models of interest will not have concave likelihoods. In such cases, we will discuss ways to derive locally optimal parameter estimates.
+
+
+\section{Gradient descent}
+\label{sec:Gradient-descent}
+
+
+\subsection{Stochastic gradient descent}
+
+\begin{algorithm}[htbp]
+	\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+	
+    \Input{Training data $\mathcal{D}=\left\{(\vec{x}_i,y_i) | i=1:N\right\}$}
+	\Output{A linear model: $y_i=\vec{\theta}^T\vec{x}$}
+    $\vec{w} \leftarrow 0;\; b \leftarrow 0;\; k \leftarrow 0$\;
+    \While{no mistakes made within the for loop}{
+        \For{$i\leftarrow 1$ \KwTo $N$}{
+			\If{$y_i(\vec{w} \cdot \vec{x}_i+b) \leq 0$}{
+				$\vec{w} \leftarrow \vec{w}+\eta y_i \vec{x}_i$\;
+				$b \leftarrow b+\eta y_i$\;
+				$k \leftarrow k+1$\;
+			}
+		}
+    }
+\caption{Stochastic gradient descent}
+\end{algorithm}
+
+
+\subsection{Batch gradient descent}
+
+
+\subsection{Line search}
+The \textbf{line search}\footnote{\url{http://en.wikipedia.org/wiki/Line_search}} approach first finds a descent direction along which the objective function $f$ will be reduced and then computes a step size that determines how far $\vec{x}$ should move along that direction. The descent direction can be computed by various methods, such as gradient descent(Section \ref{sec:Gradient-descent}), Newton's method(Section \ref{sec:Newtons-method}) and Quasi-Newton method(Section \ref{sec:Quasi-Newton-method}). The step size can be determined either exactly or inexactly.
+
+
+\subsection{Momentum term}
+
+
+\section{Lagrange duality}
+
+
+\subsection{Primal form}
+Consider the following, which we'll call the \textbf{primal} optimization problem:
+\begin{eqnarray}
+xyz
+\end{eqnarray}
+
+
+\subsection{Dual form}
+
+
+\section{Newton's method}
+\label{sec:Newtons-method}
+\begin{align}
+f(\vec{x})& \approx f(\vec{x}_k)+\vec{g}_k^T(\vec{x}-\vec{x}_k)+\dfrac{1}{2}(\vec{x}-\vec{x}_k)^T\vec{H}_k(\vec{x}-\vec{x}_k) \nonumber \\
+\text{where } & \vec{g}_k \triangleq \vec{g}(\vec{x}_k)=f'(\vec{x}_k), \vec{H}_k \triangleq \vec{H}(\vec{x}_k), \nonumber \\
+              & \vec{H}(\vec{x}) \triangleq \left[\dfrac{\partial^2 f}{\partial x_i \partial x_j}\right]_{D \times D} \quad \text{(Hessian matrix)} \nonumber \\
+f'(\vec{x})& = \vec{g}_k+\vec{H}_k(\vec{x}-\vec{x}_k)=0 \Rightarrow  \label{eqn:newton-stationary-point} \\
+\vec{x}_{k+1}& = \vec{x}_k-\vec{H}_k^{-1}\vec{g}_k
+\end{align}
+
+\begin{algorithm}[htbp]
+    Initialize $\vec{x}_0$ \\
+	
+	\While{(!convergency)} {
+        Evaluate $\vec{g}_k=\nabla f(\vec{x}_k)$ \\
+        Evaluate $\vec{H}_k=\nabla^2 f(\vec{x}_k)$ \\
+        $\vec{d}_k=-\vec{H}_k^{-1}\vec{g}_k$ \\
+        Use line search to find step size $\eta_k$ along $\vec{d}_k$ \\
+        $\vec{x}_{k+1}=\vec{x}_k+\eta_k\vec{d}_k$
+	}
+	
+\caption{Newton’s method for minimizing a strictly convex function}
+\end{algorithm}
+
+
+\section{Quasi-Newton method}
+\label{sec:Quasi-Newton-method}
+From Equation \ref{eqn:newton-stationary-point} we can infer out the \textbf{quasi-Newton condition} as follows:
+\begin{align}
+f'(\vec{x})-\vec{g}_k & = \vec{H}_k(\vec{x}-\vec{x}_k) \nonumber \\
+\vec{g}_{k-1}-\vec{g}_k & = \vec{H}_k(\vec{x}_{k-1}-\vec{x}_k) \Rightarrow \nonumber \\
+\vec{g}_k- \vec{g}_{k-1} & = \vec{H}_k(\vec{x}_k-\vec{x}_{k-1}) \nonumber \\
+\vec{g}_{k+1}- \vec{g}_k & = \vec{H}_{k+1}(\vec{x}_{k+1}-\vec{x}_k) \quad \text{(quasi-Newton condition)} \label{eqn:quasi-Newton-condition}
+\end{align}
+
+The idea is to replace $\vec{H}_k^{-1}$ with a approximation $\vec{B}_k$, which satisfies the following properties:
+\begin{enumerate}
+\item{$\vec{B}_k$ must be symmetric}
+\item{$\vec{B}_k$ must satisfies the quasi-Newton condition, i.e., $\vec{g}_{k+1} - \vec{g}_k= \vec{B}_{k+1}(\vec{x}_{k+1}-\vec{x}_k)$. \\
+Let $\vec{y}_k=\vec{g}_{k+1}- \vec{g}_k$, $\vec{\delta}_k=\vec{x}_{k+1}-\vec{x}_k$, then
+\begin{equation}
+\vec{B}_{k+1}\vec{y}_k=\vec{\delta}_k \label{eqn:secant-equation}
+\end{equation}
+}
+\item{Subject to the above, $\vec{B}_k$ should be as close as possible to $\vec{B_{k-1}}$.}
+\end{enumerate}
+
+Note that we did not require that $\vec{B}_k$ be positive definite. That is because we can show that it must be 
+positive definite if $\vec{B_{k-1}}$ is. Therefore, as long as the initial Hessian approximation $\vec{B}_0$ is positive definite, 
+all $\vec{B}_k$ are, by induction. 
+
+
+\subsection{DFP}
+Updating rule:
+\begin{equation}
+\vec{B}_{k+1}=\vec{B}_k+\vec{P}_k+\vec{Q}_k
+\end{equation}
+
+From Equation \ref{eqn:secant-equation} we can get
+\begin{equation*}
+\vec{B}_{k+1}\vec{y}_k=\vec{B}_k\vec{y}_k+\vec{P}_k\vec{y}_k+\vec{Q}_k\vec{y}_k=\vec{\delta}_k
+\end{equation*}
+
+To make the equation above establish, just let
+\begin{align*}
+\vec{P}_k\vec{y}_k & = \vec{\delta}_k \\
+\vec{Q}_k\vec{y}_k & = -\vec{B}_k\vec{y}_k
+\end{align*}
+
+In DFP algorithm, $\vec{P}_k$ and $\vec{Q}_k$ are
+\begin{align}
+\vec{P}_k &= \dfrac{\vec{\delta}_k\vec{\delta}_k^T}{\vec{\delta}_k^T\vec{y}_k} \\
+\vec{Q}_k &= -\dfrac{\vec{B}_k\vec{y}_k\vec{y}_k^T\vec{B}_k}{\vec{y}_k^T\vec{B}_k\vec{y}_k}
+\end{align}
+
+
+\subsection{BFGS}
+Use $\vec{B}_k$ as a approximation to $\vec{H}_k$, then the quasi-Newton condition becomes
+\begin{equation}
+\vec{B}_{k+1}\vec{\delta}_k=\vec{y}_k
+\end{equation}
+
+The updating rule is similar to DFP, but $\vec{P}_k$ and $\vec{Q}_k$ are different. Let 
+\begin{align*}
+\vec{P}_k\vec{\delta}_k & = \vec{y}_k \\
+\vec{Q}_k\vec{\delta}_k & = -\vec{B}_k\vec{\delta}_k
+\end{align*}
+
+Then
+\begin{align}
+\vec{P}_k &= \dfrac{\vec{y}_k\vec{y}_k^T}{\vec{y}_k^T\vec{\delta}_k} \\
+\vec{Q}_k &= -\dfrac{\vec{B}_k\vec{\delta}_k\vec{\delta}_k^T\vec{B}_k}{\vec{\delta}_k^T\vec{B}_k\vec{\delta}_k}
+\end{align}
+
+
+\subsection{Broyden}
+Broyden's algorithm is a linear combination of DFP and BFGS.
