@@ -1,0 +1,74 @@
+\chapter{Matrix Decomposition}
+\label{chapter:Matrix Decomposition}
+\section{LU Decompistion}
+\section{QR Decomposition}
+\section{Eigen value Decomposition}
+\begin{definition}
+	An $\mathbf{eigenvector}$ of an $n\times n$ matrix $A$ is a nonzero vector $\vec{x}$ such that $A\vec{x}=\lambda\vec{x}$ for some scalar $\lambda$.A scalar $\lambda$ is called $\mathbf{eigenvalue}$ of $A$ if there is a nontrivial solution \vec{x} of $A\vec{x}=\lambda\vec{x}$;such an \vec{x} is called an eigenvector corresponding to $\lambda$\footnote{An eigenvalue may be zero}.
+\end{definition}
+
+
+\section{Singular Value Decomposition}
+
+\subsection{definition}
+\begin{definition}
+	Any matrix can be decomposed as follows
+	\begin{equation}\label{eqn:SVD}
+	\underbrace{\vec{X}}_{N \times D}=\underbrace{\vec{U}}_{N \times N}\underbrace{\vec{\Sigma}}_{N \times D}\underbrace{\vec{V}^T}_{D \times D}
+	\end{equation}
+	where $\vec{U}$ is an $N \times N$ matrix whose columns are orthornormal(so $\vec{U}^T\vec{U}=\vec{I}$), $\vec{V}$ is $D \times D$ matrix whose rows and columns are orthonormal (so $\vec{V}^T\vec{V}=\vec{V}\vec{V}^T=\vec{I}_D$), and $\vec{\Sigma}$ is a $N \times D$ matrix containing the $r=\min(N,D)$ singular values $\sigma_i \geq 0$ on the main diagonal, with 0s filling the rest of the matrix.
+\end{definition}
+\subsection{proof}
+Let $A$ be an $m\times n$ matrix.Then $A^TA$ is symmetric and can be orthogonally diagonalized with eigenvectors.The \textbf{singular values} of $A$ are the square root of the eigenvalues of $A^TA$,denoted by $\sigma_1,\sigma_2,...,\sigma_n$.That is $\sigma_i = \sqrt{\lambda_i}$ for $1\leq i \leq n$.
+The eigenvalues are usually arranged so that
+\begin{equation}
+\lambda_1 \geq \lambda_2 \geq...\geq \lambda_n \geq 0
+\end{equation}
+
+\begin{theorem}
+	Suppose {$\vec{v}_1,\vec{v_2}...,\vec{v_n}$} is an orthogonal basis of $\mathbb{R}^n$ consisting of eigenvector of $A^TA$,arranged so that the corresponding eigenvalues of  $A^TA$ satisfy $\lambda_1 \geq \lambda_2 \geq...\geq \lambda_n \geq 0$  and suppose $A$ has r nonzero singular values.Then {$A\vec{v_1},...,A\vec{v_r}$} is an orthogonal basis for $ColA$,and $rankA=r$. 
+\end{theorem}
+\begin{proof}
+	Because $\mathbf{v_i}$ and $\vec{v_j}$ are orthogonal for $i\neq j$,
+	\begin{equation}
+	(A\vec{v_i})^T(A\vec{v_j}) = \vec{v_i}^TA^TA\vec{v_j} = \vec{v_i}^T(\lambda_j\vec{v_j})=0
+	\end{equation} 
+\end{proof}
+We therefore have
+\begin{equation}
+A\vec{v_i} = \sigma_i\vec{u_i}
+\end{equation}
+For a general vector $\vec{x}$,since eigenvectors are orthogonal unit vectors,we have
+\begin{equation}
+\vec{x} = (\vec{v_1}\cdot\vec{x})\vec{v_1} + (\vec{v_2}\cdot\vec{x})\vec{v_2} +...+(\vec{v_n}\cdot\vec{x})\vec{v_n}
+\end{equation}
+This means that
+\begin{align}
+& M\vec{x} = (\vec{v_1}\cdot\vec{x})M\vec{v_1} + (\vec{v_2}\cdot\vec{x})M\vec{v_2} +...+(\vec{v_n}\cdot\vec{x})M\vec{v_n} \\
+& M\vec{x} = (\vec{v_1}\cdot\vec{x})\sigma_1\vec{u_1} + (\vec{v_2}\cdot\vec{x})\sigma_2\vec{u_2} +...+(\vec{v_n}\cdot\vec{x})\sigma_n\vec{u_n}
+\end{align}
+Remember that dot product can be computed using the vector transpose
+\begin{equation}
+\vec{v}\cdot\vec{u} = \vec{v^T}\vec{u}
+\end{equation}
+which leads to
+\begin{align}
+& M\vec{x} = \vec{u_1}\sigma_1\vec{v_1^T}\vec{x}+\vec{u_2}\sigma_2\vec{v_2^T}\vec{x}+...+\vec{u_n}\sigma_n\vec{v_n^T}\vec{x} \\
+&  M = \vec{u_1}\sigma_1\vec{v_1^T}+\vec{u_2}\sigma_2\vec{v_2^T}+...+\vec{u_n}\sigma_n\vec{v_n^T}
+\end{align}
+And this is usually expressed by writing 
+\begin{equation}
+M = U\Sigma V^T
+\end{equation}
+As for $\vec{u_i}$,we have
+\begin{align}
+\begin{cases}
+A^TA\vec{v_i} &= \lambda\vec{v_i} \\
+A\vec{v_i}    &= \sigma_i\vec{u_i}     \\
+\end{cases}
+&\Rightarrow A^T\sigma_i\vec{u_i} = \lambda\vec{v_i} \\
+&\Rightarrow \sigma_iA^T\vec{u_i} = \lambda\vec{v_i}\\
+&\Rightarrow AA^T\vec{u_i}&=\lambda_iA\vec{v_i} \\
+&						  &= \lambda_i\sigma_i\vec{u_i}\\
+\end{align}
+So we can see that $\vec{u_i}$ is the eigenvector of symmetric matrix $AA^T$,and $\vec{v_i}$ is the eigenvector of symmetric matrix $A^TA$.In summary,$\vec{u_i}$ and \vec{v_i} are the \textbf{left-eigenvector} and \textbf{right-eigenvectors} of matrix $A$.
