@@ -148,52 +148,5 @@ Boosting
   
   
   
-  
- \chapter{Principal Component Analysis}
- \section{Introduction}
-    Principal Component Analysis is widely used for applications such as dimensionality reduction,lossy data 
-  compression,feature extraction,and data visualization.Also known as the Karhunen-Loeve transfrom.There are 
-  two definitions giving rise to the same algorithm.PCA can be defined as the orthogonal projection of the data 
-  onto a lower dimensional linear space,known as the principal subspace,such that the variance of the projected data
-  is maximized.Equivalently,it can be defined as the linear projection the minimizes the average projection cost,
-  defined as  the linear projection taht minimizes the average projection cost,defined as the mean squared distance
-  between the data points and their projections.
-\section{Maximum variance formulation}
-    Consider a data set of observations \{x_n\} where n = 1,...,N,and x_n is a Euclidean variable wih dimensionality D.
-Our goal is to project the data onto a space having dimensionality M < D while maxmizing the variance of the projected
-data.We define the direction of this space using a D-dimensional unit vector \mathbf{u_1^T}\mathbf{u_1} = 1.Each 
-data point \mathbf{x_n} is then projected onto a scalar value \mathbf{u_1^T}\mathbf{x_n}.The mean of the projected 
-data is \mathbf{u_1^T}\bar{\mathbf{x}} where the \bar{\mathbf{x}} is the sample set mean given by
-                                  \bar{\mathbf{x}} = \frac{1}{N}\sum_{n=1}^{N}{\mathbf{x_n}}
-and the variance of the projected data is given by
-\frac{1}{N}\sum_{n=1}^{N}\{\mathbf{u_1^T}\mathbf{x_n} - \mathbf{u_1^T}\bar{\mathbf{x}}\}^2 \\
-= \frac{1}{N}\sum_{n=1}^{N}{\{\mathbf{u_1^T}(\mathbf{x_n} - \bar{\mathbf{x}})\}^2} \\
-= \frac{1}{N}\sum_{n=1}^{N}{\{\mathbf{u_1^T(\mathbf{x_n - \bar{\mathbf{x}}})(\mathbf{x_n -\bar{x}})^T\mathbf{u_1^T} }  \}} \\
-= \mathbf{u_1^T}\mathbf{S}\mathbf{u_1}
-where \mathbf{S} is the data covariance matrix defined by
-\mathbf{S} = \frac{1}{N}\sum_{n=1}^{N}(\mathbf{x_n}-\bar{\mathbf{x}})(\mathbf{x_n}-\mathbf{\bar{x}})^T
-We now maximize the projected variance \mathbf{u_1^T}\mathbf{S}\mathbf{u_1} with respect to \mathbf{u_1},which is a
-constrained maximization to prevent \parallel\mathbf{u_1}\parallel\rightarrow \infty .The appropriate constraint 
-comes from the normalization condition \mathbf{u_1^T}\mathbf{u_1}=1.To enforce this constraint,we introduce a 
-Lagrange multiplier that we shall denote by \lambda_1,and then make an unconstrained maximization of
-\begin{equation}
-\mathbf{u_1^T}\mathbf{S}\mathbf{u_1} + \lambda_1(1-\mathbf{u_1^T}\mathbf{u_1})
-\end{equation}
-By setting the derivative with respect to \mathbf{u_1} equal to zero,we see that this quantity will have a stationayr
-point when
-\begin{equation}
-\mathbf{S}\mathbf{u_1} = \lambda_1\mathbf{u_1}
-\end{equation
-which says that \mathbf{u_1} must be an eigenvector of \mathbf{S}.If we left-mutiply by \mathbf{u_1^T} and make use
-of \mathbf{u_1^T}{u_1} = 1,we see that the variance is given by
-\begin{equation}
-\mathbf{u_1^TSu_1} = \lambda_1
-\end{equation}
-and so the variance will be a maximum when we set \mathbf{u_1} equal to the eigenvactor having the largest 
-eigenvalue \lambda_1.This eigenvector is known as the first principal component.
 
-\section{Minimum-error formulation}
-
-
-\section{Applications of PCA}
 

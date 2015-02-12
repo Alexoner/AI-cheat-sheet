@@ -10,7 +10,7 @@
 
 \section{Singular Value Decomposition}
 
-\subsection{definition}
+\subsection{Definition}
 \begin{definition}
 	Any matrix can be decomposed as follows
 	\begin{equation}\label{eqn:SVD}
@@ -18,7 +18,7 @@
 	\end{equation}
 	where $\vec{U}$ is an $N \times N$ matrix whose columns are orthornormal(so $\vec{U}^T\vec{U}=\vec{I}$), $\vec{V}$ is $D \times D$ matrix whose rows and columns are orthonormal (so $\vec{V}^T\vec{V}=\vec{V}\vec{V}^T=\vec{I}_D$), and $\vec{\Sigma}$ is a $N \times D$ matrix containing the $r=\min(N,D)$ singular values $\sigma_i \geq 0$ on the main diagonal, with 0s filling the rest of the matrix.
 \end{definition}
-\subsection{proof}
+\subsection{Proof}
 Let $A$ be an $m\times n$ matrix.Then $A^TA$ is symmetric and can be orthogonally diagonalized with eigenvectors.The \textbf{singular values} of $A$ are the square root of the eigenvalues of $A^TA$,denoted by $\sigma_1,\sigma_2,...,\sigma_n$.That is $\sigma_i = \sqrt{\lambda_i}$ for $1\leq i \leq n$.
 The eigenvalues are usually arranged so that
 \begin{equation}
@@ -61,14 +61,16 @@ And this is usually expressed by writing
 M = U\Sigma V^T
 \end{equation}
 As for $\vec{u_i}$,we have
-\begin{align}
-\begin{cases}
-A^TA\vec{v_i} &= \lambda\vec{v_i} \\
-A\vec{v_i}    &= \sigma_i\vec{u_i}     \\
-\end{cases}
-&\Rightarrow A^T\sigma_i\vec{u_i} = \lambda\vec{v_i} \\
-&\Rightarrow \sigma_iA^T\vec{u_i} = \lambda\vec{v_i}\\
-&\Rightarrow AA^T\vec{u_i}&=\lambda_iA\vec{v_i} \\
-&						  &= \lambda_i\sigma_i\vec{u_i}\\
-\end{align}
+\begin{align*}
+&\begin{cases}
+(A^TA)\vec{v_i} = \lambda_i\vec{v_i}	\\
+A\vec{v_i}    = \sigma_i\vec{u_i}	\\
+\end{cases} \\
+&\Rightarrow A^T\sigma_i\vec{u_i} = \lambda_i\vec{v_i} \\
+&\Rightarrow \sigma_iA^T\vec{u_i} = \lambda_i\vec{v_i}\\
+&\Rightarrow (AA^T)\vec{u_i}=\sigma_iA\vec{v_i} = \lambda_i\vec{u_i}\\
+\end{align*}
 So we can see that $\vec{u_i}$ is the eigenvector of symmetric matrix $AA^T$,and $\vec{v_i}$ is the eigenvector of symmetric matrix $A^TA$.In summary,$\vec{u_i}$ and \vec{v_i} are the \textbf{left-eigenvector} and \textbf{right-eigenvectors} of matrix $A$.
+\subsection{Application}
+\subsubsection{Principal Component Analysis}
+The projection vectors for principal component projection are the left-eigenvectors

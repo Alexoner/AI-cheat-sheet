@@ -131,67 +131,15 @@ In many applications, such as collaborative filtering, we have missing data. One
 
 \section{Principal components analysis (PCA)}
 \label{sec:PCA}
-\subsection{Introduction}
 Consider the FA model where we constrain $\vec{\Psi}=\sigma^2\vec{I}$, and $\vec{W}$ to be orthonormal. It can be shown (Tipping and Bishop 1999) that, as $\sigma^2 \rightarrow 0$, this model reduces to classical (nonprobabilistic) \textbf{principal components analysis}(PCA), also known as the Karhunen Loeve transform. The version where $\sigma^2 > 0$ is known as \textbf{probabilistic PCA}(\textbf{PPCA}) (Tipping and Bishop 1999), orsensible PCA(Roweis 1997).
-
-
-
 
 
 \subsection{Classical PCA}
 
-\subsubsection{Statement of the algorithm}
-Principal Component Analysis is widely used for applications such as dimensionality reduction,lossy data 
-  compression,feature extraction,and data visualization.Also known as the Karhunen-Loeve transfrom.There are 
-  two definitions giving rise to the same algorithm.
-\begin{definition}PCA can be defined as the orthogonal projection of the data onto a lower dimensional linear space,known as the principal subspace,such that the variance of the projected data is maximized.Equivalently,it can be defined as the linear projection the minimizes the average projection cost,defined as  the linear projection that minimizes the average projection cost,defined as the mean squared distance between the data points and their projections.
-\end{definition}
 
-\subsubsection{Maximum variance formulation}
-\begin{proof}
-Consider a data set of observations $\{x_n\}$ where $n = 1,...,N$,and $x_n$ is a Euclidean variable wih dimensionality D.
-Our goal is to project the data onto a space having dimensionality M < D while maxmizing the variance of the projected
-data.We define the direction of this space using a $D-dimensional$ unit vector $ \mathbf{u_1^T}\mathbf{u_1} = 1 $.Each 
-data point $\mathbf{x_n}$ is then projected onto a scalar value $ \mathbf{u_1^T}\mathbf{x_n} $.The mean of the projected 
-data is $ \mathbf{u_1^T}\bar{\mathbf{x}} $ where the $  \bar{\mathbf{x}} $ is the sample set mean given by
-$ \bar{\mathbf{x}} = \frac{1}{N}\sum_{n=1}^{N}{\mathbf{x_n}} $
-and the variance of the projected data is given by
-\begin{align}
-&\frac{1}{N}\sum_{n=1}^{N}\{\mathbf{u_1^T}\mathbf{x_n} - \mathbf{u_1^T}\bar{\mathbf{x}}\}^2 \\
-&= \frac{1}{N}\sum_{n=1}^{N}{\{\mathbf{u_1^T}(\mathbf{x_n} - \bar{\mathbf{x}})\}^2} \\
-&= \frac{1}{N}\sum_{n=1}^{N}{\{\mathbf{u_1^T(\mathbf{x_n - \bar{\mathbf{x}}})(\mathbf{x_n -\bar{x}})^T\mathbf{u_1^T} }  \}} \\
-&= \mathbf{u_1^T}\mathbf{S}\mathbf{u_1}
-\end{align}
-where $\mathbf{S}$ is the data covariance matrix defined by
-\begin{equation}
-\mathbf{S} = \frac{1}{N}\sum_{n=1}^{N}(\mathbf{x_n}-\bar{\mathbf{x}})(\mathbf{x_n}-\mathbf{\bar{x}})^T
-\end{equation}
-We now maximize the projected variance $ \mathbf{u_1^T}\mathbf{S}\mathbf{u_1} $ with respect to $ \mathbf{u_1} $,which is a
-constrained maximization to prevent $ \parallel\mathbf{u_1}\parallel\rightarrow \infty $ .The appropriate constraint 
-comes from the normalization condition $ \mathbf{u_1^T}\mathbf{u_1}=1 $.To enforce this constraint,we introduce a 
-Lagrange multiplier that we shall denote by $ \lambda_1 $,and then make an unconstrained maximization of
-\begin{equation}
-\mathbf{u_1^T}\mathbf{S}\mathbf{u_1} + \lambda_1(1-\mathbf{u_1^T}\mathbf{u_1})
-\end{equation}
-By setting the derivative with respect to $ \mathbf{u_1} $ equal to zero,we see that this quantity will have a stationayr
-point when
-\begin{equation}
-\mathbf{S}\mathbf{u_1} = \lambda_1\mathbf{u_1}
-\end{equation}
-which says that $ \mathbf{u_1}$ must be an eigenvector of $ \mathbf{S} $.If we left-mutiply by $ \mathbf{u_1^T} $ and make use of $ \mathbf{u_1^T}{u_1} = 1 $,we see that the variance is given by
-\begin{equation}
-\mathbf{u_1^TSu_1} = \lambda_1
-\end{equation}
-and so the variance will be a maximum when we set $ \mathbf{u_1} $ equal to the eigenvector having the largest 
-eigenvalue $ \lambda_1 $.This eigenvector is known as the first principal component.
-\end{proof}
-To summarize, principal component analysis involves evaluating the mean x and the covariance matrix S of the data set and then finding the M eigenvectors of S corresponding to the M largest eigenvalues. Algorithms for finding eigenvectors and eigenvalues, as well as additional theorems related to eigenvector decomposition,can be found in Golub and Van Loan (1996). Note that the computational cost of computing the full eigenvector decomposition for a matrix of size $D \times D$ is $O(D^3)$. If we plan to project our data onto the first M principal components, then we only need to find the first M eigenvalues and eigenvectors. This can be done with more
-efficient techniques, such as the power method (Golub and Van Loan, 1996), that scale like $O(MD^2)$ Section 12.2.2 ), or alternatively we can make use of the EM algorithm.
+\subsubsection{Statement of the theorem}
+The synthesis viewof classical PCA is summarized in the forllowing theorem.
 
-
-
-\subsubsection{Minimum reconstruction error formulation}
-The synthesis view of minimum reconstruction error perspective of PCA is summarized in the following theorem.
 \begin{theorem}
 Suppose we want to find an orthogonal set of $L$ linear basis vectors $\vec{w}_j \in \mathbb{R}^D$, and the corresponding scores $\vec{z}_i \in \mathbb{R}^L$, such that we minimize the average \textbf{reconstruction error}
 \begin{equation}
@@ -222,9 +170,9 @@ An example of this is shown in Figure \ref{fig:PCA-PPCA}(a) for $D=2$ and $L=1$.
 The principal directions are the ones along which the data shows maximal variance. This means that PCA can be “misled” by directions in which the variance is high merely because of the measurement scale. It is therefore standard practice to standardize the data first, or equivalently, to work with correlation matrices instead of covariance matrices. 
 
 
-\begin{proof}
+\subsubsection{Proof *}
 See Section 12.2.2 of MLAPP.
-\end{proof}
+
 
 \subsection{Singular value decomposition (SVD)}
 We have defined the solution to PCA in terms of eigenvectors of the covariance matrix. However, there is another way to obtain the solution, based on the \textbf{singular value decomposition}, or \textbf{SVD}. This basically generalizes the notion of eigenvectors from square matrices to any kind of matrix.
