@@ -23,10 +23,18 @@ This is known as \textbf{basis function expansion}. (Note that the model is stil
 
 
 
-\section{MLE}
+\section{Maximum likelihood estimations(least squares)}
+A common way to estimate the parameters of a statistical model is to compute the MLE,which is defined as
+\begin{equation}
+	\vec{\hat{\theta}}=\arg\max_\theta{logp(D|\vec{\theta})}
+\end{equation}
+Assume the training examples are \textbf{independently and identically distributed(IID)},we can write the \textbf{log-likelihood} function as follows:
+\begin{equation}
+\ell(\vec{\theta}) \triangleq \log p(\mathcal{D}|\vec{\theta})
+\end{equation}
 Instead of maximizing the log-likelihood, we can equivalently minimize the \textbf{negative log likelihood} or \textbf{NLL}:
 \begin{equation}
-\text{NLL}(\vec{\theta}) \triangleq -\ell(\vec{\theta})=-\log(\mathcal{D}|\vec{\theta})
+\text{NLL}(\vec{\theta}) \triangleq -\ell(\vec{\theta})=-\log p(\mathcal{D}|\vec{\theta})
 \end{equation}
 
 The NLL formulation is sometimes more convenient, since many optimization software packages are designed to find the minima of functions, rather than maxima.
@@ -52,11 +60,36 @@ Let's drop constants wrt $\vec{w}$ and NLL can be written as
 There two ways to minimize NLL$(\vec{w})$.
 
 
-\subsection{OLS}
-Define $\vec{y}=(y_1,y_2,\cdots,y_N)$, $\vec{X}=\left(\begin{array}{c}\vec{x}_1^T \\ \vec{x}_2^T \\ \vdots \\ \vec{x}_N^T\end{array}\right)$, then NLL$(\vec{w})$ can be written as
-\begin{equation}
-\text{NLL}(\vec{w})=\dfrac{1}{2}(\vec{y}-\vec{X}\vec{w})^T(\vec{y}-\vec{X}\vec{w})
-\end{equation}
+\subsection{Derivations of the MLE}
+Define $\vec{y}=(y_1,y_2,\cdots,y_N)$, $\vec{X}=\left(\begin{array}{c}\vec{x}_1^T \\ \vec{x}_2^T \\ \vdots \\ \vec{x}_N^T\end{array}\right)$, then we can rewritten the objective in a form that is more amendable to differentiation:
+\begin{align}
+\text{NLL}(\vec{w}) &= \dfrac{1}{2}(\vec{y}-\vec{X}\vec{w})^T(\vec{y}-\vec{X}\vec{w})\\
+&= \dfrac{1}{2} [\vec{w^T} (\vec{X}^T\vec{X})\vec{w} - \vec{y}^T\vec{x}\vec{w}- \vec{w}^T\vec{x}^T\vec{y}  +\vec{y}^T\vec{y}]			\\
+\Rightarrow
+\dfrac{\partial}{\partial \vec{w}}\text{NLL} &= \dfrac{1}{2} \vec{w^T} (\vec{X}^T\vec{X})\vec{w} -\vec{w}^T(\vec{x}^T\vec{y}) 
+\end{align}
+
+where
+$\begin{cases}
+\vec{X} = \begin{bmatrix}
+&\vec{x_1^T} \\
+&\vec{x_2^T} \\
+& ... \\
+&\vec{x_n^T}
+\end{bmatrix}\\	
+\vec{X^T}\vec{X} =
+\begin{bmatrix}
+\vec{x_1} & \vec{x_2} & ...&\vec{x_n}
+\end{bmatrix} 
+\cdot
+\begin{bmatrix}
+&\vec{x_1^T} \\
+&\vec{x_2^T} \\
+& ... \\
+&\vec{x_n^T}
+\end{bmatrix}  = \sum\limits_{i=1}^{N}\vec{x_i}\vec{x_i^T} = \sum\limits_{i=1}^{N} \\
+\end{cases}$
+is the \textbf{sum of squares } matrix.
 
 When $\mathcal{D}$ is small(for example, $N < 1000$), we can use the following equation to compute \vec{w} directly
 \begin{equation}
@@ -78,10 +111,10 @@ trA &\triangleq& \sum\limits_{i=1}^n A_{ii} \nonumber \\
 Then,
 \begin{eqnarray*}
 \text{NLL}(\vec{w}) &=& \frac{1}{2N}(\vec{X}\vec{w}-\vec{y})^T(\vec{X}\vec{w}-\vec{y}) \\
-\frac{\partial \text{NLL}}{\vec{w}} &=& \frac{1}{2} \frac{\partial}{\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}+\vec{y}^T\vec{y}) \\
-                           &=& \frac{1}{2} \frac{\partial}{\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
-						   &=& \frac{1}{2} \frac{\partial}{\vec{w}} tr(\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
-						   &=& \frac{1}{2} \frac{\partial}{\vec{w}} (tr\vec{w}^T\vec{X}^T\vec{X}\vec{w}-2tr\vec{y}^T\vec{X}\vec{w})
+\frac{\partial \text{NLL}}{\partial\vec{w}} &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}+\vec{y}^T\vec{y}) \\
+                           &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
+						   &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} tr(\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
+						   &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (tr\vec{w}^T\vec{X}^T\vec{X}\vec{w}-2tr\vec{y}^T\vec{X}\vec{w})
 \end{eqnarray*}
 
 Combining Equations \ref{eqn:matrix-1} and \ref{eqn:matrix-2}, we find that 
@@ -91,16 +124,29 @@ Combining Equations \ref{eqn:matrix-1} and \ref{eqn:matrix-2}, we find that
 
 Let $A^T=\vec{w}, B=B^T=\vec{X}^T\vec{X}$, and $C=I$, Hence,
 \begin{eqnarray}
-\frac{\partial \text{NLL}}{\vec{w}} &=& \frac{1}{2} (\vec{X}^T\vec{X}\vec{w}+\vec{X}^T\vec{X}\vec{w} -2\vec{X}^T\vec{y}) \nonumber \\
+\frac{\partial \text{NLL}}{\partial\vec{w}} &=& \frac{1}{2} (\vec{X}^T\vec{X}\vec{w}+\vec{X}^T\vec{X}\vec{w} -2\vec{X}^T\vec{y}) \nonumber \\
 						   &=& \frac{1}{2} (\vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y}) \nonumber \\
-\frac{\partial \text{NLL}}{\vec{w}} &=& 0 \Rightarrow \vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y} =0 \nonumber \\
+\frac{\partial \text{NLL}}{\partial\vec{w}} &=& 0 \Rightarrow \vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y} =0 \nonumber \\
 \vec{X}^T\vec{X}\vec{w} &=& \vec{X}^T\vec{y} \label{eqn:normal-equation} \\
 \hat{\vec{w}}_{\mathrm{OLS}} &=& (\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y} \nonumber
 \end{eqnarray}
 \end{proof}
-
 Equation \ref{eqn:normal-equation} is known as the \textbf{normal equation}.
-
+\begin{proof}
+Consider $\mathbf{vector-vector}$ differentiation,if $\mathbf{A}$ is not a function of $\vec{x}$ then
+\begin{equation}
+\dfrac{\partial\vec{X}^TA\vec{X}}{\partial\vec{X}} = \vec{X}^T(\mathbf{A}+\mathbf{A}^T) = (\mathbf{A}+\mathbf{A}^T)\vec{X}
+\end{equation}
+\end{proof}
+Then,we can derivate $\dfrac{\partial NLL}{\partial \vec{w}}$
+\begin{eqnarray}
+g(\vec{w}) &= \dfrac{\partial NLL}{\partial\vec{w}} \\
+&=\vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y}			
+\end{eqnarray}
+Setting the derivative to zero,we get
+\begin{equation}
+	\vec{w} = (\vec{X}^T\vec{X})^{-1}\vec{x}^T\vec{y}
+\end{equation}
 
 \subsubsection{Geometric interpretation}
 
