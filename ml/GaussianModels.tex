@@ -1,16 +1,27 @@
 \chapter{Gaussian Models}
 \label{chap:Gaussian Models}
-
-In this chapter, we discuss the \textbf{multivariate Gaussian} or \textbf{multivariate normal(MVN)}, which is the most widely used joint probability density function for continuous variables. It will form the basis for many of the models we will encounter in later chapters.
-
+The Gaussian,also known as the \textbf{normal distribution},is a widely used model for the \textbf{distribution of continuous variables}.In the case of a single variable $x$,the Gaussian distribution can be written in the form
+\begin{equation}
+	\mathcal{N}(x|\mu,\sigma^2) = \dfrac{1}{(2\pi\sigma^2)^{\frac{1}{2}}}\exp\{\dfrac{1}{2\sigma^2 (x-\mu)^2} \}
+\end{equation}
+where the $\mu$ is the mean and $\sigma^2$ is the variance.
+Now we will discuss the \textbf{multivariate Gaussian} or \textbf{multivariate normal(MVN)}, which is the most widely used joint probability density function for continuous variables. It will form the basis for many of the models.
 
 \section{Basics}
-Recall from Section \ref{sec:MVN} that the pdf for an MVN in $D$ dimensions is defined by the following:
+Recall from Section \ref{sec:MVN},for a $D-dimensionl$ vector \vec{x},the multivariate Gaussian distribution(MVN),i.e. the \textbf{pdf} takes the form:
 \begin{equation}
 \mathcal{N}(\vec{x}|\vec{\mu},\Sigma) \triangleq \dfrac{1}{(2\pi)^{\frac{D}{2}}|\Sigma|^{\frac{1}{2}}}\exp\left[-\dfrac{1}{2}(\vec{x}-\vec{\mu})^T\Sigma^{-1}(\vec{x}-\vec{\mu})\right]
 \end{equation}
+where $\mu$ is a $D-dimensional$ mean vector,$\Sigma$ is a $D\times D$ covariance matrix,and $|\Sigma|$ denotes the determinant of $\Sigma$.
 
-The expression inside the exponent is the Mahalanobis distance between a data vector $\vec{x}$ and the mean vector $\vec{\mu}$, We can gain a better understanding of this quantity by performing an \textbf{eigendecomposition} of $\vec{\Sigma}$. That is, we write $\vec{\Sigma}=\vec{U}\vec{\Lambda}\vec{U}^T$, where $\vec{U}$ is an orthonormal matrix of eigenvectors satsifying $\vec{U}^T\vec{U}=\vec{I}$, and $\vec{\Lambda}$ is a diagonal matrix of eigenvalues. Using the eigendecomposition, we have that
+The Gaussian distribution arises in many different contexts and can be motivated from variety of different
+perspectives,such as the distribution that maximizes the entropy.Another situation in which the Gaussian distribution arises is when we consider the sum of multiple random variables.The $central limit theorem$ (due to Laplace),tells us that,subject to certain mild conditions,the sum of a set of random variables,which is of course itself a random variable,has a distribution that becomes increasingly Gaussian as the number of terms in the sum increases(Walker,1969).
+
+The expression inside the exponent,which is the functional dependence of the Gaussian on $\vec{x}$,is through the quadratic form
+\begin{equation}\label{eqn:Gaussian quadratic form}
+	\Delta^2 = (\vec{x}-\vec{\mu})^T\Sigma^{-1}(\vec{x}-\vec{\mu})
+\end{equation}
+ The quantity $\Delta$ is the $Mahalanobis distance$ between a data vector $\vec{x}$ and the mean vector $\vec{\mu}$ and reduces to the Euclidean distance when $\Sigma$ is the identity matrix. We can gain a better understanding of this quantity by performing an \textbf{eigendecomposition} of $\vec{\Sigma}$. That is, we write $\vec{\Sigma}=\vec{U}\vec{\Lambda}\vec{U}^T$, where $\vec{U}$ is an orthonormal matrix of eigenvectors satsifying $\vec{U}^T\vec{U}=\vec{I}$, and $\vec{\Lambda}$ is a diagonal matrix of eigenvalues. Using the eigendecomposition, we have that
 \begin{equation}
 \vec{\Sigma}^{-1}=\vec{U}^{-T}\vec{\Lambda}^{-1}\vec{U}^{-1}=\vec{U}\vec{\Lambda}^{-1}\vec{U}^T=\sum\limits_{i=1}^D \dfrac{1}{\lambda_i}\vec{u}_i\vec{u}_i^T
 \end{equation}
@@ -35,7 +46,77 @@ Hence we see that the contours of equal probability density of a Gaussian lie al
 \end{figure}
 
 In general, we see that the Mahalanobis distance corresponds to Euclidean distance in a transformed coordinate system, where we shift by $\vec{\mu}$ and rotate by $\vec{U}$.
+\subsection{proof}
+\begin{proof}
+  First of all,we note that the matrix $\Sigma$ can be taken to be symmetric,without loss of generality.Now we consider the eigenvector equation for the convariance matrix
+  \begin{equation}
+  	\Sigma\vec{\mu_i} = \lambda_i\vec{\mu_i}
+  \end{equation}
+  where $ i = 1,...,D $.Because $\Sigma$ is real,symmetric matrix its eigenvalues will be real,and its eigenvectors can be chosen to form an orthonormal set,so that
+  \begin{equation}
+  \vec{\mu_i}^T\vec{\mu_j} = \mathcal{I}_{ij}
+  \end{equation}
+  where $\mathcal{I}_{ij}$ is the $i,j$ element of the identity matrix and satisfies 
+  \begin{align}
+  \mathcal{I}_{ij} = \begin{cases}
+  & 1,\text{if i=j} \\
+  & 0,\text{otherwise}.
+  \end{cases}
+  \end{align}
+  The covariance matrix $\Sigma$ can be expressed as an equation in terms of its eigenvectors in the form
+  \begin{eqnarray}
+  	\vec{\Sigma} & =\vec{U}\vec{\Lambda}\vec{U}^T \\
+  	& = \sum\limits_{i=1}^{D}\lambda_i\vec{\mu_i}\vec{\vec{u_i}^T}
+  \end{eqnarray}
+  where $\vec{u}_i$ is the $i$'th column of $\vec{U}$, containing the $i$'th eigenvector.
+  Similarly,the inverse covariance matrix $\Sigma^{-1}$ can be expressed as 
+  \begin{equation}\label{eqn:Gaussian inverse covariance matrix eigen form}
+  \vec{\Sigma^{-1}} = \sum\limits_{i=1}^{D}\dfrac{1}{\lambda_i}\vec{u_i}\vec{u_i}^T
+  \end{equation}
+  Substituting \ref{eqn:Gaussian inverse covariance matrix eigen form} into \ref{eqn:Gaussian quadratic form} ,the quadratic form becomes
+  \begin{equation}
+  	\Delta^2 = \sum\limits_{i=1}^{D}\dfrac{y_i^2}{\lambda_i}
+  \end{equation}
+  where we have defined 
+  \begin{equation}
+  	y_i = \vec{u_i}^T(\vec{x}-\vec{u})
+  \end{equation}
+  We can interpret $\{y_i\}$ as a new coordinate system defined by the orthonormal vectors $\vec{u_i}$ that are shifted and rotated with respect to the original $x_i$ coordinates.Forming the vector $\vec{y}=(y_1,...,y_D)^T$,we have
+  \begin{equation}
+  	\vec{y} = \vec{U}(\vec{x}-\vec{\mu})
+  \end{equation}
+  where
+  \begin{equation}
+  \vec{U} = \begin{bmatrix}
+  \vec{u_1}^T & \vec{u_2}^T&...&\vec{u_n}^T
+  \end{bmatrix}
+  \end{equation}
+  $\vec{U}$ is an $orthogonal$ matrix.
+  A matrix whose eigenvalue are strictly positive is said to be $positive definite$, and if all the eigenvalues are nonnegative,then the covariance matrix is said to be $positive semidefinite$.
+  
+  Now consider  the form of Gaussian distribution in the new coordinate system defined by the $y_i$.In going from $\vec{x}$ to $\vec{y}$ coordinate system,we have a $Jacobian matrix$ $\vec{J}$ with elements given by
+  \begin{eqnarray}
+  	J_{ij} = \dfrac{\partial x_i}{\partial y_i} = U_{ji}\\
+  	\vec{J} = \dfrac{\partial\vec{x}}{\partial\vec{y}}
+  \end{eqnarray}
+  where $U_{ji}$ are the elements of the matrix $\vec{U}^T$.Using the orthonormality property of the matrix $\vec{U}$, we see that the square of the determinant of the Jacobian matrix is
+  \begin{equation}
+  	|\vec{J}|^2 = |\vec{I}| = 1
+  \end{equation}
+  Also,the determinant $|\vec{Sigma}|$ of the covariance matrix can be written as the product of its eigenvalues,and hence
+  \begin{eqnarray}
+  |\vec{\Sigma}|^{1/2} = \prod_{j=1}^{D}\lambda_j^{1/2}
+  \end{eqnarray}
+  Thus in the $y_i$ coordinate system,the Gaussian distribution takes the form
+  \begin{equation}
+  p(\vec{y}) = p(\vec{x})|\vec{J}| = \prod_{j=1}^{D}\dfrac{1}{(2\pi \lambda_j)^{1/2}}exp\{-\dfrac{y_j ^2}{2\lambda_j}\}
+  \end{equation}
+  which is the product of D independent univariate Gaussian distributions.So we have normalized the multivariate Gaussian.
+\end{proof}
+Now we can check the first and second order moments of the Gaussian.
 
+\subsection{limitations}
+Gaussian distribution has quadratically growing parameters with dimension.A further limitation of the Gaussian distribution is that it is intrinsically unimodal(i.e.,has a single maximum) and so is unable to provide a good approximation to multimodal distributions.We will introduce $latent$ variables,also called $hidden$ variables or $unobserved$ variables to address both of these problems.
 
 \subsection{MLE for a MVN}
 \begin{theorem}(\textbf{MLE for a MVN})
@@ -277,6 +358,9 @@ Below we give some examples of these equations in action, which will make them s
 
 \subsubsection{Marginals and conditionals of a 2d Gaussian}
 
+\subsection{information form}
+
+\subsection{Proof}
 
 \section{Linear Gaussian systems}
 Suppose we have two variables, $\vec{x}$ and $\vec{y}$.Let $\vec{x} \in \mathbb{R}^{D_x}$ be a hidden variable, and $\vec{y} \in \mathbb{R}^{D_y}$ be a noisy observation of $\vec{x}$. Let us assume we have the following prior and likelihood:
@@ -309,6 +393,9 @@ In addition, the normalization constant $p(\vec{y})$ is given by
 
 For the proof, see Section 4.4.3 TODO.
 
+\subsection{Examples}
+
+\subsection{Proof}
 
 \section{Digression: The Wishart distribution *}
 
