@@ -7,14 +7,17 @@ Linear regression is the “work horse” of statistics and (supervised) machine
 
 \section{Representation}
 
-\begin{equation}
-p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\vec{x}, \sigma^2)
-\end{equation}
-where $\vec{w}$ and $\vec{x}$ are extended vectors, $\vec{x}=(1,x)$, $\vec{w}=(b,w)$.
+\begin{eqnarray}
+& y(\vec{x}) = \vec{w}^T\vec{x}+\epsilon \\
+& p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\vec{x}, \sigma^2) \\
+\end{eqnarray}
+where $\vec{w}$ (\textbf{weight vector}) and $\vec{x}$ are extended vectors, $\vec{x}=(1,x)$, $\vec{w}=(b,w)$ and $\epsilon$ has a \textbf{Gaussian} or \textbf{normal} distribution.$w_0$ is the intercept or \textbf{text}
 
-Linear regression can be made to model non-linear relationships by replacing $\vec{x}$ with some non-linear function of the inputs, $\phi(\vec{x})$ \begin{equation}
-p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\phi(\vec{x}), \sigma^2)
-\end{equation}
+Linear regression can be made to model non-linear relationships by replacing $\vec{x}$ with some non-linear function of the inputs, $\phi(\vec{x})$ 
+\begin{eqnarray}
+& y(\vec{x}) = \vec{w}^T\phi(\vec{x})+\epsilon \\
+& p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\phi(\vec{x}), \sigma^2)
+\end{eqnarray}
 
 This is known as \textbf{basis function expansion}. (Note that the model is still linear in the parameters $\vec{w}$, so it is still called linear regression; the importance of this will become clear below.) A simple example are polynomial basis functions, where the model has the form
 \begin{equation}
@@ -26,7 +29,7 @@ This is known as \textbf{basis function expansion}. (Note that the model is stil
 \section{Maximum likelihood estimations(least squares)}
 A common way to estimate the parameters of a statistical model is to compute the MLE,which is defined as
 \begin{equation}
-	\vec{\hat{\theta}}=\arg\max_\theta{logp(D|\vec{\theta})}
+	\vec{\hat{\theta}}=\arg\max_\theta{\log p(\mathcal{D}|\vec{\theta})}
 \end{equation}
 Assume the training examples are \textbf{independently and identically distributed(IID)},we can write the \textbf{log-likelihood} function as follows:
 \begin{equation}
@@ -49,10 +52,15 @@ RSS stands for \textbf{residual sum of squares} and is defined by
 \begin{equation}
 \text{RSS}(\vec{w}) \triangleq \sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{x}_i)^2
 \end{equation}
+The RSS can also be written as the square of the $\ell_2$ \textbf{norm} of the vector of residual errors:
+\begin{equation}
+RSS(\vec{w}) = \parallel\epsilon\parallel_2^2 = \sum_{i=1}^{N}\epsilon_i^2
+\end{equation}
+where $\epsilon_i = (y_i - \vec{w}^T\vec{x_i})$.
 
 We see that the MLE for $\vec{w}$ is the one that minimizes the RSS, so this method is known as \textbf{least squares}.
 
-Let's drop constants wrt $\vec{w}$ and NLL can be written as
+Let's drop constants with respect to $\vec{w}$ and NLL can be written as
 \begin{equation}
 \text{NLL}(\vec{w}) = \dfrac{1}{2}\sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{x}_i)^2
 \end{equation}
@@ -148,7 +156,7 @@ Setting the derivative to zero,we get
 	\vec{w} = (\vec{X}^T\vec{X})^{-1}\vec{x}^T\vec{y}
 \end{equation}
 
-\subsubsection{Geometric interpretation}
+\subsection{Geometric interpretation}
 
 See Figure \ref{fig:graphical-interpretation-of-OLS}.
 \begin{figure}[hbtp]
@@ -157,6 +165,30 @@ See Figure \ref{fig:graphical-interpretation-of-OLS}.
 \caption{Graphical interpretation of least squares for $N=3$ examples and $D=2$ features. $\tilde{\vec{x}}_1$ and $\tilde{\vec{x}}_2$˜ are vectors in $\mathbb{R}^3$; together they define a 2D plane. $\vec{y}$ is also a vector in $\mathbb{R}^3$ but does not lie on this 2D plane. The orthogonal projection of $\vec{y}$ onto this plane is denoted $\hat{\vec{y}}$. The red line from $\vec{y}$ to $\hat{\vec{y}}$ is the residual, whose norm we want to minimize. For visual clarity, all vectors have been converted to unit norm.}
 \label{fig:graphical-interpretation-of-OLS} 
 \end{figure}
+Given that
+\begin{eqnarray}
+\vec{X} = \begin{bmatrix}
+\vec{x_1}^T &\\
+\vec{x_2}^T &\\
+ ...        &\\
+\vec{x_N}^T
+\end{bmatrix} 
+= \begin{bmatrix}
+\vec{\tilde{x_1}} & \vec{\tilde{x_1}} & ... &\vec{\tilde{x_D}}
+\end{bmatrix}\\
+\vec{y} = \begin{bmatrix}
+y_1 \\
+y_2 \\
+... \\
+y_n
+\end{bmatrix} 
+\end{eqnarray}
+We seek a vector $\hat{\vec{y}} \in \mathbb{R}^N$ that lies in the column linear space of $\vec{X}$ and is as close as possible to $\vec{y}$,i.e.,we want to find
+\begin{eqnarray}
+\hat{\vec{y}} \in span(\vec{X}) \\
+\Rightarrow \hat{\vec{y}} = \vec{X}\vec{w} = w_1\vec{\tilde{x_1}}+\cdot\cdot\cdot+w_D\vec{\tilde{x_D}} \\
+\vec{\hat{y}}=\arg\min\limits_{\hat{\vec{y}} \in \text{span} (\{\vec{\tilde{x_1}},...,\vec{\tilde{x_D}}\})}
+\end{eqnarray}
 
 To minimize the norm of the residual, $\vec{y}-\hat{\vec{y}}$, we want the residual vector to be orthogonal to every column of $\vec{X}$,so˜ $\tilde{\vec{x}}_j(\vec{y}-\hat{\vec{y}})=0$ for $j=1:D$. Hence
 \begin{equation}\begin{split}
@@ -219,6 +251,112 @@ We will consider a variety of different priors in this book. Each of these corre
 Regularization is the most common way to avoid overfitting. However, another effective approach — which is not always available — is to use lots of data. It should be intuitively obvious that the more training data we have, the better we will be able to learn.
 
 In domains with lots of data, simple methods can work surprisingly well (Halevy et al. 2009). However, there are still reasons to study more sophisticated learning methods, because there will always be problems for which we have little data. For example, even in such a data-rich domain as web search, as soon as we want to start personalizing the results, the amount of data available for any given user starts to look small again (relative to the complexity of the problem).
+
+\section{The Bias-Variance Decomposition}
+\subsubsection{representation}
+Data representation:
+N observations of x,wiritten 
+$X \equiv (x_1,x_2,...,x_n)^T$
+together with corresponding observations of the values of t,denoted 
+$t \equiv (t_1,t_2,...t_N)^T$.
+\begin{equation}
+t_i = f(\vec{x_i}) + \epsilon 
+\end{equation}
+where the noise $ \epsilon $ has zero mean and variance $ \sigma^2 $.
+Find a function \[ \hat{f}(x) \] that approximates the true function \[ t = f(\vec{x}) \] as well as possible.Make "as well as possible" precise  by measuring the mean squared error between y and $ \hat{f}(x) $,we want $ (t - \hat{f}(x))^2 $ to be minimal.
+Hypothesis function(model representation):
+$y(x,\bold w)= w_0+w_1x+w_2x^2+...+w_Mx^M = \sum_{j=0}^{M}w_jx^j$
+M is the order of the polynomial,and $x^j$ denotes $x$ raised to the power of $j$.The polynomial coefficients $w_0,...w_M$ are
+collectively denoted by the vector $\mathbf{w}$.
+
+Error Function(Sum of squares of errors between predictions $y(x_n,w)$ for each data point $x_n$ and the corresponding target values $t_n$,so that we minimize:
+\begin{equation}
+E(\bold w)=\frac{1}{2}\sum_{n=1}^{N}\{y(x_n,\bold w)-t_n \}^2
+\end{equation}
+root-mean-squre(RMS) error defined by
+\begin{equation} 
+E_{RMS} = \sqrt[2]{2E(\bold w^*)/N}
+\end{equation}
+Penalized(regularized) error function
+\begin{equation}
+\widetilde{E}(\textbf{w}) = \frac{1}{2}\sum_{n=1}^{N}\{y(x_n,\textbf{w}-t_n\}^2 + \frac{1}{2} \parallel \textbf{w} \parallel^2
+\end{equation}
+where $\parallel \textbf{w} \parallel^2 \equiv \textbf{w}^T\textbf{w}=w_0^2+w_1^2+...+w_M^2$
+
+\subsubsection{Loss function for regression}
+\begin{equation}
+\mathbb{E}[\mathit{L}] = \iint\mathit{L}(t,y(\textbf{x}))p(\textbf{x},t)d\textbf{x}dt
+\end{equation}
+A common choice of loss function in squared loss given by 
+\begin{eqnarray}
+\mathit{L}(t,y(\textbf{x})) = \{y(\textbf{x}) - t\}^2 \\
+\mathbb{E}[\mathit{L}] = \iint\{y(\textbf{x}) - t\}^2 p(\textbf{x},t)d\textbf{x}dt.
+\end{eqnarray}
+Minimize $ \mathbb{E}[\mathit{L}] $ by using the calculus of variations to give 
+\begin{equation}
+\frac{\delta\mathbb{E}[\mathit{L}]}{\delta y(\mathbf{x}))} = 2 \int\{ y(\mathbf{x} -t) \}p(\mathbf{x},t)dt = 0
+\end{equation}
+Solving for $ y(\textbf{x}) $ and using the sum and product rules of probability,we obtain
+\begin{equation}
+y(\textbf{x}) = \frac{\int tp(\textbf{x},t)dt}{p(\textbf{x})} = \int tp(t|\textbf{x})dt = \mathbb{E}[t|\textbf{x}]
+\end{equation}
+
+Let's derive this result in a slightly different way.Armed with knowledge that the optimal solution is the 
+conditional expectation,we can expand the square term as follows
+\begin{equation}
+\{y(\textbf{x} -t)\}^2
+= \{y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] + \mathbb{E}[t|\textbf{x}] - t )\}^2 
+= \{ y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] \}^2 + 2\{ y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] \}\{ \mathbb{E}[t|\textbf{x}]-t \} + \{ \mathbb{E}[t|\textbf{x}] -t \}^2
+\end{equation}
+where,$ \mathbb{E}[t|\textbf{x}] $ denote $ \mathbb{E}_{t}[t|\textbf{x}] $.Substitute into the loss function and perform the integral over t,we see the cross-term vanishes
+\begin{align}\label{eqn:squared loss function}
+\mathbb{E}[\mathit{L}]                                                           
+&= \iint\{y(\textbf{x}) - t\}^2 p(\textbf{x},t)d\textbf{x}dt                    \\
+&= \int \{ y(\textbf{x}) -\mathbb{E}[t|\textbf{x}] \}^2 p(\textbf{x})d\textbf{x} + 
+\int\{ \mathbb{E}[t|\textbf{x}] - t \}^2 p(\textbf{x})d\textbf{x}               \\
+&= \int \{ y(\textbf{x}) -h(\textbf{x}) \}^2 p(\textbf{x})d\textbf{x} +            
+\int\{ h(\textbf{x}) - t \}^2 p(\textbf{x})d\textbf{x}                          \\
+&= \int \{ y(\textbf{x}) -h(\textbf{x}) \}^2 p(\textbf{x})d\textbf{x} +            
+\int\{ h(\textbf{x}) - t \}^2 p(\textbf{x},t)d\textbf{x}dt                      \\
+\end{align}
+
+\subsubsection{Decomposition}
+For a popular choice,we use squared loss function,for which the optimal prediction is given by the conditional
+expectation,which we denote by h(\textbf{x}) and which is given by 
+\begin{equation}
+h(\textbf{x}) = \mathbb{E}[t|\textbf{x}] = \int tp(t|\textbf{x})dt
+\end{equation}
+
+
+Consider the integrand of the first term of \ref{eqn:squared loss function},which for particular data set D takes the form
+\begin{equation}
+\{ y(\textbf{x};D) - h(\textbf{x}) \} ^2
+\end{equation}
+This quantity will be dependent on the particular data set D,so we take its average over the ensemble of data sets.
+If we add and substract the quantity $ \mathbb{E_D}[y(\textbf{x};D)] $ inside the braces,and then expand,we obtain
+\begin{align}
+\{ y(\textbf{x};D) - h(\textbf{x}) \} ^2 \\
+=&\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] + \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
+=& \{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2 + \{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2 +
+2\{ y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)]\}\{ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})\} \\
+=& \underbrace{\{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2} + \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}   \\
+=&                    \color{red}{variance}                 +   \color{blue}{(bias)^2}  + (irreducible error)
+\end{align}
+The decomposition of the expected squared loss
+\begin{equation}
+expected loss = (bias)^2 + variance + noise
+\end{equation}
+where
+\begin{eqnarray}
+(bias)^2 = ...
+variance = ...
+noise = ...
+\end{eqnarray}
+
+The function $ y(\textbf{x}) $ we seek to determine enters only the first term,which will be minimized when $ y(\textbf{x}) $ is equal to $ \mathbb{E}[t|\textbf{x}] $,in which case this term will vanish.The second term is the variance of distribution of t,averaged over $ \textbf{x} $,representing the intrinsic variabilility of the target data and can be regarded as noise.It's the irreducible minimum value of the loss function.More sophisticated loss function,Minkowski loss
+\begin{equation}
+\mathbb{E}[\mathit{L_q}] = \iint| y(\textbf{x}) - t |^q p(\textbf{x},t)d\textbf{x}dt
+\end{equation}
 
 
 \section{Bayesian linear regression}

@@ -18,11 +18,12 @@ In the simplest setting,each training input $\mathbf{x_i}$ is a D-dimensional ve
   Here the goal is to learn a mapping from inputs $x$ to outputs $y$,where $y \in \{1,...,C\}$,with $C$ being the number of classes.If $C=2$,this is called \textbf{binary classification};if $C>2$,this is called \textbf{multiclass classification}.if the class labels are not mutually exclusive,we call it \textbf{multi-label classification},but this is best viewed as predicting multiple related binary class labels(a so-called \textbf{multiple output model}).
   One way to formalize the problem is as \textbf{function approximation}:assume $y=f(\mathbf{x})$ for some unknown function $f$,and the goal of learning is to estimate the function $f$ given a labeled training set,and then to make predictions(estimate) using $\hat{y} =\hat{f}(\mathbf{x})$.Our main goal is to make predictions on novel inputs,meaning ones that we have not seen before(\textbf{generalization}.
 \subsubsection{Probabilistic predictions}
+We denote the probability distribution over possible labels,given the input vector $\vec{x}$ and training set $\mathcal{D}$ by $p(y|\vec{x},\mathcal{D})$.
 Given a probabilistic output,we can always compute out "best guess" as to the "true label" using
 \begin{equation}
 \hat{y} = \hat{f}(\mathbf{x}) = \arg\max\limits_{c=1}^{C} p(y=c|\mathbf{x},D)
 \end{equation}
-This corresponds to a \textbf{MAP estimate}(MAP stands for\textbf{maximum a posteriori}).
+This corresponds to the most probable class label,and is called the \textbf{mode} of distribution $p(y|\vec{x},\mathcal{D})$;it is also known as a \textbf{MAP estimate}(MAP stands for\textbf{maximum a posteriori}).
 \subsubsection{Applications}
 \subsection{Regression}
 
