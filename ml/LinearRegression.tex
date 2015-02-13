@@ -327,13 +327,12 @@ expectation,which we denote by h(\textbf{x}) and which is given by
 h(\textbf{x}) = \mathbb{E}[t|\textbf{x}] = \int tp(t|\textbf{x})dt
 \end{equation}
 
-
 Consider the integrand of the first term of \ref{eqn:squared loss function},which for particular data set D takes the form
 \begin{equation}
 \{ y(\textbf{x};D) - h(\textbf{x}) \} ^2
 \end{equation}
 This quantity will be dependent on the particular data set D,so we take its average over the ensemble of data sets.
-If we add and substract the quantity $ \mathbb{E_D}[y(\textbf{x};D)] $ inside the braces,and then expand,we obtain
+If we add and subtract the quantity $ \mathbb{E_D}[y(\textbf{x};D)] $ inside the braces,and then expand,we obtain
 \begin{align}
 \{ y(\textbf{x};D) - h(\textbf{x}) \} ^2 \\
 =&\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] + \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
@@ -344,16 +343,18 @@ If we add and substract the quantity $ \mathbb{E_D}[y(\textbf{x};D)] $ inside th
 \end{align}
 The decomposition of the expected squared loss
 \begin{equation}
-expected loss = (bias)^2 + variance + noise
+\text{expected loss} = (bias)^2 + variance + noise
 \end{equation}
 where
 \begin{eqnarray}
-(bias)^2 = ...
-variance = ...
+(bias)^2 = ... \\
+variance = ... \\
 noise = ...
 \end{eqnarray}
 
-The function $ y(\textbf{x}) $ we seek to determine enters only the first term,which will be minimized when $ y(\textbf{x}) $ is equal to $ \mathbb{E}[t|\textbf{x}] $,in which case this term will vanish.The second term is the variance of distribution of t,averaged over $ \textbf{x} $,representing the intrinsic variabilility of the target data and can be regarded as noise.It's the irreducible minimum value of the loss function.More sophisticated loss function,Minkowski loss
+The function $ y(\textbf{x}) $ we seek to determine enters only the first term,which will be minimized when $ y(\textbf{x}) $ is equal to $ \mathbb{E}[t|\textbf{x}] $,in which case this term will vanish.The second term is the variance of distribution of t,averaged over $ \textbf{x} $,representing the intrinsic variabilility of the target data and can be regarded as noise.It's the irreducible minimum value of the loss function.
+
+More sophisticated loss function,Minkowski loss
 \begin{equation}
 \mathbb{E}[\mathit{L_q}] = \iint| y(\textbf{x}) - t |^q p(\textbf{x},t)d\textbf{x}dt
 \end{equation}
