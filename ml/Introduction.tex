@@ -1,4 +1,4 @@
-\chapter{Introduction}
+git\chapter{Introduction}
 \label{chapter:Introduction}
 
 \section{Types of machine learning}
@@ -149,6 +149,23 @@ In many applications,however,the supply of data for training and testing will be
 
 \section{The Curse of Dimensionality}
 
+\section{Decision Theory}
+Probability theory provides us with a consistent mathematical framework for quantifying and manipulating uncertainty.And when combined with probability theory,decision theory allows us to make optimal decisions in situations involving uncertainty such as those encountered in pattern recognition.
+
+Suppose we have an input vector x together with a corresponding vector t of target variables, and our goal is to predict t given a new value for x. For regression problems, t will comprise continuous variables, whereas for classification problems t will represent class labels. The joint probability distribution p(x, t) provides a complete summary of the uncertainty associated with these variables. Determination of p(x, t) from a set of training data is an example of \textbf{inference} and is typically a very difficult problem.
+
+The \textbf{decision} step, is the subject of decision theory to tell us how to make optimal decisions given the appropriate probabilities. We shall see that the decision stage is generally very simple, even trivial, once we have solved the inference problem.
+
+Consider,for a classification problem,in which case,the input are vectors  $\vec{x}$ and we denote the class $i$ by $\mathcal{C}_k$.Using Bayes' theorem,these probabilities can be expressed in the form
+\begin{equation}
+p(\mathcal{C}_k|\vec{x}) = \dfrac{p(\vec{x}\mathcal{C}_k)p(\mathcal{C}_k)}{p(\vec{x})}
+\end{equation}
+Note that any of the quantities appearing in Bayes' theorem can be obtained from the joint distribution $p(\vec{x},\mathcal{C}_k)$ by either \textbf{marginalizing} or \textbf{conditioning} with respect to the appropriate variables.We can now interpret $p(\mathcal{C}_k)$ as the prior probability for the class $\mathcal{C}_k$,and the $p(\mathcal{C}_k|\vec{x})$ as the corresponding posterior probability,$p(\vex{x}|\mathcal{C}_k)$ is the likelihood function.If our aim it to minimize the chance of assigning $\vex{x}$ to the wrong class,then intuitively we would choose the class having the higher posterior probability.
+\subsection{Minimizing the misclassification rate}
+\subsection{Minimizing the expected loss}
+\subsection{The reject option}
+\subsection{Inference and decision}
+\subsection{Loss functions for regression}
 \section{Some basic concepts}
 
 
