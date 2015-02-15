@@ -1,0 +1,101 @@
+\chapter{Linear Models for Classification}
+\label{Linear Models for Classification}
+
+\section{Discriminant Functions}
+\subsection{Two classes}
+\subsection{Multiple classes}
+\subsection{Least squares for classification}
+\subsection{Fisher's linear discriminant}
+\subsubsection{representation}
+One way to view a linear classification model is in terms of dimensionality reduction.Consider first the case of two classes,and suppose we take the $D-dimensional$ input vector $\vec{x}$ and project it down to one dimension using
+\begin{equation}\label{eqn:Fisher LDA projection}
+y = \vec{w}^T\vec{x}.
+\end{equation}
+If we place a threshold on $y$ and classify $y \geq -w_0$ as class $\mathcal{C_1}$,and otherwise class $\mathcal{C_2}$,then we obtain our standard linear classifier discussed in the previous section.
+\subsubsection{optimization}
+By adjusting the components of the weight vector $\vec{w}$,we can select a projection that maximizes the class separation.To begin with,consider a two-class problem in which there are $N_1$ points of class $\mathcal{C_1}$ and $N_2$ points of class $\mathcal{C_2}$,so that the mean vectors of the two classes are given by
+\begin{equation}
+\vec{m_1} = \dfrac{1}{N_1} \sum_{n\in \mathcal{C_1}}{\vec{x_n}},\vec{m_1} = \dfrac{1}{N_2}\sum_{n\in \mathcal{C_2}}\vec{x_n}
+\end{equation}
+The simplest measure of the separation of the classes,when projected onto $\vec{w}$,is the separation of the projected  class means.This suggests that we might choose $\vec{w}$ so as to maximize
+\begin{equation}
+m_2 - m_1 = \vec{x}^T(\vec{m_2}-\vec{m_1})
+\end{equation}
+where\begin{equation}
+m_k = \vec{w}^T\vec{m_k}
+\end{equation}
+is the mean of the projected data from class $\mathcal{C_k}$.However this expression can be makde arbitrarily large simply by increasing the magnitude of $\vec{w}$.To solve this,we could constrain $\vec{2}$ to have unit length,so that $\sum_{i}{w_i^2}=1$.Using a Lagrange multiplier to perform the constrained maximization,we then find that $\vec{w} \propto (\vec{m_2} - \vec{m_1})$.There is still a problem with this approach that the projected data have considerable overlap for strongly nondiagonal convariances of the class distributions.
+
+The idea proposed by Fisher is to \textbf{maximize a function that will give a large separation between the projected class means while also giving a small variance within each class,thereby minimizing the class overlap}.The projection formula \ref{eqn:Fisher LDA projection} transforms the set of labelled data points in $\vec{x}$ into a labelled set in the one-dimensional space $y$.The within-class variance of the transformed data from class $\mathcal{C_k}$ is therefore given by
+\begin{equation}
+s_k^2 = \sum_{n\in \mathcal{C_k}}(y_n-m_k)^2 
+\end{equation}
+where\begin{equation}
+y_n = \vec{w}^T\vec{x_n}
+\end{equation}
+We can define the total within-class variance for the whole data set to be simply $s_1^2+s_2^2$.The Fisher criterion is defined to be the ratio of the between-class variance to the within-class variance and is given by
+\begin{equation}
+J(\vec{w}) = \dfrac{(m_2-m_1)^2}{s_1^2+s_2^2}
+\end{equation}
+
+We can make the dependence on \vec{w} explicit by rewrite the Fisher criterion in the form
+\begin{equation}\label{eqn:Fisher criterion}
+J(\vec{w}) = \dfrac{\vec{w}^T\vec{S_B}\vec{w}}{\vec{w}^T\vec{S_W}\vec{w}}
+\end{equation}
+where $\vec{S_B}$ is the $between-class$ covariance matrix,given by 
+\begin{equation}\label{eqn:Fisher between-class covariance matrix}
+\vec{S_B} = (\vec{m_2}-\vec{m_1})(\vec{m_2}-\vec{m_1})^T
+\end{equation}
+so
+\begin{equation}
+\vec{w}^T\vec{S_B}\vec{w} = \vec{w} ^T(\vec{m_2} - \vec{m_1})(\vec{m_2}-\vec{m_1})^T\vec{w} = (m_2-m_1)(m_2-m_1)
+\end{equation}
+and $\vec{S_W}$ is the total $within-class$ covariance matrix,given by
+\begin{equation}
+\vec{S_W} = \sum_{\mathcal{C}}\sum_{n\in \mathcal{C}_1}(\vec{x_n} - \vec{m_1})(\vec{x_n}-\vec{m_1})^T
+\end{equation}
+so
+\begin{equation}
+\vec{w}^T\vec{S_W}\vec{w} = \sum_{\mathcal{C}_k}\sum_{n\in \mathcal{C}_k}{\vec{w}^T(\vec{x_n}-\vec{m_k})(\vec{x_n}-\vec{m_k})^T} = \sum_{\mathcal{C}_i}\sum_{n \in \mathcal{C}_k}(y_n-m_k)^2
+\end{equation}
+Differentiating \ref{eqn:Fisher criterion} with respect to $\vec{w}$,we find that $J(\vec{w})$ is maximized when
+\begin{equation}
+{(\vec{w}^T\vec{S_B}\vec{w})\vec{S_W}\vec{w}} = (\vec{w}^T\vec{S_W}\vec{w})\vec{S_B}\vec{w}
+\end{equation}
+\begin{proof}
+\begin{eqnarray}\because\begin{cases}
+	\dfrac{\partial}{\partial x}\dfrac{f(x)}{g(x)} = \dfrac{f'g-fg'}{g^2}, \text{where } f^\prime = \dfrac{\partial f(x)}{\partial x} \text{ and } g' = \dfrac{\partial g(x)}{\partial x}
+	\\ \dfrac{\partial}{\partial \vec{x}} \vec{x}^T\vec{A}\vec{x} = (\vec{A}+\vec{A}^T)\vec{x}
+\end{cases}	\\
+\therefore\end{eqnarray}
+\begin{eqnarray}
+\dfrac{\partial}{\partial \vec{w}}J(\vec{w}) & =  \dfrac{2\vec{S_B}\vec{w}(\vec{w}^T\vec{S_W}\vec{w})-(\vec{w}^T\vec{S_B}\vec{w})\vec{S_W}\vec{w}}{(\vec{w}^T\vec{S_W}\vec{w})^2}
+\end{eqnarray}
+Setting the derivative to zero,we can get the result.
+\end{proof}
+\subsection{Relation to least squares}
+\subsection{Fisher's discriminant for multiple classes}
+\subsection{The perceptron algorithm}
+
+
+\section{Probabilistic Generative Models}
+\subsection{Continuous inputs}
+\subsection{Maximum likelihood solution}
+\subsection{Discrete features}
+\subsection{Exponential family}
+
+
+\section{Probabilistic Discriminative Models}
+\subsection{Fixed basis functions}
+\subsection{Logistic regression}
+\subsection{Iterative reweighted least squares}
+\subsection{Multiclass logistic regression}
+\subsection{Probit regression}
+\subsection{Canonical link functions}
+
+\subsection{The Laplace Approximation}
+\subsection{Model comparison and BIC}
+
+\section{Bayesian Logistic Regression}
+\subsection{Laplace approximation}
+\subsection{Predictive distribution}

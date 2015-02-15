@@ -18,11 +18,12 @@ In the simplest setting,each training input $\mathbf{x_i}$ is a D-dimensional ve
   Here the goal is to learn a mapping from inputs $x$ to outputs $y$,where $y \in \{1,...,C\}$,with $C$ being the number of classes.If $C=2$,this is called \textbf{binary classification};if $C>2$,this is called \textbf{multiclass classification}.if the class labels are not mutually exclusive,we call it \textbf{multi-label classification},but this is best viewed as predicting multiple related binary class labels(a so-called \textbf{multiple output model}).
   One way to formalize the problem is as \textbf{function approximation}:assume $y=f(\mathbf{x})$ for some unknown function $f$,and the goal of learning is to estimate the function $f$ given a labeled training set,and then to make predictions(estimate) using $\hat{y} =\hat{f}(\mathbf{x})$.Our main goal is to make predictions on novel inputs,meaning ones that we have not seen before(\textbf{generalization}.
 \subsubsection{Probabilistic predictions}
+We denote the probability distribution over possible labels,given the input vector $\vec{x}$ and training set $\mathcal{D}$ by $p(y|\vec{x},\mathcal{D})$.
 Given a probabilistic output,we can always compute out "best guess" as to the "true label" using
 \begin{equation}
 \hat{y} = \hat{f}(\mathbf{x}) = \arg\max\limits_{c=1}^{C} p(y=c|\mathbf{x},D)
 \end{equation}
-This corresponds to a \textbf{MAP estimate}(MAP stands for\textbf{maximum a posteriori}).
+This corresponds to the most probable class label,and is called the \textbf{mode} of distribution $p(y|\vec{x},\mathcal{D})$;it is also known as a \textbf{MAP estimate}(MAP stands for\textbf{maximum a posteriori}).
 \subsubsection{Applications}
 \subsection{Regression}
 
@@ -128,6 +129,25 @@ SRM(Structural risk minimization)
 \subsection{Optimization}
 Finally, we need a \textbf{training algorithm}(also called \textbf{learning algorithm}) to search among the classifiers in the the hypothesis space for the highest-scoring one. The choice of optimization technique is key to the \textbf{efficiency} of the model.
 
+\section{Model Selection}
+If data is plentiful,then on approach to avoid over-fitting is to use some of the some of the available data to train a range of models,or a given model with a range of values for its complexity parameters,and then to compare them on independent data,sometimes called a \textbf{Validation set},and select the one having the best predictive performance.If the model design is iterated many times using a limited size data set,then some over-fitting to the validation data can occur and so it may be necessary to keep aside a third \textbf{test set} on which the performance of the selected model is finally evaluated.
+
+\subsubsection{Cross validation}
+\label{sec:Cross-validation}
+\begin{definition}
+	\textbf{Cross validation}, sometimes called \emph{rotation estimation}, is a \emph{model validation} technique for assessing how the results of a statistical analysis will generalize to an independent data set\footnote{\url{http://en.wikipedia.org/wiki/Cross-validation_(statistics)}}.
+\end{definition}
+
+Common types of cross-validation:
+\begin{enumerate}
+	\item K-fold cross-validation. In k-fold cross-validation, the original sample is randomly partitioned into k equal size subsamples. Of the k subsamples, a single subsample is retained as the validation data for testing the model, and the remaining k − 1 subsamples are used as training data.
+	\item 2-fold cross-validation. Also, called simple cross-validation or holdout method. This is the simplest variation of k-fold cross-validation, k=2.
+	\item Leave-one-out cross-validation(\emph{LOOCV}). k=M, the number of original samples.
+\end{enumerate}
+In many applications,however,the supply of data for training and testing will be limited.We wish to use as much of available data as possible for both training and validation set.One solution to this dilemma is to use \textbf{cross-validations}.One round of cross-validation involves partitioning a sample of data into complementary subsets, performing the analysis on one subset (called the training set), and validating the analysis on the other subset (called the validation set or testing set). To reduce variability, multiple rounds of cross-validation are performed using different partitions, and the validation results are averaged over the rounds.
+
+
+\section{The Curse of Dimensionality}
 
 \section{Some basic concepts}
 
@@ -153,20 +173,6 @@ No training is needed.
 
 
 \subsection{Overfitting}
-
-
-\subsection{Cross validation}
-\label{sec:Cross-validation}
-\begin{definition}
-\textbf{Cross validation}, sometimes called \emph{rotation estimation}, is a \emph{model validation} technique for assessing how the results of a statistical analysis will generalize to an independent data set\footnote{\url{http://en.wikipedia.org/wiki/Cross-validation_(statistics)}}.
-\end{definition}
-
-Common types of cross-validation:
-\begin{enumerate}
-\item K-fold cross-validation. In k-fold cross-validation, the original sample is randomly partitioned into k equal size subsamples. Of the k subsamples, a single subsample is retained as the validation data for testing the model, and the remaining k − 1 subsamples are used as training data.
-\item 2-fold cross-validation. Also, called simple cross-validation or holdout method. This is the simplest variation of k-fold cross-validation, k=2.
-\item Leave-one-out cross-validation(\emph{LOOCV}). k=M, the number of original samples.
-\end{enumerate}
 
 
 \subsection{Model selection}

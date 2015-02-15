@@ -3,35 +3,35 @@
 
 \section{Frequentists vs. Bayesians}
 There are two different interpretations of probability.
-One is called the \textbf{frequentist} interpretation. In this view, probabilities represent long run frequencies of events. For example, the above statement means that, if we flip the coin many times, we expect it to land heads about half the time.
+One is called the \textbf{frequentist} interpretation. In this view, probabilities represent long run \textbf{frequencies} of events. For example, the above statement means that, if we flip the coin many times, we expect it to land heads about half the time.
 
 The other interpretation is called the \textbf{Bayesian} interpretation of probability. In this view, probability is used to quantify our \textbf{uncertainty} about something; hence it is fundamentally related to information rather than repeated trials (Jaynes 2003). In the Bayesian view, the above statement means we believe the coin is equally likely to land heads or tails on the next toss
 
-One big advantage of the Bayesian interpretation is that it can be
-used to model our uncertainty about events that do not have long term
-frequencies. For example, we might want to compute the probability that the polar ice cap will melt by 2020 CE. This event will happen
-zero or one times, but cannot happen repeatedly. Nevertheless,we
-thought to be able to quantify our uncertainty about this event. To
-give another machine learning oriented example, we might have observed a “blip” on our radar screen, and want to compute the
-probability distribution over the location of the corresponding
-target (be it a bird, plane, or missile). In all these cases, the
-idea of repeated trials does not make sense, but the Bayesian
-interpretation is valid and indeed quite natural. We shall therefore
-adopt the Bayesian interpretation in this book. Fortunately, the
-basic rules of probability theory are the same, no matter which
-interpretation is adopted.
+One big advantage of the Bayesian interpretation is that it can be used to model our uncertainty about events that do not have long term frequencies. For example, we might want to compute the probability that the polar ice cap will melt by 2020 CE. This event will happen zero or one times, but cannot happen repeatedly. Nevertheless,we thought to be able to quantify our uncertainty about this event. To give another machine learning oriented example, we might have observed a “blip” on our radar screen, and want to compute the
+probability distribution over the location of the corresponding target (be it a bird, plane, or missile). In all these cases, the idea of repeated trials does not make sense, but the Bayesian interpretation is valid and indeed quite natural. We shall therefore adopt the Bayesian interpretation in this book. Fortunately, the
+basic rules of probability theory are the same, no matter which interpretation is adopted.
 
 
-\section{Basic concepts of probability theory}
+\section{probability theory}
 
 %\subsection{Basic concepts}
-\subsection{Discrete random variables}
+\subsection{Concepts}
 The expression $p(A)$ denotes the probability that event A is true.We require that $0\leq p(A) \leq 1$,where 0 means the event definitely will not happen,and $p(A)=1$ means the event definitely will happen.$p(\hat{A})$ denotes the probability of the event not A;this is defined to be $p(\hat{A})=1-p(A)$.
 
 We denote a random event by defining a \textbf{random variable} $X$.
+
 \textbf{Descrete random variable}: $X$ ,which can take on any value from a finite or countably infinite set .We denote the probability of the event that $X=x$ by $p(X=x)$,or just $p(x)$ for short.Here $p()$ is called a \textbf{probability mass function} or \textbf{pmf}.The pmfs are defined one \textbf{state space}.$\mathbb{I}$ denotes the binary \textbf{indicator funcition}.
 
 \textbf{Continuous random variable}: the value of $X$ is real-valued.
+
+\textbf{prior probability distribution}
+In Bayesian statistical inference, a prior probability distribution, often called simply the prior, of an uncertain quantity p is the probability distribution that would express one's uncertainty about p \textbf{before} some evidence is taken into account.
+
+\textbf{posterior probability distribution}
+In Bayesian statistics, the posterior probability of a random event or an uncertain proposition is the conditional probability that is assigned \textbf{after} the relevant evidence or background is taken into account.
+
+\textbf{likelihood function}
+In statistics, a likelihood function (often simply the likelihood) is a function of the parameters of a statistical model.The likelihood of a set of parameter values, θ, given outcomes x, is equal to the probability of those observed outcomes given those parameter values
 
 \subsection{Fundamental rules}
 In this section,we review the basic rule of probability.
@@ -183,29 +183,28 @@ Combinations of discrete and continuous variables.
 
 
 Bayesian probabilities
-So far, we have viewed probabilities in terms of the frequencies of random,repeatable events,which we shall refer to
-as the classical or frequentist interpretation of probability.Now we turn to the more general Bayesian view,in which 
-probabilities provide a quantification of uncertainty.
-We can adopt a similar approach when making inferences about quantities such as the parameters $\mathbf{w}$ in the 
-polynomial curve fitting.We capture our assumptions about \textbf{w},before observing the data,in the form of a 
-prior probability distribution $p(\mathbf{w})$.The effect of the observed data $D = {t_1,...,t_N}$ is expressed through
-the conditional probability $p(D|w)$
+So far, we have viewed probabilities in terms of the frequencies of random,repeatable events,which we shall refer to as the classical or frequentist interpretation of probability.Now we turn to the more general Bayesian view,in which probabilities provide a quantification of uncertainty.
+
+We can adopt a similar approach when making inferences about quantities such as the parameters $\mathbf{w}$ in the polynomial curve fitting.We capture our assumptions about \textbf{w},before observing the data,in the form of a \textbf{prior} probability distribution $p(\mathbf{w})$.The effect of the observed data $\mathcal{D} = {t_1,...,t_N}$ is expressed through the conditional probability $p(D|w)$.Bayes' theorem,which takes the form
 \begin{equation}
-p(\textbf{w} |D) = \frac{p(D|\textbf{w})p(\textbf{w})}{p(D)}
+p(\textbf{w}|\mathcal{D}) = \frac{p(\mathcal{D}|\textbf{w})p(\textbf{w})}{p(\mathcal{D})}
 \end{equation}
+then allows us to evaluate the uncertainty in $\vec{w}$ \textbf{after} we have observed $\mathcal{D}$ in the form of the \textbf{posterior} probability $p(\mathbf{w}|\mathcal{D})$.
 
 The quantity $p(D|w)$ on the right-hand side of Bayes' theorem is evaluated for the observed data set D and 
-can be viewed as a function of the parameter vector $\mathbf{w}$,in which case it is called the likelihood function.
+can be viewed as a function of the parameter vector $\mathbf{w}$,in which case it is called the \textbf{likelihood function}.It expresses how probable the observed data set is for different settings of the parameter vector $\vec{w}$.
 \begin{equation}
 posteroir \propto likelihood \times prior
 \end{equation}
- Integrating both side with respect to $\textbf{w}$
+where all of these quantities are viewed as functions of $\vec{w}$.
+ Integrating both side with respect to $\mathbf{w}$
  \begin{equation}
-p(D) = \int p(D|\textbf{w}) p(\textbf{w})d\textbf{w} 
+p(D) = \int p(D|\mathbf{w}) p(\mathbf{w})d\mathbf{w} 
  \end{equation}
 
-A widely used frequentise estimator is maximum likelihood,in which $\mathbf{w}$ is set to the value that 
-maximizes the likehood function $p(D|w)$.
+A widely used frequentist estimator is \textbf{maximum likelihood},in which $\mathbf{w}$ is set to the value that maximizes the likelihood function $p(\mathcal{D}|w)$.In the machine learning literature,the negative log of the likelihood function is called an \textbf{error function}.
+
+Oner approach to determining the frequentist error bars is the \textbf{bootstrap},in which multiple data sets are created as follows.Suppose out original data set consists of $N$ data points.We can create a new data set $X_B$ by drawing $N$ points at random from $X$, with \textbf{replacement}, so that some points in X may be replicated in XB, whereas other points in X may be absent from $X_B$. This process can be repeated L times to generate L data sets each of size N and each obtained by sampling from the original data set X. The statistical accuracy of parameter estimates can then be evaluated by looking at the variability of predictions between the different bootstrap data sets.
 
 
 
@@ -579,14 +578,15 @@ The \textbf{covariance} between two rv’s $X$ and $Y$ measures the degree to wh
 \begin{definition}
 If $X$ is a $D$-dimensional random vector, its \textbf{covariance matrix} is defined to be the following symmetric, positive definite matrix:
 \begin{align}
-\mathrm{cov}[X] & \triangleq \mathbb{E}\left[(X-\mathbb{E}[X])(X-\mathbb{E}[X])^T\right] \\
+\mathrm{cov}[\vec{x}] & \triangleq \mathbb{E}\left[(\vec{x}-\mathbb{E}[\vec{x}])(\vec{x}-\mathbb{E}[\vec{x}])^T\right] \\
        &  = \left( \begin{array}{cccc}
-           \text{var}[X_1] & \text{Cov}[X_1,X_2] & \cdots & \text{Cov}[X_1,X_D] \\
-           \text{Cov}[X_2,X_1] & \text{var}[X_2] & \cdots & \text{Cov}[X_2,X_D] \\
+           \text{var}[\vec{x_1}] & \text{Cov}[\vec{x_1},\vec{x_2}] & \cdots & \text{Cov}[\vec{x_1},\vec{x_D}] \\
+           \text{Cov}[\vec{x_2},\vec{x_1}] & \text{var}[x_2] & \cdots & \text{Cov}[\vec{x_2},\vec{x_D}] \\
 		   \vdots & \vdots & \ddots & \vdots \\
-           \text{Cov}[X_D,X_1] & \text{Cov}[X_D,X_2] & \cdots & \text{var}[X_D] \end{array} \right)
+           \text{Cov}[\vec{x_D},\vec{x_1}] & \text{Cov}[\vec{x_D},\vec{x_2}] & \cdots & \text{var}[\vec{x_D}] \end{array} \right)
 \end{align}
 \end{definition}
+For 
 
 \begin{definition}
 The (Pearson) \textbf{correlation coefficient} between $X$ and $Y$ is defined as
