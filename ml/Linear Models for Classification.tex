@@ -1,7 +1,27 @@
 \chapter{Linear Models for Classification}
 \label{Linear Models for Classification}
+The goal in classification is to take an input vector $\vec{x}$ and to assign it to one of $K$ discrete classes $\mathcal{C}_k$ where $K = 1,...,K$.The input space is thereby divided into $decision regions$ whose boundaries are called $decision boundaries$ or $decision surfaces$.Data sets whose classes can be separated exactly by linear decision surfaces are said to be $linearly separable$.
 
+In Chapter 1,we identified three distinct approaches to the classification problem.The simplest involves constructing a discriminant function that directly assigns
+each vector x to a specific class. A more powerful approach, however, models the conditional probability distribution p(Ck|x) in an inference stage, and then subsequently uses this distribution to make optimal decisions. By separating inference and decision, we gain numerous benefits, as discussed in Section 1.5.4. There are two different approaches to determining the conditional probabilities $p(C_k|x)$. One technique is to model them directly, for example by representing them as parametric models and then optimizing the parameters using a training set. Alternatively, we can adopt a generative approach in which we model the class-conditional densities
+given by p(x|Ck), together with the prior probabilities p(Ck) for the classes, and then we compute the required posterior probabilities using Bayes’ theorem
+\begin{equation}
+p(\mathcal{C}_k|\vec{x}) = \dfrac{p(\vec{x}\mathcal{C}_k)p(\mathcal{C}_k)}{p(\vec{x})}
+\end{equation}
+
+In the linear regression models considered in Chapter 3, the model prediction
+y(x,w) was given by a linear function of the parameters w. In the simplest case,
+the model is also linear in the input variables and therefore takes the form y(x) =
+wTx+w0, so that y is a real number. For classification problems, however, we wish
+to predict discrete class labels, or more generally posterior probabilities that lie in
+the range (0, 1). To achieve this, we consider a generalization of this model in which
+we transform the linear function of w using a nonlinear function f( · ) so that
+\begin{equation}
+y(\vec{x}) = f(\vec{w}^T\vec{x} + w_0)
+\end{equation}
+In the machine learning literature $f(\cdot)$ is known as an \textbf{activation function},whereas its inverse is called a \textbf{link function} in the statistics literature.The decision surfaces correspond to y(x) = constant, so that $\vec{w}^T\vec{x} + w_0 = constant$ and hence the decision surfaces are linear functions of $\vec{x}$, even if the function $f(·)$ is nonlinear. For this reason, the class of models described by (4.3) are called \textbf{generalized linear models} (McCullagh and Nelder,1996).However,in contrast to the models used for regression,they are no longer linear in the parameters due to the presence of the nonlinear  function $f(\cdot)$.
 \section{Discriminant Functions}
+A discriminant is a function that takes an input vector $\vec{x}$ and assigns it to be one of $K$ classes,denoted  $\mathcal{C}_k$.
 \subsection{Two classes}
 \subsection{Multiple classes}
 \subsection{Least squares for classification}
@@ -12,7 +32,7 @@ One way to view a linear classification model is in terms of dimensionality redu
 y = \vec{w}^T\vec{x}.
 \end{equation}
 If we place a threshold on $y$ and classify $y \geq -w_0$ as class $\mathcal{C_1}$,and otherwise class $\mathcal{C_2}$,then we obtain our standard linear classifier discussed in the previous section.
-\subsubsection{optimization}
+\subsubsection{evaluation}
 By adjusting the components of the weight vector $\vec{w}$,we can select a projection that maximizes the class separation.To begin with,consider a two-class problem in which there are $N_1$ points of class $\mathcal{C_1}$ and $N_2$ points of class $\mathcal{C_2}$,so that the mean vectors of the two classes are given by
 \begin{equation}
 \vec{m_1} = \dfrac{1}{N_1} \sum_{n\in \mathcal{C_1}}{\vec{x_n}},\vec{m_1} = \dfrac{1}{N_2}\sum_{n\in \mathcal{C_2}}\vec{x_n}
@@ -26,6 +46,7 @@ m_k = \vec{w}^T\vec{m_k}
 \end{equation}
 is the mean of the projected data from class $\mathcal{C_k}$.However this expression can be makde arbitrarily large simply by increasing the magnitude of $\vec{w}$.To solve this,we could constrain $\vec{2}$ to have unit length,so that $\sum_{i}{w_i^2}=1$.Using a Lagrange multiplier to perform the constrained maximization,we then find that $\vec{w} \propto (\vec{m_2} - \vec{m_1})$.There is still a problem with this approach that the projected data have considerable overlap for strongly nondiagonal convariances of the class distributions.
 
+\subsubsection{optimization}
 The idea proposed by Fisher is to \textbf{maximize a function that will give a large separation between the projected class means while also giving a small variance within each class,thereby minimizing the class overlap}.The projection formula \ref{eqn:Fisher LDA projection} transforms the set of labelled data points in $\vec{x}$ into a labelled set in the one-dimensional space $y$.The within-class variance of the transformed data from class $\mathcal{C_k}$ is therefore given by
 \begin{equation}
 s_k^2 = \sum_{n\in \mathcal{C_k}}(y_n-m_k)^2 
@@ -62,6 +83,16 @@ Differentiating \ref{eqn:Fisher criterion} with respect to $\vec{w}$,we find tha
 \begin{equation}
 {(\vec{w}^T\vec{S_B}\vec{w})\vec{S_W}\vec{w}} = (\vec{w}^T\vec{S_W}\vec{w})\vec{S_B}\vec{w}
 \end{equation}
+Rewriting this as
+\begin{equation}\label{eqn:Fisher generalized eigenvalue}
+\vec{S_B}\vec{w} = \lambda\vec{S_W}\vec{w}
+\end{equation}
+where
+\begin{equation}
+\lambda = \dfrac{(\vec{w}^T\vec{S_B}\vec{w})}{(\vec{w}^T\vec{S_W}\vec{w})}
+\end{equation}
+which is called a \textbf{generalized eigenvalue} problem solution.
+
 \begin{proof}
 \begin{eqnarray}\because\begin{cases}
 	\dfrac{\partial}{\partial x}\dfrac{f(x)}{g(x)} = \dfrac{f'g-fg'}{g^2}, \text{where } f^\prime = \dfrac{\partial f(x)}{\partial x} \text{ and } g' = \dfrac{\partial g(x)}{\partial x}
@@ -73,6 +104,35 @@ Differentiating \ref{eqn:Fisher criterion} with respect to $\vec{w}$,we find tha
 \end{eqnarray}
 Setting the derivative to zero,we can get the result.
 \end{proof}
+In particular,since 
+\begin{equation}
+\lambda\vec{w} = \vec{S_W}(\vec{m_2}-\vec{m_1})(m_2-m_1)
+\end{equation}
+Multiply both sides of \ref{eqn:Fisher generalized eigenvalue} by $\vec{S_W}^{-1}$ we then obtain
+\begin{equation}\label{eqn:Fisher's linear discriminant}
+\vec{w} \propto \vec{S_W}^{-1}(\vec{m_2}-\vec{m_1})
+\end{equation}
+Note that if the within-class covariance is isotropic,so that $\vec{S_W}$ is proportional to the unit matrix($\vec{S_W} \propto \vec{I}$),we find that $\vec{w}$ is proportional to the difference vector of the class means.
+
+The result \ref{eqn:Fisher's linear discriminant} is known as $Fisher's linear discriminant$,although strictly it is not a discriminant but rather a specific choice of direction for projection of the data down to one dimension.However,the projected data can subsequently be used to construct a discriminant,by choosing a threshold $y_0$ so that we classify a new point as belonging to $\mathcal{C}_1$ if $y(\vec{x}) \geq y_0$ and can classify it as belonging to $\mathcal{C}_2$ otherwise.
+
+\subsection{Extensions to higher dimensions and multiple classes}
+We can extend the above idea to multiple classes,and to higher dimensional subspaces,by finding a projection $matrix \vec{W}$ which maps from $D$ to $L$ so as to maximize
+\begin{equation}
+J(\vec{W}) = \dfrac{|\vec{W}\vec{\Sigma_B}\vec{W}^T|}{|\vec{W}\Sigma_W\vec{W}^T|}
+\end{equation}
+where
+\begin{eqnarray}
+\Sigma_B \triangleq \sum_{c}{\dfrac{N_c}{N}(\vec{m_c}-\vec{m})(\vec{m_c}-\vec{m})^T} \\
+\Sigma_W \triangleq \sum_{c}\dfrac{N_c}{N}\Sigma_c \\
+\Sigma_c \triangleq \sum_{i:y_i=c}(\vec{x_i}-\vec{m_c})(\vec{x_i}-\vec{m_c})^T
+\end{eqnarray}
+The solution can be shown to be
+\begin{equation}
+\vec{W} = \Sigma_W^{-\frac{1}{2}}\vec{U}
+\end{equation}
+where $\vec{U}$ are the $\vec{L}$ leading eigenvectors of $\Sigma_W^{-\frac{1}{2}}\Sigma_B\Sigma_W^{-1\frac{1}{2}}$,assuming $\Sigma_W$ is non-singular.(If it is singular,we can first perform PCA on all the data).
+\subsection{Probabilistic interpretation of FLDA *}
 \subsection{Relation to least squares}
 \subsection{Fisher's discriminant for multiple classes}
 \subsection{The perceptron algorithm}
