@@ -158,16 +158,204 @@ The \textbf{decision} step, is the subject of decision theory to tell us how to 
 
 Consider,for a classification problem,in which case,the input are vectors  $\vec{x}$ and we denote the class $i$ by $\mathcal{C}_k$.Using Bayes' theorem,these probabilities can be expressed in the form
 \begin{equation}
-p(\mathcal{C}_k|\vec{x}) = \dfrac{p(\vec{x}\mathcal{C}_k)p(\mathcal{C}_k)}{p(\vec{x})}
+p(\mathcal{C}_k|\vec{x}) = \dfrac{p(\vec{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{p(\vec{x})}
 \end{equation}
-Note that any of the quantities appearing in Bayes' theorem can be obtained from the joint distribution $p(\vec{x},\mathcal{C}_k)$ by either \textbf{marginalizing} or \textbf{conditioning} with respect to the appropriate variables.We can now interpret $p(\mathcal{C}_k)$ as the prior probability for the class $\mathcal{C}_k$,and the $p(\mathcal{C}_k|\vec{x})$ as the corresponding posterior probability,$p(\vex{x}|\mathcal{C}_k)$ is the likelihood function.If our aim it to minimize the chance of assigning $\vex{x}$ to the wrong class,then intuitively we would choose the class having the higher posterior probability.
+Note that any of the quantities appearing in Bayes' theorem can be obtained from the joint distribution $p(\vec{x},\mathcal{C}_k)$ by either \textbf{marginalizing} or \textbf{conditioning} with respect to the appropriate variables.We can now interpret $p(\mathcal{C}_k)$ as the prior probability for the class $\mathcal{C}_k$,and the $p(\mathcal{C}_k|\vec{x})$ as the corresponding posterior probability,$p(\vec{x}|\mathcal{C}_k)$ is the likelihood function.If our aim it to minimize the chance of assigning $\vec{x}$ to the wrong class,then intuitively we would choose the class having the higher posterior probability.
 \subsection{Minimizing the misclassification rate}
 \subsection{Minimizing the expected loss}
 \subsection{The reject option}
 \subsection{Inference and decision}
-\subsection{Loss functions for regression}
-\section{Some basic concepts}
+We have broken the classification problem down into two separate stages,the \textbf{inference stage} in which we use training data to learn to \textbf{model} for $p(\mathcal{C}_k|\vec{x})$,and the subsequent \textbf{decision stage} in which we use these posterior probabilities to make optimal class assignments.An alternative  possibility would be to solve both problems together and simply learn a function that maps input $\vec{x}$ directly into decisions.Such a function is called a \textbf{discriminant function}.
 
+In fact,we can identify three distinct approaches to solving decision problems,given, in decreasing order of complexity,by
+\begin{enumerate} %[label=(\alph*)]
+	\item First solve the inference problem of determining the class-conditional densities
+	$p(x|\mathcal{C}_k)$ for each class $\mathcal{C}_k$ individually. Also separately infer the prior class probabilities $p(\mathcal{C}_k)$. Then use $Bayes’$ theorem in the form 
+	\begin{equation}
+	p(\mathcal{C}_k|\vec{x}) = \dfrac{p(x|\mathcal{C}_k)p(\mathcal{C}_k)}{p(\vec{x})}
+	\end{equation}
+	to find the posterior class probabilities $p(\mathcal{C}_k|\vec{x})$. As usual, the denominator in $Bayes’$ theorem can be found in terms of the quantities appearing in the
+	numerator, because
+	\begin{equation}
+	p(\vec{x}) = \sum_k{p(\vec{x}|\mathcal{C}_k)p(\mathcal{C}_k)}
+	\end{equation}
+	Equivalently, we can model the joint distribution $p(x, \mathcal{C}_k)$ directly and then
+	normalize to obtain the posterior probabilities. Having found the posterior
+	probabilities, we use decision theory to determine class membership for each new input x.Approaches that explicitly or implicitly model the \textbf{distribution of inputs as well as outputs} are known as \textbf{Generative models},because by sampling from them it is possible to generate synthetic data points in the input space.
+	\item First solve the inference problem of determining the posterior class probabilities $p(\mathcal{C}_k|\vec{x})$,and then subsequently use decision theory to assign each new $\vec{x}$ to one of the classes.Approaches that model the posterior probabilities are called \textbf{discriminative models}
+	\item Find a function $f(\vec{x})$,called a discriminant function,which maps each input $\vec{x}$ directly into a class label.For instance,in the case of two-case problems,$f(\cdot)$ might be binary valued and such that $f=0$ represents class $\mathcal{C}_1$ and so on.
+\end{enumerate}
+Now consider the relative merits of there three alternatives.Approach (a) is the
+most demanding because it involves finding the joint distribution over both x and
+Ck. For many applications, x will have high dimensionality, and consequently we
+may need a large training set in order to be able to determine the class-conditional
+densities to reasonable accuracy. Note that the class \textbf{priors} $p(\mathcal{C_k})$ can often be estimated simply from the \textbf{fractions of the training set data points in each of the classes}. One advantage of approach (a), however, is that it also allows the marginal density
+of data p(x) to be determined from (1.83). This can be useful for detecting new data
+points that have low probability under the model and for which the predictions may
+be of low accuracy, which is known as \textbf{outlier detection or novelty detection} (Bishop,
+1994; Tarassenko, 1995).
+
+However, if we only wish to make classification decisions, then it can be wasteful
+of computational resources, and excessively demanding of data, to find the joint
+distribution p(x, Ck) when in fact we only really need the posterior probabilities
+p(Ck|x), which can be obtained directly through approach (b). Indeed, the classconditional
+densities may contain a lot of structure that has little effect on the posterior
+probabilities, as illustrated in Figure 1.27. There has been much interest in
+exploring the relative merits of generative and discriminative approaches to machine
+learning, and in finding ways to combine them (Jebara, 2004; Lasserre et al., 2006).
+An even simpler approach is (c) in which we use the training data to find a
+discriminant function f(x) that maps each x directly onto a class label, thereby
+combining the inference and decision stages into a single learning problem. In the
+example of Figure 1.27, this would correspond to finding the value of x shown by
+the vertical green line, because this is the decision boundary giving the minimum
+probability of misclassification.
+
+Reasons for wanting to compute the posterior probabilities include:
+\begin{itemize}
+	\item \textbf{Minimize risk.}
+	\item \textbf{Reject option.}
+	\item \textbf{Compensating for class priors.}
+	\item \textbf{Combining models.} For complex applications,we may wish to break the problem into a number of smaller subproblems each of which can be tackled by a separate module.As long as each of 	the two models gives posterior probabilities for the classes, we can combine 	the outputs systematically using the rules of probability. One simple way to 	do this is to assume that, for each class separately, the distributions of inputs are independent,so that
+	\begin{equation}
+	p(\vec{x_I},\vec{x_B}|\mathcal{C}_k)  = p(\vec{x_I}|\mathcal{C}_k)p(\vec{x_B}|\mathcal{C}_k)
+	\end{equation}
+	This is an example of \textbf{conditional independence} property.The posterior probability,given both data(from different modules) ,is then given by 
+	\begin{align}
+	p(\mathcal{C}_k|\vec{x_I},\vec{x_B}) &\propto p(\vec{x_I},\vec{x_B}|\mathcal{C}_k)p(\mathcal{C}_k) \\
+	&\propto p(\vec{x_I}|\mathcal{C}_k)p(\vec{x_B}|\mathcal{C}_k)p(\mathcal{C}_k) \\
+	&\propto \dfrac{p(\mathcal{C}_k|\vec{x_I})p(\mathcal{C}_k|\vec{x_B})}{p(\mathcal{C}_k)}
+	\end{align}
+\end{itemize}
+
+\section{Information theory}
+Consider a discrete random variable x and we ask how much information is received when we observe a specific value for this variable.Our measure of information content will therefore depend on the probability distribution $p(x)$,and we therefore look for a quantity $h(x)$ that is monotonic function of the probability $p(x)$ and that expresses the information content.The form of $h(\cdot)$ can be found by noting that if we have two events $x$ and $y$ that are unrelated,then the information gain from observing both of them should be the sum of the information gained from each of them separately,so that $h(x,y) = h(x)+ h(y)$.Two unrelated events will be statistically independent and so $p(x,y) = p(x)p(y)$.From these two relationships,it is easily shown that $h(x)$ must be given by the logarithm of $p(x)$ and so we have
+\begin{equation}\label{eqn:information content}
+h(x) = -\log_2p(x)
+\end{equation}
+where the negative sign ensures that information is positive or zero.Note that low probability events x correspond to high information content.The choice of basis for the logarithm is arbitrary.
+
+Now suppose that a sender wishes to transmit the value of a random variable to a receiver.The average amount of information that they transmit in the process is obtained by taking the expectation of \ref{eqn:information content}  with respect to the distribution $p(x)$ and is given by
+\begin{equation}
+H[x] = -\sum\limits_{x}p(x)\log_2 p(x)
+\end{equation}
+This important quantity is called the \textbf{entropy} of the random variable x.
+
+The \textbf{noiseless coding theorem} (Shannon,1948) states that the entropy is a lower bound on the number of bits needed to transmit the state of a random variable.
+
+For example ,we can represente the states $x={a, b, c, d, e, f, g, h}$ using, for instance, the following set of code strings: 0, 10, 110, 1110, 111100, 111101, 111110, 111111.
+The average length of the code that has to be transmitted is then
+\begin{equation}
+\text{average code length} = \dfrac{1}{2} \times 1 + \dfrac{1}{4} \times 2+\dfrac{1}{8} \times 3 + \dfrac{1}{16} \times 4 + 4\times \dfrac{1}{64}\times 6 = 2 \text{ bits}
+\end{equation}
+Now,we switch to the use of natural logarithm in defining entropy.And entropy can be understood in an alternative view of \textbf{multiplicity}.
+The continuous form of the entropy is given by 
+\begin{equation}
+\lim\limits_{\Delta\rightarrow 0}\{\sum\limits_{i}p(x_i)\Delta \ln p(x_i) \} = -\int p(x)\ln p(x)dx
+\end{equation}
+where the quantity on the right-side is called the \textbf{differential entropy}.
+
+For a density defined over multiple continuous variables,denoted collectively by the vector $\vec{x}$,the differential entropy is given by 
+\begin{equation}
+H[x] = -\int p(\vec{x})lnp(\vec{x})d\vec{x}
+\end{equation}
+
+In the case of discrete distributions,we see that the maximum entropy configuration correspondes to an equal distribution of probabilities across the possible states of variable.Now consider the maximum entropy configuration for a continuous variable.It will be necessary to constrain the first and second moments of $p(x)$ as well as preserving the normalization constraint.Therefore we need to maximize the differential entropy $H[x] = -\int p(\vec{x}) \ln p(\vec{x})d\vec{x}$ with three constraints
+\begin{align}
+\int_{-\infty}^{\infty}p(x)dx &= 1 \\
+\int_{-\infty}^{\infty}xp(x)dx &= \mu \\
+\int_{-\infty}^{\infty}(x-\mu)^2p(x)dx &= \sigma^2.
+\end{align} 
+The constrained maximization can be performed using Lagrange multipliers so that we maximize the following functional with respect to $p(x)$
+\begin{equation}
+-\int_{-\infty}^{\infty}p(x)\ln p(x)dx + \lambda_1(\int_{-\infty}^{\infty}p(x)dx-1) + \lambda_2(\int_{-\infty}^{\infty}xp(x)dx-\mu) + \lambda_3(\int_{-\infty}^{\infty}(x-\mu)^2p(x)dx - \sigma^2)
+\end{equation}
+Using the calculus of variations,we set the derivative of this functional to zero giving
+\begin{equation}
+p(x) = exp\{-1+\lambda_1+\lambda_2 x+\lambda_3 (x-\mu)^2\}
+\end{equation}
+The Lagrange multipliers can be found by back substitution of this result into the three constraint equations,leading finally to the result
+\begin{equation}
+p(x) = \dfrac{1}{(2\pi \sigma^2)^(1/2)}exp\{-\dfrac{(x-\mu)^2}{2\sigma ^2}\}
+\end{equation}
+and so the distribution that maximizes the differential entropy is the Gaussian.
+
+If we evaluate the differential entropy of the Gaussian,we obtain
+\begin{equation}
+H[x] = \dfrac{1}{2}\{1+\ln (2\pi \sigma^2)\}
+\end{equation}
+Thus we see again that the entropy increases as the distribution becomes broader,i.e.,as $\sigma^2$ increases.
+
+Suppose we have joint distribution $p(\vec{x},\vec{y})$ from which we draw pairs of values of $\vec{x}$ and $\vec{y}$.If a value of $\vec{x}$ is already known,then the additional information needed to specify the corresponding value of $\vec{y}$ is given by $-\ln p(\vec{y}|\vec{x})$,thus the average additional information needed can be written as
+\begin{equation}
+H[\vec{y}|\vec{x}] = -\iint p(\vec{y},\vec{x})\ln p(\vec{y}|\vec{x})d\vec{y}d\vec{x}
+\end{equation}
+which is called the \textbf{conditional entropy} of $\vec{y}$ given $\vec{x}$.Using the product rule,the conditional entropy satisfies the relation
+\begin{equation}
+H[\vec{x},\vec{y}] = H[\vec{y}|\vec{x}] + H[\vec{x}]
+\end{equation}
+where $H[\vec{x},\vec{y}]$ is the differential entropy of $p(\vec{x},\vec{y})$ and $H[\vec{x}]$ is the differential entropy of the marginal distribution $p(\vec{x})$.
+\begin{proof}
+	\begin{align}
+	H[\vec{x},\vec{y}] - H[\vec{y}|\vec{x}] &=  -\iint p(\vec{y},\vec{x}) \ln p(\vec{y},\vec{x})d\vec{y}d\vec{x} + \iint p(\vec{y},\vec{x})\ln p(\vec{y}|\vec{x})d\vec{y}d\vec{x} \\
+	& = \iint p(\vec{y},\vec{x}) \ln \dfrac{p(\vec{y}|\vec{x})}{p(\vec{y},\vec{x})} \\
+	& = \iint p(\vec{y},\vec{x}) \ln \dfrac{1}{p(\vec{x})}d\vec{y}d\vec{x} \\
+	& = -\iint p(\vec{y},\vec{x}) \ln {p(\vec{x})}d\vec{y}d\vec{x} \\
+	& = -\iint p(\vec{x}) \ln {p(\vec{x})}d\vec{x} \\
+	& = H[\vec{x}]
+	\end{align}
+\end{proof}
+
+\subsection{Relative entropy and mutual information}
+Consider some unknown distribution $p(\vec{x})$,and suppose that we have modelled this using an approximating distribution $q\vec{x})$.Then the average \textbf{additional} amount of information(in nats) required to specify the value of $\vec{x}$ as a result of using $q(\vec{x})$ instead of the true distribution is given by 
+\begin{align}
+KL(q\parallel p) &= -\int p(\vec{x})\ln q(\vec{x}) d\vec{x} - (- \int p(\vec{x}) \ln p(\vec{x})d\vec{x}) \\
+& = -\int p(\vec{x})\ln \{\dfrac{q\vec{x}}{p\vec{x}}\}d\vec{x}
+\end{align}
+This is known as the \textbf{relative  entropy} or \textbf{Kullback-Leibler divergence},or \textbf{KL divergence} (Kullback and Leibler,1951),between the distributions $p(\vec{x})$ and $q(\vec{x})$.Note that it is not a symmetrical quantity.
+Now introduce the  concept of \textbf{convex} functions .A function $f(x)$ is said to be convex if it has the property that every chord lies on or above the function, as shown in Figure 1.31. Any value of x in the interval from x = a to x = b can be written in the form λa + (1 − λ)b where $0 \leq λ \leq 1$. The corresponding point on the chord is given by λf(a) + (1 − λ)f(b),and the corresponding value of the function is f(λa + (1 − λ)b).Convexity then implies
+\begin{equation}
+f(\lambda a + (1-\lambda)b) \leq \lambda f(a) + (1-\lambda) f(b)
+\end{equation}
+This is equivalent to the requirement that the second derivative of the function be everywhere positive. A function is called strictly convex if the equality is satisfied only for $λ\lambda = 0$ and $λ = 1$. If a function has the opposite property, namely that every chord lies on or below the function, it is called concave, with a corresponding definition for strictly concave. If a function $f(x)$ is convex, then $−f(x)$ will be concave.
+
+Using the technique of \textbf{proof by induction},we can show that a convex function $f(x)$ satisfies 
+\begin{equation}\label{ineqn:Jensen's inequality}
+f(\sum_{i=1}^{M}\lambda_i x_i) \leq \sum_{i=1}^{M}\lambda_i f(x_i)
+\end{equation}
+where $\lambda_i \geq 0$ and $\sum_{i}\lambda_i = 1$,for any set of points $\{x_i\}$,this is known as \textbf{Jensen's inequality}.If we interpret the $\lambda_i$ as the probability distribution over a discrete variable $x$ taking the values $\{x_i\}$,then \ref{ineqn:Jensen's inequality} can be written
+\begin{equation}
+f(\mathbb{E}[x]) \leq \mathbb{E}[f(x)]
+\end{equation}
+where $\mathbb{E}(\cdot)$ denotes the expectation.For continuous variables,Jensen's inequality takes the form
+\begin{equation}
+f(\int \vec{x}p(\vec{x})) \leq \int f(\vec{x})p(\vec{x})d\vec{x}
+\end{equation}
+We can apply Jensen's inequality to the KL-divergence to give
+\begin{equation}
+KL(p\parallel q) = -\int p(\vec{x}) \ln\{\dfrac{q(\vec{x})}{p(\vec{x})}\}d\vec{x} \geq -\ln \int q(\vec{x})d\vec{x} = 0
+\end{equation}
+where we have used the fact that $-\ln x$ is a convex function,together with the normalization condition $\int q(\vec{x})d\vec{x} = 1$.
+
+Suppose we try to approximate this distribution using some parametric distribution $q(\vec{x}|\vec{\theta})$.Then the expectation of KL-divergence with respect to $p(\vec{x})$ can be approximated by a finite sum over these training points,so that
+\begin{equation}
+KL(p\parallel q) \simeq \sum_{n=1}^{N}\{-\ln q(\vec{x_n}|\vec{\theta}) + \ln p(\vec{x_n})\}
+\end{equation}
+The second term on the right-hand side is independent of $\theta$,and the first term is the negative log likelihood function for $\theta$ under the distribution $q(\vec{x}|\vec{\theta})$ evaluated using the training set.Thus minimizing this KL-divergence is equivalent to maximizing the likelihood function.
+
+
+If ,for a joint distribution,the variables $\vec{x}$ and $\vec{y}$ are not independent,we can gain some idea of whether they are 'close' to being independent by considering the KL-divergence between the joint distribution and the product of the marginals,given by
+\begin{align}
+I[\vec{x},\vec{y}] &\equiv KL(p(\vec{x},\vec{y}\parallel p(\vec{x})p(\vec{y})) \\
+& = -\iint p(\vec{x},\vec{y})\ln (\dfrac{p(\vec{x})p(\vec{y})}{p(\vec{x},\vec{y})})d\vec{x}d\vec{y}
+\end{align}
+which is called the \textbf{mutual information} between the variables $\vec{x}$ and $\vec{y}$.From the property of the KL-divergence,we see that $I(\vec{x},\vec{y}) \geq 0$ with equality if,and only if $\vec{x}$ and $\vec{y}$ are independent.Using the sum and product rules of probability,we see the relationship to conditional entropy through
+\begin{equation}
+I[\vec{x},\vec{y}] = H[\vec{x}] - H[\vec{x}|\vec{y}] = H[\vec{y}] - H[\vec{y}|\vec{x}]
+\end{equation}
+Thus we can view the mutual information as the reduction in the uncertainty about $\vec{x}$ by virtue of being told the value of $\vec{y}$ (or vice versa).
+
+
+\section{Some basic concepts}
 
 \subsection{Parametric vs non-parametric models}
 
