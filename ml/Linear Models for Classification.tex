@@ -24,7 +24,25 @@ In the machine learning literature $f(\cdot)$ is known as an \textbf{activation 
 A discriminant is a function that takes an input vector $\vec{x}$ and assigns it to be one of $K$ classes,denoted  $\mathcal{C}_k$.
 \subsection{Two classes}
 \subsection{Multiple classes}
+Consider the extension of linear discriminants to $ K >2$ classes,building a $K$-class discriminants by combining a number of two-class discriminant functions on which leads to some serious difficulties(Duda and Hart,1973).
+
+Consider the use of $K-1$ classifier each of which solves a two-class problem of separating points int particular class $\mathcal{C}_k$ from points not in that class.This is known as a \textbf{one-versus-the-rest} classifier.An alternative is to introduce $K(K-1)/2$ binary discriminant functions,one for every possible pair classes.This is known as a \textbf{one-versus-one} classifier.Both of these two approaches run into the problem of ambiguous regions.We can avoid these difficulties by considering a single $K$-class discriminant comprising $k$ linear functions of the form
+\begin{equation}
+y_k(\vec{x}) = \vec{w_k}^T\vec{x}+w_{k0}
+\end{equation}
+and then assigning a point $\vec{x}$ to class $\mathcal{C}_k$ if $y_k(\vec{x}) > y_j(\vec{x})$ for all $j \neq k$.The decision boundary between class $\mathcal{C}_k$ and $\mathcal{C}_j$ is therefore given by $y_k(\vec{x}) = y_j(\vec{x})$ and hence corresponds to a $(D-1)$-dimensional hyperplane defined by
+\begin{equation}
+(\vec{w_k}-\vec{w_j})^T + (w_{k0}-w_{j0}) = 0
+\end{equation}
+The decision regions of such a discriminant are always singly connected and convex.
+
 \subsection{Least squares for classification}
+Even as a discriminant function(where we use it to make decisions directly and dispense with any probabilistic interpretation)it suffers from some severe problems.Least-squares solutions lack robustness to outliers,and this applies equally to the classification application.Additional points(outliers) produce a significant change in the location of the decision boundary.The sum-of-squares error function penalizes predictions that are 'too correct' in that they lie a long way on the correct side of the decision boundary.More than lack of robustness,least-squares solutions may gives poor results on classification problems.
+
+The failure of least squares lies in the fact that it corresponds to maximum likelihood under the assumption of a Gaussian conditional distribution,whereas binary target vectors clearly have a distribution that is far from Gaussian(a Bernoulli).
+
+
+
 \subsection{Fisher's linear discriminant}
 \subsubsection{representation}
 One way to view a linear classification model is in terms of dimensionality reduction.Consider first the case of two classes,and suppose we take the $D-dimensional$ input vector $\vec{x}$ and project it down to one dimension using
@@ -136,9 +154,62 @@ where $\vec{U}$ are the $\vec{L}$ leading eigenvectors of $\Sigma_W^{-\frac{1}{2
 \subsection{Relation to least squares}
 \subsection{Fisher's discriminant for multiple classes}
 \subsection{The perceptron algorithm}
+Another example of a linear discriminant model is the perceptron of Rosenblatt(1962),which corresponds to a two-class transformation to give a feature vector $\phi(\vec{x})$,and this is then used to construct a generalized linear model of the form
+\begin{equation}
+y(\vec{x}) = f(\vec{w}^T\vec{\phi}(\vec{x}))
+\end{equation}
+where the nonlinear activation function $f(\cdot)$ is given by a step function of the form
+\begin{equation}
+f(a) = \begin{cases}
++1,a \geq 0 \\
+-1,a \leq 0
+\end{cases}
+\end{equation}
 
+\subsubsection{error function}
+A natural choice of error function would be the total number of misclassified patterns,which does not lead to a simple learning algorithm because the error is a piecewise constant function of $\vec{w}$,with discontinuities wherever a change in $\vec{w}$ causes the decision boundary to move across one of the data points.Methods based on gradient can't be applied.An alternative error function is known as the \textbf{perceptron criterion},given by
+\begin{equation}
+E_P(\vec{w}) = -\sum_{n\in \mathcal{M}}{\vec{w}^T\vec{\phi_n}(\vec{x})t_n}
+\end{equation}
+where we use $t\in \{-1,+1\}$ coding scheme, $\mathcal{M}$ denotes the set of all misclassified patterns.The perceptron criterion associates zero error with any pattern that is correctly classified,whereas for a misclassified pattern $\vec{x}$ it tries to minimize the quantity $-\vec{w}^T\vec{\phi_n}t_n$.The perceptron learning rule is not guaranteed to reduce the total error function at each stage.
+
+However,the \textbf{perceptron convergence theorem} states that if there exists an exact solution(linearly separable),then the perceptron learning algorithm is guaranteed to find an exact solution if a finite number of steps.
+
+Aside from difficulties with the learning algorithm,the perceptron does not provide probabilistic outputs,nor does it generalize readily to $K>2$ classes.The most important limitation,however,arises from the fact that it is based on linear combinations of fixed basis functions.
+
+\subsubsection{optimization}
+We now apply the stochastic gradient descent algorithm to this error function.The change in the weight vector $\vec{w}$ is then given by
+\begin{equation}
+\vec{w}^{\tau+1} = \vec{w}^{\tau} - \eta\nabla E_P(\vec{w}) = \vec{w}^{\tau} + \eta\phi_n t_n
+\end{equation}
+where $\eta$ is the learning rate parameter and $\tau$ is an integer that indexes the steps of the algorithm.Because the perceptron function $y(\vec{x},\vec{w})$ is unchanged if we multiply $\vec{w}$ by a constant,so we can set the learning rate $\eta$ equal to 1 without of generality.
 
 \section{Probabilistic Generative Models}
+We turn next to a probabilistic view of classification and show how models with linear decision boundaries arise from simple assumptions about the distribution of the data,adopting a generative approach in which we model the class-conditional densities $p(\vec{x}|\mathcal{C}_k)$,as well as the class priors $p(\mathcal{c}_k)$,and then use these to compute posterior probabilities $p(\mathcal{C}_k|\vec{x})$ through Bayes' theorem.
+
+Consider first of all the case two classes.The posterior probability for class $\mathcal{C}_1$ can be written as 
+\begin{align}
+p(\mathcal{C}_1|\vec{x}) &= \dfrac{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)}{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)+p(\vec{x}|\mathcal{C}_2)p(\mathcal{C}_2)} \\
+&= \dfrac{1}{1+exp(-a)} = \sigma(a)
+\end{align}
+where we have defined
+\begin{equation}
+a = \ln \dfrac{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)}{p(\vec{x}|\mathcal{C}_2)p(\mathcal{C}_2)}
+\end{equation}
+and $\sigma(a)$ is the \textbf{logistic sigmoid} function defined by
+\begin{equation}
+\sigma(a) = \dfrac{1}{1+exp(-a)}
+\end{equation}
+The term 'sigmoid' means S-shaped,sometimes called a 'squashing function' because it maps the whole real axis into a finite interval.It satisfies symmetry property
+\begin{equation}
+\sigma(-a) = 1 - \sigma(a)
+\end{equation}
+The inverse of the logistic sigmoid is given by 
+\begin{equation}
+a = \ln(\dfrac{\sigma}{1-\sigma})
+\end{equation}
+and is known as the \textbf{logit} function.It represents the log of the ratio of probabilities $ln[p(\mathcal{C}_1|vec{x})/p(\mathcal{C}_2|vec{x})]$ for the two classes,also known as the \textbf{log odds}.
+
 \subsection{Continuous inputs}
 \subsection{Maximum likelihood solution}
 \subsection{Discrete features}
