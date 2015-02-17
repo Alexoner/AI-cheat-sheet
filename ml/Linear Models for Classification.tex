@@ -1,10 +1,9 @@
 \chapter{Linear Models for Classification}
 \label{Linear Models for Classification}
-The goal in classification is to take an input vector $\vec{x}$ and to assign it to one of $K$ discrete classes $\mathcal{C}_k$ where $K = 1,...,K$.The input space is thereby divided into $decision regions$ whose boundaries are called $decision boundaries$ or $decision surfaces$.Data sets whose classes can be separated exactly by linear decision surfaces are said to be $linearly separable$.
+The goal in classification is to take an input vector $\vec{x}$ and to assign it to one of $K$ discrete classes $\mathcal{C}_k$ where $K = 1,...,K$.The input space is thereby divided into \textbf{decision regions} whose boundaries are called \textbf{decision boundaries} or \textbf{decision surfaces}.Data sets whose classes can be separated exactly by linear decision surfaces are said to be \textbf{linearly separable}.
 
-In Chapter 1,we identified three distinct approaches to the classification problem.The simplest involves constructing a discriminant function that directly assigns
-each vector x to a specific class. A more powerful approach, however, models the conditional probability distribution p(Ck|x) in an inference stage, and then subsequently uses this distribution to make optimal decisions. By separating inference and decision, we gain numerous benefits, as discussed in Section 1.5.4. There are two different approaches to determining the conditional probabilities $p(C_k|x)$. One technique is to model them directly, for example by representing them as parametric models and then optimizing the parameters using a training set. Alternatively, we can adopt a generative approach in which we model the class-conditional densities
-given by p(x|Ck), together with the prior probabilities p(Ck) for the classes, and then we compute the required posterior probabilities using Bayes’ theorem
+In Chapter 1,we identified three distinct approaches to the classification problem.The simplest involves constructing a \textbf{discriminant function} that directly assigns
+each vector x to a specific class. A more powerful approach, however, models the \textbf{conditional probability distribution} $p(C_k|x)$ in an \textbf{inference} stage, and then subsequently uses this distribution to make optimal \textbf{decisions}. By separating inference and decision, we gain numerous benefits, as discussed in \ref{chapter:Introduction}. There are two different approaches to determining the conditional probabilities $p(C_k|x)$. One technique is to model them \textbf{directly}, for example by representing them as parametric models and then optimizing the parameters using a training set. Alternatively, we can adopt a generative approach in which we model the \textbf{class-conditional densities} given by p(x|Ck), together with the \textbf{prior probabilities} p(Ck) for the classes, and then we compute the required posterior probabilities using Bayes’ theorem
 \begin{equation}
 p(\mathcal{C}_k|\vec{x}) = \dfrac{p(\vec{x}\mathcal{C}_k)p(\mathcal{C}_k)}{p(\vec{x})}
 \end{equation}
@@ -12,10 +11,10 @@ p(\mathcal{C}_k|\vec{x}) = \dfrac{p(\vec{x}\mathcal{C}_k)p(\mathcal{C}_k)}{p(\ve
 In the linear regression models considered in Chapter 3, the model prediction
 y(x,w) was given by a linear function of the parameters w. In the simplest case,
 the model is also linear in the input variables and therefore takes the form y(x) =
-wTx+w0, so that y is a real number. For classification problems, however, we wish
+$\vec{w}^Tx+w_0$, so that y is a real number. For classification problems, however, we wish
 to predict discrete class labels, or more generally posterior probabilities that lie in
 the range (0, 1). To achieve this, we consider a generalization of this model in which
-we transform the linear function of w using a nonlinear function f( · ) so that
+we transform the linear function of w using a nonlinear function $f( · )$ so that
 \begin{equation}
 y(\vec{x}) = f(\vec{w}^T\vec{x} + w_0)
 \end{equation}
@@ -187,10 +186,11 @@ where $\eta$ is the learning rate parameter and $\tau$ is an integer that indexe
 \section{Probabilistic Generative Models}
 We turn next to a probabilistic view of classification and show how models with linear decision boundaries arise from simple assumptions about the distribution of the data,adopting a generative approach in which we model the class-conditional densities $p(\vec{x}|\mathcal{C}_k)$,as well as the class priors $p(\mathcal{c}_k)$,and then use these to compute posterior probabilities $p(\mathcal{C}_k|\vec{x})$ through Bayes' theorem.
 
+\subsection{Two classes}
 Consider first of all the case two classes.The posterior probability for class $\mathcal{C}_1$ can be written as 
 \begin{align}
 p(\mathcal{C}_1|\vec{x}) &= \dfrac{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)}{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)+p(\vec{x}|\mathcal{C}_2)p(\mathcal{C}_2)} \\
-&= \dfrac{1}{1+exp(-a)} = \sigma(a)
+&= \dfrac{1}{1+\exp(-a)} = \sigma(a)
 \end{align}
 where we have defined
 \begin{equation}
@@ -198,7 +198,7 @@ a = \ln \dfrac{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)}{p(\vec{x}|\mathcal{C}_2
 \end{equation}
 and $\sigma(a)$ is the \textbf{logistic sigmoid} function defined by
 \begin{equation}
-\sigma(a) = \dfrac{1}{1+exp(-a)}
+\sigma(a) = \dfrac{1}{1+\exp(-a)}
 \end{equation}
 The term 'sigmoid' means S-shaped,sometimes called a 'squashing function' because it maps the whole real axis into a finite interval.It satisfies symmetry property
 \begin{equation}
@@ -208,11 +208,140 @@ The inverse of the logistic sigmoid is given by
 \begin{equation}
 a = \ln(\dfrac{\sigma}{1-\sigma})
 \end{equation}
-and is known as the \textbf{logit} function.It represents the log of the ratio of probabilities $ln[p(\mathcal{C}_1|vec{x})/p(\mathcal{C}_2|vec{x})]$ for the two classes,also known as the \textbf{log odds}.
+and is known as the \textbf{logit} function.It represents the log of the ratio of probabilities $ln[p(\mathcal{C}_1|\vec{x})/p(\mathcal{C}_2|\vec{x})]$ for the two classes,also known as the \textbf{log odds}.
+\subsection{Multiple classes}
+For the case of $K>2$ classes,we have posterior
+\begin{align}
+p(\mathcal{C}_k|\vec{x}) 
+&=\dfrac{p(\vec{x}|\mathcal{C}_k)p(\mathcal{C}_k)}{\sum_{j}{p(\vec{x}|\mathcal{C}_j)p(\mathcal{C}_j)}} \\
+&=\dfrac{\exp(a_k)}{\sum_j\exp(a_j)}
+\end{align}
+which is known as the \textbf{normalized exponential} and can be regarded as a multiclass generalization of the logistic sigmoid.Here the quantities $a_k$ are defined by
+\begin{equation}
+a_k=\ln p(\vec{x}|\mathcal{C}_k)p(\mathcal{C}_k)
+\end{equation}
+The normalized function is also known as the \textbf{softmax function},as it represents a smoothed version of the 'max' function because,if $a_k \gg a_j$ for all $j\neq k$,then $p(\mathcal{C}_k|\vec{x}) \simeq 1$ and,$p(\mathcal{C}_j|\vec{x}) \simeq 0$.
 
+
+The following investigate the consequences of choosing specific forms for the class-conditional densities,continuous and discrete inputs.
 \subsection{Continuous inputs}
+Assume that the class-conditional densities are \textbf{Gaussian} sharing the \textbf{same covariance matrix} and then explore the resulting form for the posterior probabilities.Thus the density(pdf) for class $\mathcal{C}_k$ is given by
+\begin{equation}
+p(\vec{x}|\mathcal{C}_k) = \dfrac{1}{(2\pi)^{D/2}}\dfrac{1}{|\vec{\Sigma}|^{1/2}}
+\exp\{-\dfrac{1}{2}(\vec{x}-\vec{\mu})^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}_k)  \}
+\end{equation}
+In the case of two classes,we have
+\begin{align}
+a(\vec{x}) &= \log\dfrac{p(\vec{x}|\mathcal{C}_1)p(\mathcal{C}_1)}
+{p(\vec{x}|\mathcal{C}_2)p(\mathcal{C}_2)} \\
+&=-\dfrac{1}{2}(\vec{x}-\vec{\mu}_1)^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}_1) +
+\dfrac{1}{2}(\vec{x}-\vec{\mu}_2)^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}_2) + \log\dfrac{p(\mathcal{C}_1)}{p(\mathcal{C}_2)} \\
+&=(\vec{\mu_1}-\vec{\mu_2})^T\vec{\Sigma}^{-1}\vec{x}-
+\dfrac{1}{2}\vec{\mu_1}^T\vec{\Sigma}^{-1}\vec{\mu_1} +
+\dfrac{1}{2}\vec{\mu_2}^T\vec{\Sigma}^{-1}\vec{\mu_2} + \log\dfrac{p(\mathcal{C}_1)}{\mathcal{C}_2} \\
+&=\vec{w}^T\vec{x}+w_0
+\end{align}
+where
+\begin{align}
+\vec{w} &= \vec{\Sigma}^{-1}(\vec{\mu_1}-\vec{\mu_2}) \\
+w_0 &=  -\dfrac{1}{2}\vec{\mu_1}^T\vec{\Sigma}^{-1}\vec{\mu_1} +
+\dfrac{1}{2}\vec{\mu_2}^T\vec{\Sigma}^{-1}\vec{\mu_2} + \log\dfrac{p(\mathcal{C}_1)}{\mathcal{C}_2}
+\end{align}
+We see that the quadratic terms in $\vec{x}$ from the exponents of the Gaussian densities have cancelled (due to the common covariance matrices) leading to a linear function of $\vec{x}$ in the argument of logistic sigmoid.The prior $p(\mathcal{C}_k)$ enter only through the bias parameter $w_0$ so that it have effect of the parallel contours of constant posterior probability.
+
+For the general case of $K$ cases we have
+\begin{align}
+a_k(\vec{x}) &= \log p(\vec{x}|\mathcal{C}_k)p(\mathcal{C}_k)  \\
+&=\vec{\mu_k}^T\vec{\Sigma}^{-1}\vec{x} - \dfrac{1}{2}{\vec{\mu_k}}^T\vec{\Sigma}^{-1}\vec{\mu_k} + \vec{x}^T\vec{\Sigma}^{-1}\vec{x}+
+ \log p(\mathcal{C}_k) + const
+\end{align}
+Notice that $\vec{x}\vec{\Sigma}^{-1}\vec{x}$ is cancelled in the exponent of the softmax function.Therefore we can write
+\begin{equation}
+a_k(\vec{x}) = \vec{w_k}^T+w_{k0}
+\end{equation}
+where
+\begin{align}
+\vec{w_k} &= \vec{\Sigma}^{-T}\vec{\mu_k} \\
+w_{k0} &= -\dfrac{1}{2}\vec{\mu_k}^T\vec{\Sigma}^{-1}\vec{\mu_k} + \ln p(\mathcal{C}_k)
+\end{align}
+We see that the $a_k(\vec{x})$ are again linear functions of $\vec{x}$ due to the shared covariances,otherwise we obtain quadratic functions of $\vec{x}$,giving rise to a \textbf{quadratic discriminant}.
+
 \subsection{Maximum likelihood solution}
+Having specified a parametric functional form for the class-conditional densities $p(\vec{x}|\mathcal{C}_k)$,we can then determine the values of the parameters,together with the prior class probabilities $p(\mathcal{C}_k)$,using \textbf{maximum likelihood}.
+
+Consider first the case of two classes,each having a Gaussian class-conditional density with a shared covariance matrix,and suppose we have a data set $\{\vec{x_n},\vec{t_n}\}$ where $n=1,...N$.Here $t_n=1$ denotes class $\mathcal{C}_1$ and $0$ denotes $\mathcal{C}_2$.Denote the prior class probability $p(\mathcal{C}_1) = \pi$ so that $p(\mathcal{C}_2) =  1- \pi$.For a data point $\vec{x_n}$ from class $\mathcal{C}_1$,we have $t_n=1$ and hence
+\begin{equation}
+p(\vec{x_n},\mathcal{C}_1) = p(\mathcal{C}_1)p(\vec{x}|\mathcal{C}_1) = 
+\pi \mathcal{N}(\vec{x_n}|\vec{\mu_1},\vec{\Sigma})
+\end{equation}
+For class $\mathcal{C}_2$ ,and hence
+\begin{equation}
+p(\vec{x_n},\mathcal{C}_2) = p(\mathcal{C}_1)p(\vec{x}|\mathcal{C}_2) = 
+\pi \mathcal{N}(\vec{x_n}|\vec{\mu_2},\vec{\Sigma})
+\end{equation}
+Thus the likelihood is given by
+\begin{equation}
+p(\vec{t}|\pi,\vec{\mu_1},\vec{\mu_2}) = \prod_{n=1}^{N}
+[\pi \mathcal{N}(\vec{x_n}|\vec{\mu_1},\vec{\Sigma})]^{t_n}
+[(1-\pi)\mathcal{N}(\vec{x_n}|\vec{\mu_2},\vec{\Sigma})]^{1-t_n}
+\end{equation}
+where $\vec{t} = (t_1,...,t_N)^T$.
+Maximize the log likelihood
+\begin{equation}
+\log p(\vec{t}|\pi,\vec{\mu_1},\vec{\mu_2}) = 
+\sum_{n=1}^{N}\{t_n\log \pi + t_n\log \mathcal{N(\vec{x_n}|\vec{\mu_1},\vec{\Sigma})}+
+(1-t_n)\log(1-\pi) + (1-t_n)\log \mathcal{N}(\vec{x_n}|\vec{\mu_2},\vec{\Sigma})  \}
+\end{equation}
+The terms that depend on $\pi$ are
+\begin{equation}
+\sum_{n=1}^{N}\{t_n\log\pi + (1-t_n)\ln(1-\pi)  \}
+\end{equation}
+Setting the derivative with respect to $\pi$ equal to zero and rearranging,we obtain
+\begin{align}
+&\sum_{n=1}^{N}\{t_n\dfrac{1}{\pi} +(t_n-1)\dfrac{1}{1-\pi}  \} = 0 \\
+\Rightarrow & \pi\sum_{n=1}^{N}(t_n-1) -\pi\sum_{n=1}^{N}t_n + \sum_{n=1}^{N}t_n = 0 \\
+\Rightarrow & \pi = \dfrac{1}{N}\sum_{n=1}^{N}t_n = \dfrac{N_1}{N}=\dfrac{N_1}{N_1+N_2}
+\end{align}
+where $N_k$ denotes the total number of data points in class $\mathcal{C}_k$.Thus the maximum likelihood estimate for $pi$ is simply the fraction of points in class as expected,which can be easily generalized to the multiclass case where ... .
+
+Now consider the maximization with respect to $\vec{\mu_1}$.The log likelihood function those terms that depend on $\vec{\mu_1}$
+\begin{equation}
+\sum_{n=1}^{N}t_n\ln\mathcal{N}(\vec{x_n}|\vec{\mu_1},\Sigma) = 
+-\dfrac{1}{2}\sum_{n=1}^{N}t_n(\vec{x_n} - \vec{\mu_1})^T\vec{\Sigma}^{-1}(\vec{x_n}-\vec{\mu_1})+ const
+\end{equation}
+Setting the derivative with respect to $\vec{\mu_1}$ to zero and arranging ,we obtain
+\begin{equation}
+\vec{\mu_1} = \dfrac{1}{N_1}t_n\vec{x_n}
+\end{equation}
+which is simply the mean of all the input vectors $\vec{x_n}$ assigned to corresponding class.
+Similarly,
+\begin{equation}
+\vec{\mu_2} = \dfrac{1}{N_2}t_n\vec{x_n}
+\end{equation}
+Finally,consider the maximum likelihood solution for the shared covariance matrix $\Sigma$.We have
+\begin{align}
+&-\dfrac{1}{2}\sum_{n=1}^{N}t_n\ln|\Sigma| - 
+\dfrac{1}{2}\sum_{n=1}^{N}t_n(\vec{x_n} - \vec{\mu_1})^T\Sigma^{-1}(\vec{x_n}-\vec{\mu_1}) \\
+&-\dfrac{1}{2}\sum_{n=1}^{N}(1-t_n)\ln|\Sigma| - \dfrac{1}{2}\sum_{n=1}^{N}(1-t_n)(\vec{x_n}-\vec{\mu_2})^T\Sigma^{-1}(\vec{x_n}-\vec{\mu_2})\\
+&= -\dfrac{N}{2}\ln|\Sigma| -\dfrac{N}{2}Tr\{\Sigma^{-1}\vec{S}\} 
+\end{align}
+where we have defined
+\begin{align}
+\vec{S} &= \dfrac{N_1}{N}\vec{S_1} + \dfrac{N_2}{N}\vec{S_2} \\
+\vec{S_1}&= \dfrac{1}{N_1}\sum_{n\in \mathcal{C}_1}{(\vec{x_n}-\vec{\mu_1})(\vec{x_n}-\vec{\mu_1})} \\
+\vec{S_2}&= \dfrac{1}{N_2}\sum_{n\in \mathcal{C}_2}{(\vec{x_n}-\vec{\mu_2})(\vec{x_n}-\vec{\mu_2})} 
+\end{align}
+Using the standard result for the maximum likelihood solution for a Gaussian distribution,we see that
+\begin{equation}
+\vec{\Sigma} = \vec{S}
+\end{equation}
+which represents a weighted average of the covariance matrices associated with each of the two classes separately.\footnote{?}
+
+This result is easily extended to the $K$ class problem.Note that the approach of fitting Gaussian distributions to the classes is not robust to outliers,because the maximum likelihood estimation of a Gaussian is not robust.
+
 \subsection{Discrete features}
+
+
 \subsection{Exponential family}
 
 

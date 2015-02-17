@@ -189,8 +189,7 @@ Now consider the relative merits of there three alternatives.Approach (a) is the
 most demanding because it involves finding the joint distribution over both x and
 Ck. For many applications, x will have high dimensionality, and consequently we
 may need a large training set in order to be able to determine the class-conditional
-densities to reasonable accuracy. Note that the class \textbf{priors} $p(\mathcal{C_k})$ can often be estimated simply from the \textbf{fractions of the training set data points in each of the classes}. One advantage of approach (a), however, is that it also allows the marginal density
-of data p(x) to be determined from (1.83). This can be useful for detecting new data
+densities to reasonable accuracy. Note that the class \textbf{priors} $p(\mathcal{C_k})$ can often be estimated simply from the \textbf{fractions of the training set data points in each of the classes}. One advantage of approach (a), however, is that it also allows the marginal density of data p(x) to be determined from (1.83). This can be useful for detecting new data
 points that have low probability under the model and for which the predictions may
 be of low accuracy, which is known as \textbf{outlier detection or novelty detection} (Bishop,
 1994; Tarassenko, 1995).
@@ -198,7 +197,7 @@ be of low accuracy, which is known as \textbf{outlier detection or novelty detec
 However, if we only wish to make classification decisions, then it can be wasteful
 of computational resources, and excessively demanding of data, to find the joint
 distribution p(x, Ck) when in fact we only really need the posterior probabilities
-p(Ck|x), which can be obtained directly through approach (b). Indeed, the classconditional
+p(Ck|x), which can be obtained directly through approach (b). Indeed, the class conditional
 densities may contain a lot of structure that has little effect on the posterior
 probabilities, as illustrated in Figure 1.27. There has been much interest in
 exploring the relative merits of generative and discriminative approaches to machine
