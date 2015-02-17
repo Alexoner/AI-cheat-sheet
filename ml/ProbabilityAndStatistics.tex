@@ -592,6 +592,35 @@ p(\vec{x}|\vec{\theta}) = h(\vec{x})\exp[\eta(\vec{\theta})^T\phi(\vec{x})-A(\et
 \end{equation}
 where $\eta$ is a function that maps the parameters $\vec{\theta}$ to the canonical parameters $\vec{\eta}=\eta(\vec{\theta})$.If $\mathrm{dim}(\vec{\theta})<\mathrm{dim}(\eta(\vec{\theta}))$, it is called a \textbf{curved exponential family}, which means we have more sufficient statistics than parameters. If $\eta(\vec{\theta})=\vec{\theta}$, the model is said to be in \textbf{canonical form}. We will assume models are in canonical form unless we state otherwise.
 
+\subsection{Maximum likelihood and sufficient statistics}
+
+\subsection{Conjugate priors}
+
+\subsection{Noninformative prios}
+In many cases,however,we may have little idea of what form the distribution should take.We may then seek a form of prior distribution,called a \textbf{noninformative prior},which is intended to have little influence on the posterior distribution as possible(Jeffries,1946;Box and Tao,1973;Bernardo and Smith,1994).
+
+Suppose we have a distribution $p(x|\lambda)$ governed by a parameter $\lambda$,we might be tempted to propose a prior distribution $p(\lambda) = $const as a suitable prior.Improper priors are ones in which the domain $\lambda$ is unbounded and the prior distribution cannot be correctly normalized because the integral over $\lambda$ diverges.A second difficulty arises from the transformation behaviour of a probability density under a nonlinear change of variables.For example
+\begin{equation}
+p_\eta(\eta) = p_\lambda(\lambda) \left | \dfrac{d\lambda}{d\eta} \right | = p_\lambda(\eta^2)\eta\propto \eta
+\end{equation}
+so the density over $\eta$ will not be constant.
+
+Here are two simple examples of noninformative priors(Berger,1985).
+First of all,if a density takes the form
+\begin{equation}
+p(x|\mu) = f(x-\mu)
+\end{equation}
+then the parameter $\mu$ is known as a \textbf{location parameter}.This family of densities exhibits \textbf{translation invariance} because if we shift $x$ by a constant to give $\hat{x} = x+c$,then
+\begin{equation}
+p(\hat{x}|\hat{\mu}) = f(\hat{x}-\hat{\mu})
+\end{equation}
+where $\hat{\mu} = \mu +c$.
+
+A second example,
+\begin{equation}\label{eqn:density scale parameter}
+p(x|\sigma) = \dfrac{1}{\sigma}f(\dfrac{x}{\sigma})
+\end{equation}
+where $\sigma>0$.Note that this will be a normalized density provided f(x) is correctly normalized.The parameter $\sigma$ is known as a \textbf{scale parameter},and the density exhibits \textbf{scale invariance}.
 
 \subsection{Examples}
 
@@ -723,6 +752,9 @@ TODO
 \label{sec:Maximum-entropy-derivation-of-the-exponential-family}
 
 
+\section{Nonparametric Methods}
+\subsection{Kernel density estimators}
+\subsection{Nearest-neighbour methods}
 
 
 \section{Joint probability distributions}

@@ -340,10 +340,41 @@ which represents a weighted average of the covariance matrices associated with e
 This result is easily extended to the $K$ class problem.Note that the approach of fitting Gaussian distributions to the classes is not robust to outliers,because the maximum likelihood estimation of a Gaussian is not robust.
 
 \subsection{Discrete features}
-
+Assume binary feature value $x_i\in \{0,1\}$ is Bernoulli distributed,thus we have class-conditional distributions of the form
+\begin{equation}
+p(\vec{x}|\mathcal{C}_k) = \prod_{i=1}^{D}\mu_{ki}^{x_i}(1-\mu_{ki})^{1-x_i}
+\end{equation}
+which contains $D$ independent parameters for each class,giving
+\begin{equation}
+a_k(\vec{x}) = \sum_{i=1}^{D}\{x_i\ln\mu_{ki}+(1-x_i)\ln(1-\mu_ki)\} + \ln p(\mathcal{C}_k)
+\end{equation}
+which again are linear functions of the input values $x_i$.Analogous results are obtained for discrete variables each of which can take $M>2$ states.
 
 \subsection{Exponential family}
+As we have see so far,for both Gaussian distributed and discrete inputs,the posterior class probabilities are given by generalized linear models with logistic sigmoid($K=2$ classes) or softmax($K\gg 2$ classes) activation functions.These are particular cases
+of a more general result obtained by assuming that the class-conditional densities
+p(x|Ck) are members of the exponential family of distributions.
+Using the form  \ref{sec:exponential-family} for members of the exponential family, we see that the distribution of x can be written in the form
+\begin{equation}
+p(\vec{x}|\vec{\lambda_k}) = h(\vec{x})g(\vec{\lambda}_k)
+\exp\{\vec{\lambda}_k^T\vec{u}(\vec{x}) \}
+\end{equation}
+We restrict attention to the subclass for which $\vec{u}(\vec{x})  = \vec{x}$.Making use of \ref{eqn:density scale parameter} to introduce a scaling parameter $s$,then
+\begin{equation}
+p(\vec{x}|\vec{\lambda_k},s) = \dfrac{1}{s}h(\vec{x}/s)g(\vec{\lambda}_k)
+\exp\{\dfrac{1}{s}\vec{\lambda}_k^T\vec{u}(\vec{x}) \}
+\end{equation}
+Note that each class have its own parameter vector $\vec{\lambda}_k$ but share the same scale parameter $s$.
 
+For the two-class problem,the posterior is given by a logistic sigmoid acting on a linear function
+\begin{equation}
+a(\vec{x}) = (\vec{\lambda}_1-\vec{\lambda}_2)^T\vec{x} + \ln g(\vec{\lambda}_1) - \ln g(\vec{\lambda}_2) +\ln p(\mathcal{C}_1)-\ln p(\mathcal{C}_2)
+\end{equation}
+Similarly,for the $K$-class problem,
+\begin{equation}
+a_k(\vec{x}) = \vec{\lambda}_k^T\vec{x}+\ln g(\vec{\lambda}_k)+\ln p(\mathcal{C}_k)
+\end{equation}
+and so again is a linear function of $\vec{x}$.
 
 \section{Probabilistic Discriminative Models}
 \subsection{Fixed basis functions}
