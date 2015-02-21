@@ -228,7 +228,7 @@ The following investigate the consequences of choosing specific forms for the cl
 Assume that the class-conditional densities are \textbf{Gaussian} sharing the \textbf{same covariance matrix} and then explore the resulting form for the posterior probabilities.Thus the density(pdf) for class $\mathcal{C}_k$ is given by
 \begin{equation}
 p(\vec{x}|\mathcal{C}_k) = \dfrac{1}{(2\pi)^{D/2}}\dfrac{1}{|\vec{\Sigma}|^{1/2}}
-\exp\{-\dfrac{1}{2}(\vec{x}-\vec{\mu})^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}_k)  \}
+\exp\{-\dfrac{1}{2}(\vec{x}-\vec{\mu}_k)^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}_k)  \}
 \end{equation}
 In the case of two classes,we have
 \begin{align}
@@ -257,7 +257,7 @@ a_k(\vec{x}) &= \log p(\vec{x}|\mathcal{C}_k)p(\mathcal{C}_k)  \\
 \end{align}
 Notice that $\vec{x}\vec{\Sigma}^{-1}\vec{x}$ is cancelled in the exponent of the softmax function.Therefore we can write
 \begin{equation}
-a_k(\vec{x}) = \vec{w_k}^T+w_{k0}
+a_k(\vec{x}) = \vec{w_k}^T\vec{x}+w_{k0}
 \end{equation}
 where
 \begin{align}
@@ -377,9 +377,70 @@ a_k(\vec{x}) = \vec{\lambda}_k^T\vec{x}+\ln g(\vec{\lambda}_k)+\ln p(\mathcal{C}
 and so again is a linear function of $\vec{x}$.
 
 \section{Probabilistic Discriminative Models}
+We have seen that the posterior probability for the two-class classification and multiclass case can be written as a logistic and softmax function respectively for a wide choice of class-conditional distributions $p(\vec{x}|\mathcal{C}_k)$.For a specific class-conditional densities $p(\vec{x}|\mathcal{C}_k)$,we use maximum likelihood to determine the parameters of the densities as well as the
+class priors $p(\mathcal{C}_k)$ and use Bayes' theorem to find the posterior class probabilities.However,an alternative approach is to use the functional form of the generalized linear model explicitly and to determine its parameters directly by using maximum likelihood,such as \textbf{iterative reweighted least squares} or IRLS.
+
+The indirect approach to finding the parameters of a generalized linear model by fitting class-conditional densities  and class priors separately and then applying Bayes' theorem,represents an example of \textbf{gernerative modelling}，because we could take such a model and generate synthetic data by drawing values of $\vec{x}$ from the marginal distribution $p(\vec{x})$.In the direct approach,we maximize a likelihood function defined through the conditional distribution $p(\mathcal{C}_k|\vec{x})$,which represents a form of \textbf{discriminative} training.
+
+ 
+
+
 \subsection{Fixed basis functions}
+So far,we have considered classification models that work directly with the original input vector $\vec{x}$.However,all of the algorithms can equally applicable if we first make a fixed  nonlinear transformation of the inputs using a vector of basis functions $\phi(\vec{x})$.The resulting decision boundaries will be linear in the feature space $\phi$,corresponding to nonlinear decision boundaries in the original $\vec{x}$ space.One of the basis function is typically set to a constant,say $\phi_0(\vec{x})=1$,so that the corresponding parameter $w_0$ plays the role of a bias.
+
+Note that nonlinear transformations cannot remove class overlap between the class-conditional densities $p(\vec{x}|\mathcal{C}_k)$.
+
 \subsection{Logistic regression}
+\subsubsection{representation}
+We begin with two-class classification.The posterior probability of class $\mathcal{C}_1$ can be written as a logistic sigmoid acting on a linear function of the feature vector $\phi$ so that 
+\begin{equation}
+p(\mathcal{C}_1|\phi) = y(\phi) = \sigma(\vec{w}^T\phi)
+\end{equation}
+which has a linear dependence on the number of parameters.Logistic regression model can also be written as
+\begin{equation}
+p(y|\vec{x},\vec{w})=\mathrm{Ber}(y|\mathrm{sigm}(\vec{w}^T\vec{\phi}))
+\end{equation}
+where $\vec{w}$ and $\vec{\phi}$ are extended vectors, i.e., $\vec{w}=(b, w_1, w_2,\cdots, w_D)$, $\vec{\phi}=(1, \phi_1, \phi_2,\cdots, \phi_D)$.
+
+Note that the derivative of the logistic sigmoid function is
+\begin{equation}
+\dfrac{d\sigma}{da} = \sigma(1-\sigma)
+\end{equation}
+
+\subsubsection{evaluation}
+For a data set $\{\phi_n,t_n \}$,where $t_n \in \{0,1\}$ and $\phi_n = \phi(\vec{x_n})$,with $n = 1,...,N$,the likelihood function can be written
+\begin{equation}
+p(\vec{t}|\vec{w}) = \prod_{n=1}^{N}y_n^{t_n}\{1-y_n \}^{1-t_n}
+\end{equation}
+where $\vec{t}=(t_1,...,t_N)^T$ and $y_n = p(\mathcal{C}_1|\phi_n)$.The negative logarithm of the likelihood,which gives the \textbf{cross-entropy} error function is in the form
+\begin{equation}
+E(\vec{w})=-\ln p(\vec{t}|\vec{w})=-\sum_{n=1}^{N}\{t_n\ln y_n +(1-t_n)\ln (1-y_n) \}
+\end{equation}
+Taking the gradient of the error function with respect to $\vec{w}$,we obtain
+\begin{align}
+\nabla E(\vec{w}) 
+&=-\sum\limits_{n=1}^{N}\{t_n\dfrac{y_n(1-y_n)}{y_n}-
+(1-t_n)\dfrac{y_n(q-y_n)}{1-y_n} \}\phi_n\\
+&=-\sum_{n=1}^{N}\{t_n(1-y_n)-(1-t_n)y_n \}\phi_n\\
+&=\sum_{n=1}^{N}(y_n-t_n)\phi_n
+\end{align}
+We see that the factor involving the derivative of the logistic sigmoid has cancelled.In particular,the contribution to the gradient from data point $n$ is given by the 'error' $y_n-t_n$ between the target value and the prediction of the model,times the basis function vector $\phi_n$,taking the same form as the gradient of the sum-of-squares error function for the linear regression model.
+
+Note that maximum likelihood can exhibit severe \textbf{over-fitting} for data sets that are linearly separable.The singularity can be avoided by inclusion of a prior and finding a \textbf{MAP(maximum a posterior)} solution for $\vec{w}$,or equivalently by adding a \textbf{regularization} term to the error function.
+
+
+
+\subsubsection{optimization}
+See the following contents.
 \subsection{Iterative reweighted least squares}
+
+
+
+
+
+
+
+
 \subsection{Multiclass logistic regression}
 \subsection{Probit regression}
 \subsection{Canonical link functions}
