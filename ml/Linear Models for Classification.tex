@@ -433,15 +433,83 @@ Note that maximum likelihood can exhibit severe \textbf{over-fitting} for data s
 \subsubsection{optimization}
 See the following contents.
 \subsection{Iterative reweighted least squares}
+\subsubsection{Newton-Raphson update}
+For logistic regression,there is no longer a closed-form solution,due to the nonlinearity of the logistic sigmoid function.The error function is concave,and can be minimized by an efficient iterative technique based on the \textbf{Newton-Raphson} iterative optimization scheme,which  uses a local quadratic approximation to the log likelihood function.
+\begin{equation}
+\vec{w}^{(new)} = \vec{w}^(old)-\vec{H}^{-1}\nabla E(\vec{w})
+\end{equation}
+where $\vec{H}$ is the Hessian matrix whose elements comprise the second derivatives of $E(\vec{w})$ with respect to the components of $\vec{w}$.
 
+Now apply the Newton-Raphson method ot the linear regression model with sum-of-squares error function.The gradient and Hessian of this error function are given by
+\begin{align}
+\nabla E(\vec{w}) &= \sum_{n=1}^{N}(\vec{w}^T\phi_n-t_n)\phi_n = \vec{\Phi}^T\vec{\Phi}\vec{w} - \vec{\Phi}^T\vec{t} \\
+\vec{H} = \nabla\nabla E(\vec{w}) &= \sum_{n=1}^{N}\phi_n\phi_n^T=\vec{\phi}^T\vec{\Phi}
+\end{align}
+where $\vec{\Phi}$ is the $N\times N$ design matrix,whose $n^{th}$ row is given by $\phi_n^T$.The Newton-Raphson update then takes the form
+\begin{align}
+\vec{w}^{(new)} &= \vec{w}^{(old)} -(\vec{\Phi}^T\vec{\Phi})^{-1}\{\vec{\Phi}^T\vec{\Phi}\vec{w}^{(old)} -\vec{\Phi}^T\vec{t} \} \\
+&=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}
+\end{align}
+which we recognize as the standard least-squares solution.
 
+Now apply the Newton-Raphson update to the cross-entropy  error function for logistic regression model.Gradient and Hessian of this error function are given by
+\begin{align}
+\nabla E(\vec{w})&=\sum_{n=1}^{N}(y_n-t_n)\phi_n
+=\vec{\Phi}^T(\vec{y}-\vec{t}) \\
+\vec{H} &= \nabla\nabla E(\vec{w})= \sum_{n=1}^{N}y_n(1-y_n)\phi_n\phi_n^T=\vec{\Phi}^T\vec{R}\vec{\Phi}
+\end{align}
+where we have introduced the $N\times N$ diagonal matrix $\vec{R}$ with elements
+\begin{equation}
+R_{nn}=y_n(1-y_n)
+\end{equation}
+We see that the Hessian depends on $\vec{w}$ and is positive definite.
 
+The Newton-Raphson update formula for the logistic regression model then becomes
+\begin{align}
+\vec{w}^{(new)} &= \vec{w}^{(old)} -(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1} \\
+&=(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1}\{\vec{\Phi}^T\vec{R}\vec{\Phi}\vec{w}^{(old)} -\vec{\Phi}^T(\vec{y}-\vec{t}) \} \\
+&=(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1}\vec{\Phi}^T\vec{R}\vec{z}
+\end{align}
+where $\vec{z}$ is an $N$-dimensional vector with elements
+\begin{equation}
+\vec{z} = \vec{\Phi}\vec{w}^{(old)}-\vec{R}^{-1}(\vec{y}-\vec{t})
+\end{equation}
+We see that the update formula takes the form of a set of normal equations for a weighted least-squares problem.Because the weighting matrix $\vec{R}$ depends on the parameter vector $\vec{w}$,we must apply the normal equations iteratively,each time using the new weight vector $\vec{w}$ to compute a revised weighing matrix $\vec{R}$.For this reason,the algorithm is known as \textbf{iterative reweighted least squares},or IRLS.The elements of the diagonal weighing matrix $\vec{R}$ can be interpreted as variances because the mean and variance of $t$ in the logistic regression model are given by
+\begin{align}
+\mathbb{E}[t] &=\sigma(\vec{x}) = y\\
+var[t]&=\mathbb{E}[t^2] -\mathbb{E}[t]^2 = \sigma(\vec{x})-\sigma(\vec{x})^2 = y(1-y)
+\end{align}
+where we have used the property $t^2=t$ for $t\in \{0,1\}$.
 
-
-
-
+\subsubsection{Linearization}
+In fact,we can interpret IRLS as the solution to a linearized problem in the space of the variable $a=\vec{w}^T\phi$.Apply Taylor expansion and then we obtain
+\begin{align}
+a_n(\vec{w}) &\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}|_{w^{(old)}}(t_n-y_n) \\
+&=\vec{\phi}_n^T\vec{w}^{(old)}-\dfrac{(y_n-t_n)}{y_n(1-y_n)} =z_n
+\end{align}
 
 \subsection{Multiclass logistic regression}
+In our discussion of generative models for multiclass classification,the posterior probabilities are given by a softmax transformation of linear functions of the feature variables,so that
+\begin{equation}
+p(\mathcal{C}_k|\phi) = y_k(\phi) = \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}
+\end{equation}
+where the 'activations' $a_k$ are given by
+\begin{equation}
+a_k = \vec{w}_k^T\phi
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Probit regression}
 \subsection{Canonical link functions}
 
