@@ -484,33 +484,80 @@ where we have used the property $t^2=t$ for $t\in \{0,1\}$.
 \subsubsection{Linearization}
 In fact,we can interpret IRLS as the solution to a linearized problem in the space of the variable $a=\vec{w}^T\phi$.Apply Taylor expansion and then we obtain
 \begin{align}
-a_n(\vec{w}) &\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}|_{w^{(old)}}(t_n-y_n) \\
+a_n(\vec{w}) &\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}\bigg|_{w^{(old)}}(t_n-y_n) \\
 &=\vec{\phi}_n^T\vec{w}^{(old)}-\dfrac{(y_n-t_n)}{y_n(1-y_n)} =z_n
 \end{align}
 
 \subsection{Multiclass logistic regression}
 In our discussion of generative models for multiclass classification,the posterior probabilities are given by a softmax transformation of linear functions of the feature variables,so that
-\begin{equation}
-p(\mathcal{C}_k|\phi) = y_k(\phi) = \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}
-\end{equation}
+\begin{align}
+p(\mathcal{C}_k|\phi) = y_k(\phi) &= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
+&=\dfrac{1}{1+\sum_{j\neq k}\exp(a_j-a_k)}
+\end{align}
+
 where the 'activations' $a_k$ are given by
 \begin{equation}
 a_k = \vec{w}_k^T\phi
 \end{equation}
+	
+Here we consider the use of maximum likelihood to determine the parameters $\{\vec{w}_k\}$ of this model directly.The derivatives of $y_k$ with respect to all of the activations $a_j$ are given by 
+\begin{align}
+\dfrac{\partial y_k}{\partial a_j} 
+&=\dfrac{\partial\dfrac{1}{1+\sum_{i\neq k}\exp(a_i-a_k)}}{\partial a_j}\\
+&=-\dfrac{e^{a_i-a_k}}{(1+\sum_{i\neq k}e^{a_i-a_k})^2}\\	
+&=y_k(I_{kj}-y_j)
+\end{align}
+where  are the elements of the identity matrix.
 
+Next we write down the likelihood function,using the $1-of-K$ coding scheme.
+\begin{equation}
+p(\vec{T}|\vec{w}_1,...,\vec{w}_K)=
+\prod_{n=1}^{N}\prod_{k=1}^{K}p(\mathcal{C}_k|\phi_n)^{t_{nk}}
+=\prod_{n=1}^{N}\prod_{k=1}^{K}y_{nk}^{t_{nk}}
+\end{equation}
+where $y_{nk}=y_k(\phi_n)$,and $\vec{T}$ is an $N\times N$ matrix of target variables with elements $t_{nk}$.Taking the negative logarithm then gives
+\begin{equation}
+E(\vec{w_1},...,\vec{w_K})=-\ln p(\vec{T}|\vec{w}_1,...,\vec{w}_K)
+=-\sum_{n=1}^{N}\sum_{k=1}^{K}t_{nk}\ln y_{nk}
+\end{equation}
+which is known as the $cross-entropy$ error function for the multiclass classification problem.
 
+Take the gradient of the error function,making use of the derivatives of the softmax function,we obtain
+\begin{equation}
+\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) =
+\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n
+\end{equation}
 
-
-
-
-
-
-
-
-
-
+To find a batch algorithm,we evaluate the Hessian matrix
+\begin{equation}
+\nabla_{w_k}\nabla_{w_j}E(\vec{w_1},...,\vec{w_K})
+=-\sum_{n=1}^{N}y_{nk}(I_{kj}-y_{nj})\phi_n\phi_n^T
+\end{equation}
+The Hessian matrix is also positive definite and so the error function has a unique minimum.
 
 \subsection{Probit regression}
+A broad range of class-conditional distributions,described by the exponential family,the resulting posterior class probabilities are given by a logistic(or softmax) transformation acting on a linear function of the feature variables,but not all choices of class-conditional density give rise to such a simple form for the posterior probabilities.
+
+The cumulative distribution function is given by
+\begin{equation}
+	\Phi(a) = \int_{-\infty}^{a}\mathcal{N}(\theta|0,1)d\theta
+\end{equation}
+which is known as the \textbf{probit function}.It has a sigmoidal shape.A evaluation of a closely related function is
+\begin{equation}
+erf(a) = \dfrac{2}{\sqrt{\pi}}\int_{0}^{a}\exp(-\theta^2/2)d\theta
+\end{equation}
+known as the \textbf{erf function} or \textbf{error function}.The generalized linear model based on a probit function is known as \textbf{probit regression}.
+
+One issue that occur in practical applications is that of \textbf{outliers}.Because probit activation function they decay like $\exp(-x^2)$,so probit model can be significantly more sensitive to outliers.However,the effect of mislabelling is easily incoporated into a probabilistic model by introducing a probability $\epsilon$ that the target value $t$ has been flipped to the wrong value,
+\begin{align}
+p(t|\vec{x}) &= (1-\epsilon)\sigma(\vec{x})+\epsilon(1-\sigma(\vec{x}))\\
+&=\epsilon + (1-2\epsilon)\sigma(\vec{x})
+\end{align}
+where $\sigma(\vec{x})$ is the activation function with input vector $\vec{x}$.Here $\epsilon$ may be set in advance,or it may be treated as a \textbf{hyperparameter} whose value is inferred from data.
+
+
+
+
 \subsection{Canonical link functions}
 
 \subsection{The Laplace Approximation}
