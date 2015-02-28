@@ -360,7 +360,7 @@ p(\vec{x}|\vec{\lambda_k}) = h(\vec{x})g(\vec{\lambda}_k)
 \exp\{\vec{\lambda}_k^T\vec{u}(\vec{x}) \}
 \end{equation}
 We restrict attention to the subclass for which $\vec{u}(\vec{x})  = \vec{x}$.Making use of \ref{eqn:density scale parameter} to introduce a scaling parameter $s$,then
-\begin{equation}
+\begin{equation}\label{eqn:restricted exponential family}
 p(\vec{x}|\vec{\lambda_k},s) = \dfrac{1}{s}h(\vec{x}/s)g(\vec{\lambda}_k)
 \exp\{\dfrac{1}{s}\vec{\lambda}_k^T\vec{u}(\vec{x}) \}
 \end{equation}
@@ -559,6 +559,45 @@ where $\sigma(\vec{x})$ is the activation function with input vector $\vec{x}$.H
 
 
 \subsection{Canonical link functions}
+We now show that there is a general result of assuming a conditional distribution for the target variable from the exponential family,along with a corresponding choice for the activation function known as the \textbf{canonical link function}.
+
+Making use of the restricted form of exponential family distribution \ref{eqn:restricted exponential family} for target variable $t$
+\begin{equation}
+p(t|\eta,s)=\dfrac{1}{s}h(\dfrac{t}{s})g(\eta)\exp\{\dfrac{\eta t}{s}\}
+\end{equation}
+The conditional mean of $t$,which denoted by $y$,is given by 
+\begin{equation}
+y \equiv \mathbb{E}[t|\eta]=-s\dfrac{d}{d\eta}\ln g(\eta)
+\end{equation}
+Thus $y$ and $\eta$ must be related,and we denote this relation through $\eta = \psi(y)$.
+
+We define a \textbf{generalized linear model} to be one for which $y$ is a nonlinear function of a linear combination of the input(or feature) variables so that
+\begin{equation}
+y=f(\vec{w}^T\vec{\phi})
+\end{equation}
+where $f(\cdot)$ is known as the \textbf{activation function},and $f^{-1}(\cdot)$ is known as the \textbf{link function} in statistics.
+
+The log likelihood function for this model,which,as a function of $\eta$ ,is given by 
+\begin{equation}
+\ln p(\vec{t}|\eta,s) = \sum_{n=1}^{N}\ln p(t_n|\eta,s) = \sum_{n=1}^{N}\{\ln g(\eta_n)+\dfrac{\eta_n t_n}{s} \} + const
+\end{equation}
+where we assume that all observations share a common scale parameter(which corresponds to the noise variance for a Gaussian distribution for instance) and so $s$ is independent of $\eta$.The derivative with respect to the model parameter $\vec{w}$ is then given by 
+\begin{align}
+\nabla_w\ln p(\vec{t}|\eta,s) 
+&=\sum_{n=1}^{N}\{\dfrac{d}{d\eta_n}\ln g(\eta_n)+\dfrac{t_n}{s} \} \dfrac{d\eta_n}{dy_n}\dfrac{dy_n}{da_n}\nabla a_n \\
+&= \sum_{n=1}^{N}\dfrac{1}{s}\{t_n-y_n \}\psi'(y_n)f'(a_n)\phi_n
+\end{align}
+where $a_n=\vec{w}^T\vec{\phi_n}$,and we have used $y_n=f(a_n)$ together.There is a considerable simplification if we choose a particular form of the link function $f^{-1}(y)$ given by
+\begin{equation}
+f^{-1}(y) = \psi(y)
+\end{equation}
+In this case,the gradient of error function reduces to 
+\begin{equation}
+\nabla\ln E(\vec{w}) = \dfrac{1}{s}\sum_{n=1}^{N}\{y_n-t_n\}\phi_n
+\end{equation}
+For the Gaussian $s=\beta^{-1}$,whereas for logistic model $s=1$.
+
+
 
 \subsection{The Laplace Approximation}
 \subsection{Model comparison and BIC}
