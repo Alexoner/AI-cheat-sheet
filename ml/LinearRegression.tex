@@ -4,37 +4,65 @@
 \section{Introduction}
 Linear regression is the “work horse” of statistics and (supervised) machine learning. When augmented with kernels or other forms of basis function expansion, it can model also nonlinear relationships. And when the Gaussian output is replaced with a Bernoulli or multinoulli distribution, it can be used for classification, as we will see below. So it pays to study this model in detail.
 
+In the simplest approach,we can directly construct an appropriate function $y(\vec{x})$ whose values for new inputs $\vec{x}$ constitute the predictions for the corresponding values of $t$.More generally,from a probabilistic perspective,we aim to model the predictive distribution $p(t|x)$ because this expresses the uncertainty about the value of $t$ for each value of $x$.
 
 \section{Representation}
+The simplest linear model for regression is \textbf{linear regression} that involves a linear combination of the input variables
+\begin{equation}
+y(\vec{x},\vec{w}) = w_0+w_1x_1+...+w_Dx_D
+\end{equation}
+where $\vec{x}=(x_1,...,x_D)^T$.
 
-\begin{eqnarray}
-& y(\vec{x}) = \vec{w}^T\vec{x}+\epsilon \\
-& p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\vec{x}, \sigma^2) \\
-\end{eqnarray}
-where $\vec{w}$ (\textbf{weight vector}) and $\vec{x}$ are extended vectors, $\vec{x}=(1,x)$, $\vec{w}=(b,w)$ and $\epsilon$ has a \textbf{Gaussian} or \textbf{normal} distribution.$w_0$ is the intercept or \textbf{text}
-
-Linear regression can be made to model non-linear relationships by replacing $\vec{x}$ with some non-linear function of the inputs, $\phi(\vec{x})$ 
-\begin{eqnarray}
-& y(\vec{x}) = \vec{w}^T\phi(\vec{x})+\epsilon \\
-& p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\phi(\vec{x}), \sigma^2)
-\end{eqnarray}
-
+Linear regression can be made to model non-linear relationships by replacing $\vec{x}$ with some non-linear function of the inputs, $\phi(\vec{x})$.Consider the linear combinations of fixed nonlinear functions of the input variables,of the form
+\begin{equation}
+y(\vec{x},\vec{w}) = w_0+\sum_{j=1}^{M-1}w_j\phi_j(x) 
+=\sum_{j=0}^{M-1}w_j\phi_j(x) = \vec{w}^T\phi(x)
+\end{equation}
+where $\phi_j(x)$ are known as \textbf{basis functions},
+$\vec{w}=(w_0,...,w_{M-1})^T$ and $\phi=(\phi_0,...,\phi_{M-1})^T$.
 This is known as \textbf{basis function expansion}. (Note that the model is still linear in the parameters $\vec{w}$, so it is still called linear regression; the importance of this will become clear below.) A simple example are polynomial basis functions, where the model has the form
 \begin{equation}
 \phi(x)=(1, x, \cdots, x^d)
 \end{equation}
 
 
+As before,we assume that the target variable is given by a deterministic function $y(\vec{x},\vec{w})$ with additive Gaussian noise so that
+\begin{equation}
+t=y(\vec{x},\vec{w})+\epsilon
+\end{equation}
+where $\epsilon$ is a zero mean Gaussian random variable with precision(inverse variance) $\beta$.Thus
+\begin{equation}
+p(t|\vec{x},\vec{w},\beta)=\mathcal{N}(t|h(\vec{x},\vec{w}),\beta^{-1})
+\end{equation}
+or 
+\begin{eqnarray}
+& y(\vec{x}) = \vec{w}^T\vec{x}+\epsilon \\
+& p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\vec{x}, \sigma^2) \\
+\end{eqnarray}
+where $\vec{w}$ (\textbf{weight vector}) and $\vec{x}$ are extended vectors, $\vec{x}=(1,x)$, $\vec{w}=(b,w)$ and $\epsilon$ has a \textbf{Gaussian} or \textbf{normal} distribution.$w_0$ is the intercept or \textbf{text}
+
+ 
+%\begin{eqnarray}
+%& y(\vec{x}) = \vec{w}^T\phi(\vec{x})+\epsilon \\
+%& p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\phi(\vec{x}), \sigma^2)
+%\end{eqnarray}
+
 
 \section{Maximum likelihood estimations(least squares)}
-A common way to estimate the parameters of a statistical model is to compute the MLE,which is defined as
-\begin{equation}
-	\vec{\hat{\theta}}=\arg\max_\theta{\log p(\mathcal{D}|\vec{\theta})}
-\end{equation}
-Assume the training examples are \textbf{independently and identically distributed(IID)},we can write the \textbf{log-likelihood} function as follows:
+Assume the training examples are \textbf{independently and identically distributed(IID)},we obtain the \textbf{likelihood function},which is a function of adjustable parameters $\vec{w}$ and $\beta$,in the form
+\begin{align}
+p(\vec{t}|\vec{X},\vec{w},\beta) =
+\prod_{n=1}^{N}\mathcal{N}(t_n|\vec{w}^T\phi(\vec{x_n}),\beta^{-1})
+\end{align}
+we can write the \textbf{log-likelihood} (logarithm of the likelihood) function as follows:
 \begin{equation}
 \ell(\vec{\theta}) \triangleq \log p(\mathcal{D}|\vec{\theta})
 \end{equation}
+A common way to estimate the parameters of a statistical model is to compute the MLE(Maximum likelihood estimations),which is defined as
+\begin{equation}
+\vec{\hat{\theta}}=\arg\max_\theta{\log p(\mathcal{D}|\vec{\theta})}
+\end{equation}
+
 Instead of maximizing the log-likelihood, we can equivalently minimize the \textbf{negative log likelihood} or \textbf{NLL}:
 \begin{equation}
 \text{NLL}(\vec{\theta}) \triangleq -\ell(\vec{\theta})=-\log p(\mathcal{D}|\vec{\theta})
@@ -44,67 +72,89 @@ The NLL formulation is sometimes more convenient, since many optimization softwa
 
 Now let us apply the method of MLE to the linear regression setting. Inserting the definition of the Gaussian into the above, we find that the log likelihood is given by
 \begin{align}
-\ell(\vec{\theta})& =\sum\limits_{i=1}^N \log\left[\dfrac{1}{\sqrt{2\pi}\sigma}\exp\left(-\dfrac{1}{2\sigma^2}(y_i-\vec{w}^T\vec{x}_i)^2\right)\right] \\
-     & =-\dfrac{1}{2\sigma^2}\text{RSS}(\vec{w})-\dfrac{\vec{w}}{2}\log(2\pi\sigma^2)
+\ell(\vec{\theta}) &= \log p(\vec{T}|\vec{w},\beta) \\
+&=\sum_{n=1}^{N}\log \mathcal{N}(t_n|\vec{w}^T\phi(\vec{x_n}),\beta^{-1}) \\
+&=\sum\limits_{i=1}^N \log\left[\dfrac{1}{\sqrt{2\pi}\sigma}\exp\left(-\dfrac{1}{2\sigma^2}(y_i-\vec{w}^T\vec{x}_i)^2\right)\right] \\
+&=\dfrac{N}{2}\log \beta-\dfrac{N}{2}\log (2\pi)-\beta E_D(\vec{w}) \\
+&=-\dfrac{1}{2\sigma^2}\text{RSS}(\vec{w})-\dfrac{\vec{w}}{2}\log(2\pi\sigma^2)
 \end{align}
-
+where the sum-of-squares error function is defined by
+\begin{equation}
+E_D(\vec{w}) =
+\dfrac{1}{2}\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x_n}) \}^2
+\end{equation}
 RSS stands for \textbf{residual sum of squares} and is defined by
 \begin{equation}
-\text{RSS}(\vec{w}) \triangleq \sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{x}_i)^2
+\text{RSS}(\vec{w}) \triangleq \sum\limits_{i=1}^N (t_i-\vec{w}^T\vec{x}_i)^2
 \end{equation}
 The RSS can also be written as the square of the $\ell_2$ \textbf{norm} of the vector of residual errors:
 \begin{equation}
 RSS(\vec{w}) = \parallel\epsilon\parallel_2^2 = \sum_{i=1}^{N}\epsilon_i^2
 \end{equation}
-where $\epsilon_i = (y_i - \vec{w}^T\vec{x_i})$.
+where $\epsilon_i = (t_i - \vec{w}^T\vec{x_i})$.
 
-We see that the MLE for $\vec{w}$ is the one that minimizes the RSS, so this method is known as \textbf{least squares}.
+There two ways to compute the optimal solution of likelihood function.
+
+\subsection{Derivations of the MLE}
+We see that maximizing the likelihood function under a conditional Gaussian noise distribution for a linear model is equivalent to $\vec{w}$ minimizing the RSS(or $E_D$), so this method is known as \textbf{least squares}.The gradient of the log likelihood function takes the form
+\begin{equation}
+\nabla\log p(\vec{t}|\vec{w},\beta)
+=\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x_n}) \}\phi(\vec{x_n})^T
+\end{equation}
 
 Let's drop constants with respect to $\vec{w}$ and NLL can be written as
 \begin{equation}
-\text{NLL}(\vec{w}) = \dfrac{1}{2}\sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{x}_i)^2
+\text{NLL}(\vec{w}) = \dfrac{1}{2}\sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{\phi}_i)^2
 \end{equation}
 
-There two ways to minimize NLL$(\vec{w})$.
-
-
-\subsection{Derivations of the MLE}
-Define $\vec{y}=(y_1,y_2,\cdots,y_N)$, $\vec{X}=\left(\begin{array}{c}\vec{x}_1^T \\ \vec{x}_2^T \\ \vdots \\ \vec{x}_N^T\end{array}\right)$, then we can rewritten the objective in a form that is more amendable to differentiation:
+Define $\vec{y}=(t_1,t_2,\cdots,t_N)$, $\vec{\Phi}=\left(\begin{array}{c}\vec{\phi}_1^T \\ \vec{\phi}_2^T \\ \vdots \\ \vec{\phi}_N^T\end{array}\right)$, then we can rewritten the objective in a form that is more amendable to differentiation:
 \begin{align}
-\text{NLL}(\vec{w}) &= \dfrac{1}{2}(\vec{y}-\vec{X}\vec{w})^T(\vec{y}-\vec{X}\vec{w})\\
-&= \dfrac{1}{2} [\vec{w^T} (\vec{X}^T\vec{X})\vec{w} - \vec{y}^T\vec{x}\vec{w}- \vec{w}^T\vec{x}^T\vec{y}  +\vec{y}^T\vec{y}]			\\
+\text{NLL}(\vec{w}) &= \dfrac{1}{2}(\vec{t}-\vec{\Phi}\vec{w})^T(\vec{t}-\vec{\Phi}\vec{w})\\
+&= \dfrac{1}{2} [\vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} - \vec{t}^T\vec{\Phi}\vec{w}- \vec{w}^T\vec{x}^T\vec{t}  +\vec{t}^T\vec{t}]			\\
 \Rightarrow
-\dfrac{\partial}{\partial \vec{w}}\text{NLL} &= \dfrac{1}{2} \vec{w^T} (\vec{X}^T\vec{X})\vec{w} -\vec{w}^T(\vec{x}^T\vec{y}) 
+\dfrac{\partial}{\partial \vec{w}}\text{NLL} &= \dfrac{1}{2} \vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} -\vec{w}^T(\vec{\Phi}^T\vec{t}) 
 \end{align}
 
 where
 $\begin{cases}
-\vec{X} = \begin{bmatrix}
-&\vec{x_1^T} \\
-&\vec{x_2^T} \\
+\vec{\Phi} = \begin{bmatrix}
+&\vec{\Phi_1^T} \\
+&\vec{\Phi_2^T} \\
 & ... \\
-&\vec{x_n^T}
-\end{bmatrix}\\	
-\vec{X^T}\vec{X} =
+&\vec{\Phi_n^T}
+\end{bmatrix} \\	
+\vec{\Phi^T}\vec{\Phi} =
 \begin{bmatrix}
-\vec{x_1} & \vec{x_2} & ...&\vec{x_n}
+\vec{\Phi_1} & \vec{\Phi_2} & ...&\vec{\Phi_n}
 \end{bmatrix} 
 \cdot
 \begin{bmatrix}
-&\vec{x_1^T} \\
-&\vec{x_2^T} \\
+&\vec{\Phi_1^T} \\
+&\vec{\Phi_2^T} \\
 & ... \\
-&\vec{x_n^T}
-\end{bmatrix}  = \sum\limits_{i=1}^{N}\vec{x_i}\vec{x_i^T} = \sum\limits_{i=1}^{N} \\
+&\vec{\Phi_N^T}
+\end{bmatrix}  = \sum\limits_{i=1}^{N}\vec{\phi_i}\vec{\phi_i^T} = \textbf{sum of squares matrix} \\
 \end{cases}$
-is the \textbf{sum of squares } matrix.
 
-When $\mathcal{D}$ is small(for example, $N < 1000$), we can use the following equation to compute \vec{w} directly
+Note that $\vec{\Phi}$ is an $N\times M$ matrix,called the \textbf{design matrix},whose elements are given by $\Phi_{nj}=\phi_j(\vec{x_n})$ so that
 \begin{equation}
-\hat{\vec{w}}_{\mathrm{OLS}}=(\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y}
+\vec{\Phi}=
+\begin{bmatrix}
+\phi_0(\vec{x_1}) &	\phi_1(\vec{x_1}) &...&\phi_{M-1}(\vec{x_1}) \\
+\phi_0(\vec{x_2}) & \phi_1(\vec{x_2}) &...&\phi_{M-1}(\vec{x_2}) \\
+\vdots &\vdots &\vdots&\vdots \\
+\phi_0(\vec{x_N})& \phi_1(\vec{x_{N}})& \cdot &\phi_{M-1}(\vec{x_N})\\
+\end{bmatrix}
 \end{equation}
 
-The corresponding solution $\hat{\vec{w}}_{\mathrm{OLS}}$ to this linear system of equations is called the \textbf{ordinary least squares} or \textbf{OLS} solution.
+
+
+When $\mathcal{D}$ is small(for example, $N < 1000$), we can use the following equation to compute $\vec{w}$ directly
+\begin{equation}
+\vec{w}_{ML}=\hat{\vec{w}}_{\mathrm{OLS}}=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}
+\end{equation}
+
+The corresponding solution $\hat{\vec{w}}_{\mathrm{OLS}}$ to this linear system of equations is called the \textbf{ordinary least squares} or \textbf{OLS} or \textbf{normal equation} solution.
 
 \begin{proof}
 We now state without proof some facts of matrix derivatives (we won’t need all of these at this section).
@@ -149,7 +199,7 @@ Consider $\mathbf{vector-vector}$ differentiation,if $\mathbf{A}$ is not a funct
 Then,we can derivate $\dfrac{\partial NLL}{\partial \vec{w}}$
 \begin{eqnarray}
 g(\vec{w}) &= \dfrac{\partial NLL}{\partial\vec{w}} \\
-&=\vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y}			
+&=\vec{\Phi}^T\vec{\Phi}\vec{w} - \vec{\Phi}^T\vec{y}			
 \end{eqnarray}
 Setting the derivative to zero,we get
 \begin{equation}
@@ -197,8 +247,19 @@ To minimize the norm of the residual, $\vec{y}-\hat{\vec{y}}$, we want the resid
 \end{split}\end{equation}
 
 
-\subsection{SGD}
-When $\mathcal{D}$ is large, use stochastic gradient descent(SGD).
+\subsection{Sequential learning}
+Batch techniques,such as the maximum likelihood solution,which involves processing the entire training set in one go(pass),can be computationally costly for large data sets.If the data set is sufficiently large,it may be worthwhile to use \textbf{sequential} algorithms,known as \textbf{on-line} algorithms.
+When $\mathcal{D}$ is large, use \textbf{stochastic gradient descent(SGD)},also known as sequential gradient descent.
+\begin{align}
+E &=\sum_{n}E_n \\
+\vec{w}^{\tau+1} &= \vec{w}^{\tau}-\eta\nabla E_n
+\end{align}
+where $\tau$ denotes the iteration number,the $\eta$ is a learning rate parameter.For the case of sum-of-squares error function,this gives
+\begin{equation}
+\vec{w}^{\tau+1} = \vec{w}^{\tau}-\eta(t_n-\vec{w}^{(\tau)T}\phi_n)\phi_n
+\end{equation}
+where $\phi_n=\phi(\vec{x_n})$.This is known as the \textbf{least-mean-squares} or the LMS algorithm.
+
 
 \begin{align}
 \because \dfrac{\partial}{\partial w_i}\text{NLL}(\vec{w})=& \sum\limits_{i=1}^N (\vec{w}^T\vec{x}_i-y_i)x_{ij} \\
@@ -209,8 +270,7 @@ When $\mathcal{D}$ is large, use stochastic gradient descent(SGD).
 
 
 \section{Ridge regression(MAP)}
-One problem with ML estimation is that it can result in overfitting. In this section, we discuss a way to ameliorate this problem by using MAP estimation with a Gaussian prior.
-
+One problem with ML estimation is that it can result in over-fitting. In this section, we discuss a way to ameliorate this problem by using MAP estimation with a Gaussian prior.
 
 \subsection{Basic idea}
 We can encourage the parameters to be small, thus resulting in a smoother curve, by using a zero-mean Gaussian prior:
@@ -219,22 +279,54 @@ p(\vec{w})=\prod\limits_j \mathcal{N}(w_j|0,\tau^2)
 \end{equation}
 where $1/\tau^2$ controls the strength of the prior. The corresponding MAP estimation problem becomes
 \begin{equation}
-\arg\max_{\vec{w}} \sum\limits_{i=1}^N \log{\mathcal{N}(y_i|w_0+\vec{w}^T\vec{x}_i,\sigma^2)}+\sum\limits_{j=1}^D \log{\mathcal{N}(w_j|0,\tau^2)}
+\arg\max_{\vec{w}} \sum\limits_{i=1}^N \log{\mathcal{N}(t_i|w_0+\vec{w}^T\vec{\phi}_i,\sigma^2)}+\sum\limits_{j=1}^D \log{\mathcal{N}(w_j|0,\tau^2)}
 \end{equation}
 
 It is a simple exercise to show that this is equivalent to minimizing the following
-\begin{equation}\label{eqn:Ridge-regression-J}
-J(\vec{w})=\dfrac{1}{N}\sum\limits_{i=1}^N (y_i-(w_0+\vec{w}^T\vec{x}_i))^2+\lambda\lVert\vec{w}\rVert^2 , \lambda \triangleq \dfrac{\sigma^2}{\tau^2}
+\begin{align}\label{eqn:Ridge-regression-J}
+J(\vec{w})&=E_D(\vec{w})+\lambda E_W(\vec{w}) \\
+&=\dfrac{1}{N}\sum\limits_{i=1}^N (y_i-(w_0+\vec{w}^T\vec{x}_i))^2+\lambda\lVert\vec{w}\rVert^2 , \lambda \triangleq \dfrac{\sigma^2}{\tau^2}
+\end{align}
+where the first term is the MSE/ NLL as usual, and the second term, $\lambda \geq 0$, is the regularization coefficient that controls the complexity penalty.
+Here $E_W(\vec{w})$ is one of the simplest forms of regularizer given by the sum-of-squares of the weight vector elements.
+\begin{equation}
+E_W(\vec{w})=\dfrac{1}{2}\vec{w}^T\vec{w}
 \end{equation}
+This particular choice of regularizer is known as \textbf{weight decay}.
 
-Here the first term is the MSE/ NLL as usual, and the second term, $\lambda \geq 0$, is a complexity penalty. The corresponding solution is given by
+The corresponding solution is given by
 \begin{equation}\label{eqn:Ridge-regression-solution}
-\hat{\vec{w}}_{\mathrm{ridge}}=(\lambda\vec{I}_D+\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y}
+\hat{\vec{w}}_{\mathrm{ridge}}=(\lambda\vec{I}_D+\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}
 \end{equation}
 
 This technique is known as \textbf{ridge regression},or \textbf{penalized least squares}. In general, adding a Gaussian prior to the parameters of a model to encourage them to be small is called $\ell_2$ \textbf{regularization} or \textbf{weight decay}. Note that the offset term $w_0$ is not regularized, since this just affects the height of the function, not its complexity.
 
 We will consider a variety of different priors in this book. Each of these corresponds to a different form of \textbf{regularization}. This technique is very widely used to prevent overfitting.
+
+\subsection{Multiple outputs}
+Now consider the case where we wish to predict $K>1$ target variables,which we denote collectively by the target vector $\vec{t}$.To use the same set of basis functions to model all the components of the target vector so that
+\begin{equation}
+\vec{y}(\vec{x},\vec{w}) = \vec{W}^T\phi(x)
+\end{equation}
+where $\vec{y}$ is a $K$-dimensional column vector,$\vec{W}$ is an $M\times K$ matrix of parameters.
+
+The conditional distribution of the target vector is an isotropic Gaussian
+\begin{equation}
+p(\vec{t}|\vec{x},\vec{W},\beta) =
+\mathcal{N}(\vec{t}|\vec{W}^T\phi(x,\beta^{-1}\vec{I}))
+\end{equation}
+
+The log likelihood function is then given by 
+\begin{align}
+\ln p(\vec{T}|\vec{X},\vec{W},\beta) 
+&=\sum_{n=1}^{N}\ln \mathcal{N}(\vec{t_n}|\vec{W}^T\phi(x_n),\beta^{-1}\vec{I}) \\
+&=\dfrac{NK}{2}\ln(\dfrac{\beta}{2\pi}) 
+ -\dfrac{\beta}{2}\sum_{n=1}^{N}\parallel \vec{t_n}-\vec{W}^T\phi(x_n)\parallel^2
+\end{align}
+We maximize this function with respect to $\vec{W}$,giving
+\begin{equation}
+\vec{W}_{ML} = (\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{T}
+\end{equation}
 
 
 \subsection{Numerically stable computation *}
@@ -361,5 +453,13 @@ More sophisticated loss function,Minkowski loss
 
 
 \section{Bayesian linear regression}
-TODO
+Hold-out data can be used to determine model complexity but it will be 
+computationally expensive and wasteful of valuable data.We therefore turn to a Bayesian treatment of linear regression,which will avoid the over-fitting problem of maximum likelihood,and which will also lead to automatic methods of determining model complexity using the training data.
+
+\subsection{Parameter distribution}
+First introduce a prior probability distribution over the model parameters 
+
+
+
+
 

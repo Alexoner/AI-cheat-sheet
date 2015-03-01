@@ -1,5 +1,12 @@
 \chapter{Probability and Statistics}
 \label{chap:Probability and Statistics}
+One role for the distributions is to model the probability distribution $p(\vec{x})$ of a random variable $x$,given a finite set of observations.This problem is known as \textbf{density estimation}.We shall assume that the data points are independent and identically distributed.
+
+\textbf{Parameter} distributions are governed by a small number of adaptive parameters,such as the mean and variance in the case of a Gaussian for example.In a frequentist treatment, we choose specific values for the parameters by optimizing some criterion, such as the likelihood function. By contrast, in a Bayesian treatment we introduce prior distributions over the parameters and then use Bayes’ theorem to compute the corresponding posterior distribution given the observed data.
+
+An important role is played by \textbf{conjugate priors},that lead to posterior distributions having the same functional form as the prior,and that therefore lead to a greatly simplified Bayesian analytics.
+
+\textbf{Nonparametric} density estimation methods in which the form of the distribution typically depends on the size of the data set.Parameters in such models control the model complexity rather than the form of the distribution.We cover three nonparametric methods based respectively on histograms,nearest-neighbours,and kernels.
 
 \section{Frequentists vs. Bayesians}
 There are two different interpretations of probability.
