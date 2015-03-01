@@ -31,7 +31,7 @@ As before,we assume that the target variable is given by a deterministic functio
 t=y(\vec{x},\vec{w})+\epsilon
 \end{equation}
 where $\epsilon$ is a zero mean Gaussian random variable with precision(inverse variance) $\beta$.Thus
-\begin{equation}
+\begin{equation}\label{eqn:linear regression representation}
 p(t|\vec{x},\vec{w},\beta)=\mathcal{N}(t|h(\vec{x},\vec{w}),\beta^{-1})
 \end{equation}
 or 
@@ -468,7 +468,7 @@ p(\vec{w}) = \mathcal{N}(\vec{w}|\vec{m_0},\vec{S}_0)
 \end{equation}
 
 The posterior distribution is proportional to the product of the likelihood and the prior.And the posterior will also be Gaussian due to the choice of conjugate Gaussian prior,which is derived in \ref{sec:Gaussian distribution}.
-\begin{equation}
+\begin{equation}\label{eqn:Bayes linear regression posterior}
 p(\vec{w}|\vec{t}) = \mathcal{N}(\vec{w}|\vec{m}_N,\vec{S}_N)
 \end{equation}
 where 
@@ -476,6 +476,47 @@ where
 \vec{m}_N &=\vec{S}_N(\vec{S}_0^{-1}\vec{m}_0+\beta\vec{\Phi}^T\vec{t})\\
 \vec{S}_N^{-1} &= \vec{S}_0^{-1}+\beta\vec{\Phi}^T\vec{\Phi}
 \end{align}
+Thus the maximum posterior weigh vector is simply given by $\vec{w}_{MAP}=\vec{m}_{N}$.If $N=0$ then the posterior distribution reverts to the prior.Furthermore,if data points arrive sequentially,then the posterior distribution at any stage acts as the prior distribution,such that the new posterior is again given.
+
+A zero-mean isotropic Gaussian governed by a single precision parameter $\alpha$ so that
+\begin{equation}
+p(\vec{w}|\alpha) = \mathcal{N}(\vec{w}|\vec{0},\alpha^{-1}\vec{I})
+\end{equation}
+for which the posterior is given by
+\begin{align}
+\vec{m}_N &=\beta\vec{S}_N\vec{\Phi}^T\vec{t} \\
+\vec{S}_N^{-1}&=\alpha\vec{I}+\beta\vec{\Phi}^T\vec{\Phi}
+\end{align}
+
+The log of posterior distribution is given by the sum of the log likelihood and the log of prior and,as a function of $\vec{w}$,takes the form
+\begin{equation}
+\log p(\vec{w}|\vec{t}) = 
+-\dfrac{\beta}{2}\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x}_n) \}^2-\dfrac{\alpha}{2}\vec{w}^T\vec{w}+const
+\end{equation}
+Maximization of this posterior w.r.t $\vec{w}$ is equivalent to minimization of the sum-of-squares error function with the addition of a quadratic regularization term,corresponding with $\lambda=\alpha/\beta$.
+
+
+
+\subsection{Predictive distribution}
+Evaluate the \textbf{predictive distribution} defined by
+\begin{equation}
+p(t|\vec{t},\alpha,\beta) = \int p(t|\vec{w},\beta)p(\vec{w}|\vec{t},\alpha,\beta)d\vec{w}
+\end{equation}
+The conditional distribution $p(t|\vec{x},\vec{w},\beta)$ of the target variable is given by \ref{eqn:linear regression representation},and the posterior weight distribution is given by \ref{eqn:Bayes linear regression posterior}.This involves the \textbf{convolution} of two Gaussian distributions.The predictive distribution take the form
+\begin{equation}
+p(t|x,\vec{t},\alpha,\beta) = \mathcal{N}(t|\vec{m}_N^T\phi(x),\sigma_N^2(\vec{x})
+\end{equation}
+where the variance $\sigma_N^2(\vec{x})$ is given by
+\begin{equation}
+\sigma_N^2(\vec{x})=\dfrac{1}{\beta}+\phi(\vec{x})^T\vec{S}_N\phi(\vec{x})
+\end{equation}
+The first term represents the noise on the data whereas the second term reflects the uncertainty associated with the parameters $\vec{w}$.
+
+
+
+
+
+
 
 
 
