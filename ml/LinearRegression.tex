@@ -50,7 +50,7 @@ where $\vec{w}$ (\textbf{weight vector}) and $\vec{x}$ are extended vectors, $\v
 
 \section{Maximum likelihood estimations(least squares)}
 Assume the training examples are \textbf{independently and identically distributed(IID)},we obtain the \textbf{likelihood function},which is a function of adjustable parameters $\vec{w}$ and $\beta$,in the form
-\begin{align}
+\begin{align}\label{eqn:linear regression likelihood}
 p(\vec{t}|\vec{X},\vec{w},\beta) =
 \prod_{n=1}^{N}\mathcal{N}(t_n|\vec{w}^T\phi(\vec{x_n}),\beta^{-1})
 \end{align}
@@ -169,10 +169,11 @@ trA &\triangleq& \sum\limits_{i=1}^n A_{ii} \nonumber \\
 Then,
 \begin{eqnarray*}
 \text{NLL}(\vec{w}) &=& \frac{1}{2N}(\vec{X}\vec{w}-\vec{y})^T(\vec{X}\vec{w}-\vec{y}) \\
-\frac{\partial \text{NLL}}{\partial\vec{w}} &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}+\vec{y}^T\vec{y}) \\
-                           &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
-						   &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} tr(\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
-						   &=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (tr\vec{w}^T\vec{X}^T\vec{X}\vec{w}-2tr\vec{y}^T\vec{X}\vec{w})
+\frac{\partial \text{NLL}}{\partial\vec{w}} 
+&=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}+\vec{y}^T\vec{y}) \\
+&=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
+&=& \frac{1}{2} \frac{\partial}{\partial\vec{w}}  \\
+&=& \frac{1}{2} \frac{\partial}{\partial\vec{w}} (tr\vec{w}^T\vec{X}^T\vec{X}\vec{w}-2tr\vec{y}^T\vec{X}\vec{w})
 \end{eqnarray*}
 
 Combining Equations \ref{eqn:matrix-1} and \ref{eqn:matrix-2}, we find that 
@@ -427,10 +428,13 @@ This quantity will be dependent on the particular data set D,so we take its aver
 If we add and subtract the quantity $ \mathbb{E_D}[y(\textbf{x};D)] $ inside the braces,and then expand,we obtain
 \begin{align}
 \{ y(\textbf{x};D) - h(\textbf{x}) \} ^2 \\
-=&\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] + \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
-=& \{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2 + \{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2 +
-2\{ y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)]\}\{ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})\} \\
-=& \underbrace{\{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2} + \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}   \\
+=&\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] 
+	+ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
+=& \{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2 
+	+ \{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2
+	+ 2\{ y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)]\}\{ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})\} \\
+=& \underbrace{\{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2} 
+	+ \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}   \\
 =&                    \color{red}{variance}                 +   \color{blue}{(bias)^2}  + (irreducible error)
 \end{align}
 The decomposition of the expected squared loss
@@ -457,8 +461,21 @@ Hold-out data can be used to determine model complexity but it will be
 computationally expensive and wasteful of valuable data.We therefore turn to a Bayesian treatment of linear regression,which will avoid the over-fitting problem of maximum likelihood,and which will also lead to automatic methods of determining model complexity using the training data.
 
 \subsection{Parameter distribution}
-First introduce a prior probability distribution over the model parameters 
+First introduce a prior probability distribution over the model parameters.The likelihood function $p(\vec{t}|\vec{w})$ defined by \ref{eqn:linear regression likelihood} is the exponential of a quadratic function of $\vec{w}$,so the corresponding conjugate prior is
+Gaussian
+\begin{equation}
+p(\vec{w}) = \mathcal{N}(\vec{w}|\vec{m_0},\vec{S}_0)
+\end{equation}
 
+The posterior distribution is proportional to the product of the likelihood and the prior.And the posterior will also be Gaussian due to the choice of conjugate Gaussian prior,which is derived in \ref{sec:Gaussian distribution}.
+\begin{equation}
+p(\vec{w}|\vec{t}) = \mathcal{N}(\vec{w}|\vec{m}_N,\vec{S}_N)
+\end{equation}
+where 
+\begin{align}
+\vec{m}_N &=\vec{S}_N(\vec{S}_0^{-1}\vec{m}_0+\beta\vec{\Phi}^T\vec{t})\\
+\vec{S}_N^{-1} &= \vec{S}_0^{-1}+\beta\vec{\Phi}^T\vec{\Phi}
+\end{align}
 
 
 
