@@ -283,7 +283,7 @@ where $1/\tau^2$ controls the strength of the prior. The corresponding MAP estim
 \arg\max_{\vec{w}} \sum\limits_{i=1}^N \log{\mathcal{N}(t_i|w_0+\vec{w}^T\vec{\phi}_i,\sigma^2)}+\sum\limits_{j=1}^D \log{\mathcal{N}(w_j|0,\tau^2)}
 \end{equation}
 
-It is a simple exercise to show that this is equivalent to minimizing the following
+This is equivalent to minimizing the following
 \begin{align}\label{eqn:Ridge-regression-J}
 J(\vec{w})&=E_D(\vec{w})+\lambda E_W(\vec{w}) \\
 &=\dfrac{1}{N}\sum\limits_{i=1}^N (y_i-(w_0+\vec{w}^T\vec{x}_i))^2+\lambda\lVert\vec{w}\rVert^2 , \lambda \triangleq \dfrac{\sigma^2}{\tau^2}
@@ -511,6 +511,38 @@ where the variance $\sigma_N^2(\vec{x})$ is given by
 \sigma_N^2(\vec{x})=\dfrac{1}{\beta}+\phi(\vec{x})^T\vec{S}_N\phi(\vec{x})
 \end{equation}
 The first term represents the noise on the data whereas the second term reflects the uncertainty associated with the parameters $\vec{w}$.
+$\sigma_{N+1}^2(\vec{x})\leq \sigma_N(\vec{x})$.In the limit $N\rightarrow \infty$,the second term goes to zero.
+
+Note that if both $\vec{w}$ and $\beta$ are treated as unknown,then we can introduce a conjugate prior distribution $p(\vec{w},\beta)$ given by Gaussian-gamma distribution,leading to a Student's t-distribution predictive distribution.
+
+\subsection{Equivalent kernel}
+The posterior mean solution \ref{} has an interpretation that will set stage for kernel methods,including Gaussian processes.The predictive mean:
+\begin{equation}
+y(\vec{x},\vec{w})=\vec{m}_N^T\vec{\phi}(\vec{x})
+=\beta\vec{\phi}(\vec{x})^T\vec{S}_N\vec{\Phi}^T\vec{t}
+=\sum_{n=1}^{N}\beta\vec{\phi}(\vec{x})^T\vec{S}_N\vec{\phi}(\vec{x}_n)t_n
+=\sum_{n=1}^{N}\mathit{k}(\vec{x},\vec{x}_n)t_n
+\end{equation}
+where
+\begin{equation}
+k(\vec{x},\vec{x'})
+=\beta\vec{\phi}(\vec{x})^T\vec{S}_N\vec{\phi}(\vec{x'})
+\end{equation}
+is known as the \textbf{smoother matrix} or \textbf{equivalent kernel}.Regression functions,such as this,which make predictions by taking linear combinations of the training set target values are known \textbf{linear smoothers}.The kernel functions are localized around $x$(local evidence weight more than distant evidence).
+
+The covariance between $y(\vec{x})$ and $y(\vec{x'})$ is given by
+\begin{align}
+cov[y(\vec{x}),y(\vec{x'})] &=cov[\vec{\phi}(\vec{x})^T\vec{w},\vec{w}^T\vec{\phi}(\vec{x'})] \\
+&=\phi(\vec{x})^T\vec{S}_N\phi(\vec{x'})=\beta^{-1}\mathit{k}(\vec{x},\vec{x'})
+\end{align}
+We see that the predictive mean at nearby points will be highly correlated.
+
+The formulation of linear regression in terms of kernel functions suggests an alternative approach,called \textbf{Gaussian process}.
+
+
+
+
+
 
 
 
