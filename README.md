@@ -5,6 +5,8 @@ This cheat sheet contains many formula equations,inference and diagrams on AI, w
 
 The cheat sheet will also appeal to someone who is preparing for a job interview related to machine learning.
 
+Sample Latex formula $$\int_{0}^{\infty}f(\vec{x},\vec{w})dx$$
+
 ##Download PDF
 [cheat-sheet.pdf](https://github.com/Alexoner/ai-cheat-sheet/raw/master/cheat-sheet.pdf) 
 
