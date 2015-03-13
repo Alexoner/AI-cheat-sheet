@@ -1,0 +1,41 @@
+% Compile with xelatex
+% UTF-8 encoding
+\documentclass[UTF8,nofonts]{ctexart}
+\setCJKmainfont{SimSun} % or any font you have.
+\setCJKsansfont{SimHei}
+\setCJKmonofont{FangSong}
+\begin{document}
+	文章内容。
+\end{document}
+
+% Compile with xelatex
+% UTF-8 encoding
+%\documentclass{article}
+%\usepackage{xeCJK}
+%\setCJKmainfont{SimSun}
+%\begin{document}
+%	文章内容
+%\end{document}
+
+% UTF-8 encoding, pdflatex or latex+dvipdfmx
+% Simplified Chinese fonts should be installed
+%\documentclass{article}
+%\usepackage{CJKutf8}
+%\AtBeginDvi{\input{zhwinfonts}}
+%\begin{document}
+%\begin{CJK*}{UTF8}{zhsong}
+%		文章内容。
+%\clearpage\end{CJK*}
+%\end{document}
+
+
+% UTF-8 encoding
+% bad-looking fonts (CJKfonts package)
+% latex+dvips, latex+dvipdfm(x) or pdflatex
+%\documentclass{article}
+%\usepackage{CJKutf8}
+%\begin{document}
+%	\begin{CJK*}{UTF8}{gbsn}
+%		文章内容。
+%		\clearpage\end{CJK*}
+%\end{document}
