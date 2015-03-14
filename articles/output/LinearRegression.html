@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta name="generator" content="pandoc" />
+        <meta name="author" content="onerhao" />
+        <title>Linear Regression</title>
+        <style type="text/css">code{white-space: pre;}</style>
+        <script type="text/x-mathjax-config">
+// <![CDATA[
+MathJax.Hub.Config({ 
+        TeX: {extensions: ["AMSmath.js", "AMSsymbols.js"]},     
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        showProcessingMessages : true,
+        messageStyle : "none" ,    
+        showMathMenu: false ,
+        tex2jax: {
+            processEnvironments: true,
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            preview : "none",
+            processEscapes: true
+        },
+        "HTML-CSS": { linebreaks: { automatic:true, width: "latex-container"} }
+    });
+    // ]]>
+        </script>
+        <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    </head>
+    <body>
+        <div id="header">
+            <h1 class="title">Linear Regression</h1>
+            <h2 class="author">onerhao</h2>
+        </div>
+        <h1 id="介绍">介绍</h1>
+        <p>线性回归通常是被人为是最简单的机器学习模型。但是却有着非常广泛的应用，其表现形式也是很多其他模型的基础.</p>
+        <h1 id="模型">模型</h1>
+        <p><span class="math">\[p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\vec{x}, \sigma^2)\]</span></p>
+        <p>这里<span class="math">\(\vec{w}\)</span> 和 <span class="math">\(\vec{x}\)</span> 是extended vectors,满足 <span class="math">\(\vec{x}=(1,x)\)</span>, <span class="math">\(\vec{w}=(b,w)\)</span>.</p>
+        <p>线性回归可以用于拟合非线性关系，只需要把<span class="math">\(\vec{x}\)</span>替换成一些非线性的作用于输入上的basis function <span class="math">\(\phi(\vec{x})\)</span> <span class="math">\[p(y|\vec{x},\vec{\theta})=\mathcal{N}(y|\vec{w}^T\phi(\vec{x}), \sigma^2)\]</span> 这个过程被称为<strong>basis function expansion</strong>.注意，这个模型仍然被称为线性线性，因为参数<span class="math">\(\vec{w}\)</span>是线性的。一个简单的例子是多项式拟合，其模型如下： <span class="math">\[\phi(x)=(1, x, \cdots, x^d)\]</span></p>
+        <h1 id="最大似然然估计">最大似然然估计</h1>
+        <p>对于一个统计模型，一个常用的估计参数的方法就是最大似然估计。 <span class="math">\[\vec{\hat{\theta}}=\arg\max_\theta{logp(D|\vec{\theta})}\]</span> 参数就是使得似然函数最大的值。 假设所有训练数据都是独立同分布的<strong>independently and identically distributed(IID)</strong>,我们可以把对数似然函数<strong>log-likelihood</strong> function写成: <span class="math">\[\ell(\vec{\theta}) \triangleq \log p(\mathcal{D}|\vec{\theta})\]</span> 最大化似然函数等价于最小化<strong>negative log likelihood</strong>: <span class="math">\[\text{NLL}(\vec{\theta}) \triangleq -\ell(\vec{\theta})=-\log p(\mathcal{D}|\vec{\theta})\]</span> 因为很多软件是为求最小值设计的，所以有时候负对数似然函数可能更加方便。下面我们看看最大似然估计的解法. <span class="math">\[\begin{aligned}
+            \ell(\vec{\theta})&amp; =\sum\limits_{i=1}^N \log\left[\dfrac{1}{\sqrt{2\pi}\sigma}\exp\left(-\dfrac{1}{2\sigma^2}(y_i-\vec{w}^T\vec{x}_i)^2\right)\right] \\
+            &amp; =-\dfrac{1}{2\sigma^2}\text{RSS}(\vec{w})-\dfrac{\vec{w}}{2}\log(2\pi\sigma^2)\end{aligned}\]</span> <span class="math">\(\vec{w}\)</span> and <span class="math">\(\beta\)</span>,in the form <span class="math">\[\begin{aligned}
+            \label{eqn:linear regression likelihood}
+            p(\vec{t}|\vec{X},\vec{w},\beta) =
+            \prod_{n=1}^{N}\mathcal{N}(t_n|\vec{w}^T\phi(\vec{x_n}),\beta^{-1})\end{aligned}\]</span> we can write the <strong>log-likelihood</strong> (logarithm of the likelihood) function as follows: <span class="math">\[\ell(\vec{\theta}) \triangleq \log p(\mathcal{D}|\vec{\theta})\]</span> A common way to estimate the parameters of a statistical model is to compute the MLE(Maximum likelihood estimations),which is defined as <span class="math">\[\vec{\hat{\theta}}=\arg\max_\theta{\log p(\mathcal{D}|\vec{\theta})}\]</span></p>
+        <p>Instead of maximizing the log-likelihood, we can equivalently minimize the <strong>negative log likelihood</strong> or <strong>NLL</strong>: <span class="math">\[\text{NLL}(\vec{\theta}) \triangleq -\ell(\vec{\theta})=-\log p(\mathcal{D}|\vec{\theta})\]</span></p>
+        <p>The NLL formulation is sometimes more convenient, since many optimization software packages are designed to find the minima of functions, rather than maxima.</p>
+        <p>Now let us apply the method of MLE to the linear regression setting. Inserting the definition of the Gaussian into the above, we find that the log likelihood is given by <span class="math">\[\begin{aligned}
+            \ell(\vec{\theta}) &amp;= \log p(\vec{T}|\vec{w},\beta) \\
+            &amp;=\sum_{n=1}^{N}\log \mathcal{N}(t_n|\vec{w}^T\phi(\vec{x_n}),\beta^{-1}) \\
+            &amp;=\sum\limits_{i=1}^N \log\left[\dfrac{1}{\sqrt{2\pi}\sigma}\exp\left(-\dfrac{1}{2\sigma^2}(y_i-\vec{w}^T\vec{x}_i)^2\right)\right] \\
+            &amp;=\dfrac{N}{2}\log \beta-\dfrac{N}{2}\log (2\pi)-\beta E_D(\vec{w}) \\
+            &amp;=-\dfrac{1}{2\sigma^2}\text{RSS}(\vec{w})-\dfrac{\vec{w}}{2}\log(2\pi\sigma^2)\end{aligned}\]</span> where the sum-of-squares error function is defined by <span class="math">\[E_D(\vec{w}) =
+            \dfrac{1}{2}\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x_n}) \}^2\]</span> RSS stands for <strong>residual sum of squares</strong> and is defined by <span class="math">\[\text{RSS}(\vec{w}) \triangleq \sum\limits_{i=1}^N (t_i-\vec{w}^T\vec{x}_i)^2\]</span> The RSS can also be written as the square of the <span class="math">\(\ell_2\)</span> <strong>norm</strong> of the vector of residual errors: <span class="math">\[RSS(\vec{w}) = \parallel\epsilon\parallel_2^2 = \sum_{i=1}^{N}\epsilon_i^2\]</span> where <span class="math">\(\epsilon_i = (t_i - \vec{w}^T\vec{x_i})\)</span>.</p>
+        <p>There two ways to compute the optimal solution of likelihood function.</p>
+        <h2 id="derivations-of-the-mle">Derivations of the MLE</h2>
+        <p>We see that maximizing the likelihood function under a conditional Gaussian noise distribution for a linear model is equivalent to <span class="math">\(\vec{w}\)</span> minimizing the RSS(or <span class="math">\(E_D\)</span>), so this method is known as <strong>least squares</strong>.The gradient of the log likelihood function takes the form <span class="math">\[\nabla\log p(\vec{t}|\vec{w},\beta)
+            =\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x_n}) \}\phi(\vec{x_n})^T\]</span></p>
+        <p>Let’s drop constants with respect to <span class="math">\(\vec{w}\)</span> and NLL can be written as <span class="math">\[\text{NLL}(\vec{w}) = \dfrac{1}{2}\sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{\phi}_i)^2\]</span></p>
+        <p>Define <span class="math">\(\vec{y}=(t_1,t_2,\cdots,t_N)\)</span>, <span class="math">\(\vec{\Phi}=\left(\begin{array}{c}\vec{\phi}_1^T \\ \vec{\phi}_2^T \\ \vdots \\ \vec{\phi}_N^T\end{array}\right)\)</span>, then we can rewritten the objective in a form that is more amendable to differentiation: <span class="math">\[\begin{aligned}
+            \text{NLL}(\vec{w}) &amp;= \dfrac{1}{2}(\vec{t}-\vec{\Phi}\vec{w})^T(\vec{t}-\vec{\Phi}\vec{w})\\
+            &amp;= \dfrac{1}{2} [\vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} - \vec{t}^T\vec{\Phi}\vec{w}- \vec{w}^T\vec{x}^T\vec{t}  +\vec{t}^T\vec{t}]          \\
+            \Rightarrow
+            \dfrac{\partial}{\partial \vec{w}}\text{NLL} &amp;= \dfrac{1}{2} \vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} -\vec{w}^T(\vec{\Phi}^T\vec{t}) \end{aligned}\]</span></p>
+        <p>where <span class="math">\(\begin{cases}
+            \vec{\Phi} = \begin{bmatrix}
+            &amp;\vec{\Phi_1^T} \\
+            &amp;\vec{\Phi_2^T} \\
+            &amp; ... \\
+            &amp;\vec{\Phi_n^T}
+            \end{bmatrix} \\    
+            \vec{\Phi^T}\vec{\Phi} =
+            \begin{bmatrix}
+            \vec{\Phi_1} &amp; \vec{\Phi_2} &amp; ...&amp;\vec{\Phi_n}
+            \end{bmatrix} 
+            \cdot
+            \begin{bmatrix}
+            &amp;\vec{\Phi_1^T} \\
+            &amp;\vec{\Phi_2^T} \\
+            &amp; ... \\
+            &amp;\vec{\Phi_N^T}
+            \end{bmatrix}  = \sum\limits_{i=1}^{N}\vec{\phi_i}\vec{\phi_i^T} = \textbf{sum of squares matrix} \\
+            \end{cases}\)</span></p>
+        <p>Note that <span class="math">\(\vec{\Phi}\)</span> is an <span class="math">\(N\times M\)</span> matrix,called the <strong>design matrix</strong>,whose elements are given by <span class="math">\(\Phi_{nj}=\phi_j(\vec{x_n})\)</span> so that <span class="math">\[\vec{\Phi}=
+            \begin{bmatrix}
+            \phi_0(\vec{x_1}) &amp; \phi_1(\vec{x_1}) &amp;...&amp;\phi_{M-1}(\vec{x_1}) \\
+            \phi_0(\vec{x_2}) &amp; \phi_1(\vec{x_2}) &amp;...&amp;\phi_{M-1}(\vec{x_2}) \\
+            \vdots &amp;\vdots &amp;\vdots&amp;\vdots \\
+            \phi_0(\vec{x_N})&amp; \phi_1(\vec{x_{N}})&amp; \cdot &amp;\phi_{M-1}(\vec{x_N})\\
+            \end{bmatrix}\]</span></p>
+        <p>When <span class="math">\(\mathcal{D}\)</span> is small(for example, <span class="math">\(N &lt; 1000\)</span>), we can use the following equation to compute <span class="math">\(\vec{w}\)</span> directly <span class="math">\[\vec{w}_{ML}=\hat{\vec{w}}_{\mathrm{OLS}}=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}\]</span></p>
+        <p>The corresponding solution <span class="math">\(\hat{\vec{w}}_{\mathrm{OLS}}\)</span> to this linear system of equations is called the <strong>ordinary least squares</strong> or <strong>OLS</strong> or <strong>normal equation</strong> solution.</p>
+        <p>We now state without proof some facts of matrix derivatives (we won’t need all of these at this section). <span class="math">\[\begin{aligned}
+            trA &amp;\triangleq&amp; \sum\limits_{i=1}^n A_{ii} \nonumber \\
+            \frac{\partial}{\partial A}AB &amp;=&amp; B^T \\
+            \frac{\partial}{\partial A^T}f(A) &amp;=&amp; \left[\frac{\partial}{\partial A}f(A)\right]^T \label{eqn:matrix-1} \\
+            \frac{\partial}{\partial A}ABA^TC &amp;=&amp; CAB+C^TAB^T \label{eqn:matrix-2} \\
+            \frac{\partial}{\partial A}|A| &amp;=&amp; |A|(A^{-1})^T
+            \end{aligned}\]</span></p>
+        <p>Then, <span class="math">\[\begin{aligned}
+            \text{NLL}(\vec{w}) &amp;=&amp; \frac{1}{2N}(\vec{X}\vec{w}-\vec{y})^T(\vec{X}\vec{w}-\vec{y}) \\
+            \frac{\partial \text{NLL}}{\partial\vec{w}} 
+            &amp;=&amp; \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}+\vec{y}^T\vec{y}) \\
+            &amp;=&amp; \frac{1}{2} \frac{\partial}{\partial\vec{w}} (\vec{w}^T\vec{X}^T\vec{X}\vec{w}-\vec{w}^T\vec{X}^T\vec{y}-\vec{y}^T\vec{X}\vec{w}) \\
+            &amp;=&amp; \frac{1}{2} \frac{\partial}{\partial\vec{w}}  \\
+            &amp;=&amp; \frac{1}{2} \frac{\partial}{\partial\vec{w}} (tr\vec{w}^T\vec{X}^T\vec{X}\vec{w}-2tr\vec{y}^T\vec{X}\vec{w})
+            \end{aligned}\]</span></p>
+        <p>Combining Equations [eqn:matrix-1] and [eqn:matrix-2], we find that <span class="math">\[\frac{\partial}{\partial A^T}ABA^TC = B^TA^TC^T+BA^TC\]</span></p>
+        <p>Let <span class="math">\(A^T=\vec{w}, B=B^T=\vec{X}^T\vec{X}\)</span>, and <span class="math">\(C=I\)</span>, Hence, <span class="math">\[\begin{aligned}
+            \frac{\partial \text{NLL}}{\partial\vec{w}} &amp;=&amp; \frac{1}{2} (\vec{X}^T\vec{X}\vec{w}+\vec{X}^T\vec{X}\vec{w} -2\vec{X}^T\vec{y}) \nonumber \\
+            &amp;=&amp; \frac{1}{2} (\vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y}) \nonumber \\
+            \frac{\partial \text{NLL}}{\partial\vec{w}} &amp;=&amp; 0 \Rightarrow \vec{X}^T\vec{X}\vec{w} - \vec{X}^T\vec{y} =0 \nonumber \\
+            \vec{X}^T\vec{X}\vec{w} &amp;=&amp; \vec{X}^T\vec{y} \label{eqn:normal-equation} \\
+            \hat{\vec{w}}_{\mathrm{OLS}} &amp;=&amp; (\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y} \nonumber
+            \end{aligned}\]</span></p>
+        <p>Equation [eqn:normal-equation] is known as the <strong>normal equation</strong>.</p>
+        <p>Consider <span class="math">\(\mathbf{vector-vector}\)</span> differentiation,if <span class="math">\(\mathbf{A}\)</span> is not a function of <span class="math">\(\vec{x}\)</span> then <span class="math">\[\dfrac{\partial\vec{X}^TA\vec{X}}{\partial\vec{X}} = \vec{X}^T(\mathbf{A}+\mathbf{A}^T) = (\mathbf{A}+\mathbf{A}^T)\vec{X}\]</span></p>
+        <p>Then,we can derivate <span class="math">\(\dfrac{\partial NLL}{\partial \vec{w}}\)</span> <span class="math">\[\begin{aligned}
+            g(\vec{w}) &amp;= \dfrac{\partial NLL}{\partial\vec{w}} \\
+            &amp;=\vec{\Phi}^T\vec{\Phi}\vec{w} - \vec{\Phi}^T\vec{y}           \end{aligned}\]</span> Setting the derivative to zero,we get <span class="math">\[\vec{w} = (\vec{X}^T\vec{X})^{-1}\vec{x}^T\vec{y}\]</span></p>
+        <h2 id="geometric-interpretation">Geometric interpretation</h2>
+        <p>See Figure [fig:graphical-interpretation-of-OLS].</p>
+        <div class="figure">
+            <img src="graphical-interpretation-of-OLS.png" alt="Graphical interpretation of least squares for N=3 examples and D=2 features. \tilde{\vec{x}}_1 and \tilde{\vec{x}}_2˜ are vectors in \mathbb{R}^3; together they define a 2D plane. \vec{y} is also a vector in \mathbb{R}^3 but does not lie on this 2D plane. The orthogonal projection of \vec{y} onto this plane is denoted \hat{\vec{y}}. The red line from \vec{y} to \hat{\vec{y}} is the residual, whose norm we want to minimize. For visual clarity, all vectors have been converted to unit norm." />
+            <p class="caption">Graphical interpretation of least squares for <span class="math">\(N=3\)</span> examples and <span class="math">\(D=2\)</span> features. <span class="math">\(\tilde{\vec{x}}_1\)</span> and <span class="math">\(\tilde{\vec{x}}_2\)</span>˜ are vectors in <span class="math">\(\mathbb{R}^3\)</span>; together they define a 2D plane. <span class="math">\(\vec{y}\)</span> is also a vector in <span class="math">\(\mathbb{R}^3\)</span> but does not lie on this 2D plane. The orthogonal projection of <span class="math">\(\vec{y}\)</span> onto this plane is denoted <span class="math">\(\hat{\vec{y}}\)</span>. The red line from <span class="math">\(\vec{y}\)</span> to <span class="math">\(\hat{\vec{y}}\)</span> is the residual, whose norm we want to minimize. For visual clarity, all vectors have been converted to unit norm.<span data-label="fig:graphical-interpretation-of-OLS"></span></p>
+        </div>
+        <p>Given that <span class="math">\[\begin{aligned}
+            \vec{X} = \begin{bmatrix}
+            \vec{x_1}^T &amp;\\
+            \vec{x_2}^T &amp;\\
+            ...        &amp;\\
+            \vec{x_N}^T
+            \end{bmatrix} 
+            = \begin{bmatrix}
+            \vec{\tilde{x_1}} &amp; \vec{\tilde{x_1}} &amp; ... &amp;\vec{\tilde{x_D}}
+            \end{bmatrix}\\
+            \vec{y} = \begin{bmatrix}
+            y_1 \\
+            y_2 \\
+            ... \\
+            y_n
+            \end{bmatrix} \end{aligned}\]</span> We seek a vector <span class="math">\(\hat{\vec{y}} \in \mathbb{R}^N\)</span> that lies in the column linear space of <span class="math">\(\vec{X}\)</span> and is as close as possible to <span class="math">\(\vec{y}\)</span>,i.e.,we want to find <span class="math">\[\begin{aligned}
+            \hat{\vec{y}} \in span(\vec{X}) \\
+            \Rightarrow \hat{\vec{y}} = \vec{X}\vec{w} = w_1\vec{\tilde{x_1}}+\cdot\cdot\cdot+w_D\vec{\tilde{x_D}} \\
+            \vec{\hat{y}}=\arg\min\limits_{\hat{\vec{y}} \in \text{span} (\{\vec{\tilde{x_1}},...,\vec{\tilde{x_D}}\})}\end{aligned}\]</span></p>
+        <p>To minimize the norm of the residual, <span class="math">\(\vec{y}-\hat{\vec{y}}\)</span>, we want the residual vector to be orthogonal to every column of <span class="math">\(\vec{X}\)</span>,so˜ <span class="math">\(\tilde{\vec{x}}_j(\vec{y}-\hat{\vec{y}})=0\)</span> for <span class="math">\(j=1:D\)</span>. Hence <span class="math">\[\begin{split}
+            \tilde{\vec{x}}_j(\vec{y}-\hat{\vec{y}})=0 &amp; \Rightarrow \vec{X}^T(\vec{y}-\vec{X}\vec{w})=0 \\
+            &amp; \Rightarrow \vec{w}=(\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y}
+            \end{split}\]</span></p>
+        <h2 id="sequential-learning">Sequential learning</h2>
+        <p>Batch techniques,such as the maximum likelihood solution,which involves processing the entire training set in one go(pass),can be computationally costly for large data sets.If the data set is sufficiently large,it may be worthwhile to use <strong>sequential</strong> algorithms,known as <strong>on-line</strong> algorithms. When <span class="math">\(\mathcal{D}\)</span> is large, use <strong>stochastic gradient descent(SGD)</strong>,also known as sequential gradient descent. <span class="math">\[\begin{aligned}
+            E &amp;=\sum_{n}E_n \\
+            \vec{w}^{\tau+1} &amp;= \vec{w}^{\tau}-\eta\nabla E_n\end{aligned}\]</span> where <span class="math">\(\tau\)</span> denotes the iteration number,the <span class="math">\(\eta\)</span> is a learning rate parameter.For the case of sum-of-squares error function,this gives <span class="math">\[\vec{w}^{\tau+1} = \vec{w}^{\tau}-\eta(t_n-\vec{w}^{(\tau)T}\phi_n)\phi_n\]</span> where <span class="math">\(\phi_n=\phi(\vec{x_n})\)</span>.This is known as the <strong>least-mean-squares</strong> or the LMS algorithm.</p>
+        <p><span class="math">\[\begin{aligned}
+            \because \dfrac{\partial}{\partial w_i}\text{NLL}(\vec{w})=&amp; \sum\limits_{i=1}^N (\vec{w}^T\vec{x}_i-y_i)x_{ij} \\
+            \therefore w_j=&amp; w_j - \alpha\dfrac{\partial}{\partial w_j}\text{NLL}(\vec{w}) \nonumber \\
+            =&amp; w_j - \sum\limits_{i=1}^N \alpha(\vec{w}^T\vec{x}_i-y_i)x_{ij} \\
+            \therefore \vec{w}=&amp; \vec{w}-\alpha(\vec{w}^T\vec{x}_i-y_i)\vec{x}\end{aligned}\]</span></p>
+        <h1 id="ridge-regressionmap">Ridge regression(MAP)</h1>
+        <p>One problem with ML estimation is that it can result in over-fitting. In this section, we discuss a way to ameliorate this problem by using MAP estimation with a Gaussian prior.</p>
+        <h2 id="basic-idea">Basic idea</h2>
+        <p>We can encourage the parameters to be small, thus resulting in a smoother curve, by using a zero-mean Gaussian prior: <span class="math">\[p(\vec{w})=\prod\limits_j \mathcal{N}(w_j|0,\tau^2)\]</span> where <span class="math">\(1/\tau^2\)</span> controls the strength of the prior. The corresponding MAP estimation problem becomes <span class="math">\[\arg\max_{\vec{w}} \sum\limits_{i=1}^N \log{\mathcal{N}(t_i|w_0+\vec{w}^T\vec{\phi}_i,\sigma^2)}+\sum\limits_{j=1}^D \log{\mathcal{N}(w_j|0,\tau^2)}\]</span></p>
+        <p>This is equivalent to minimizing the following <span class="math">\[\begin{aligned}
+            \label{eqn:Ridge-regression-J}
+            J(\vec{w})&amp;=E_D(\vec{w})+\lambda E_W(\vec{w}) \\
+            &amp;=\dfrac{1}{N}\sum\limits_{i=1}^N (y_i-(w_0+\vec{w}^T\vec{x}_i))^2+\lambda\lVert\vec{w}\rVert^2 , \lambda \triangleq \dfrac{\sigma^2}{\tau^2}\end{aligned}\]</span> where the first term is the MSE/ NLL as usual, and the second term, <span class="math">\(\lambda \geq 0\)</span>, is the regularization coefficient that controls the complexity penalty. Here <span class="math">\(E_W(\vec{w})\)</span> is one of the simplest forms of regularizer given by the sum-of-squares of the weight vector elements. <span class="math">\[E_W(\vec{w})=\dfrac{1}{2}\vec{w}^T\vec{w}\]</span> This particular choice of regularizer is known as <strong>weight decay</strong>.</p>
+        <p>The corresponding solution is given by <span class="math">\[\label{eqn:Ridge-regression-solution}
+            \hat{\vec{w}}_{\mathrm{ridge}}=(\lambda\vec{I}_D+\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}\]</span></p>
+        <p>This technique is known as <strong>ridge regression</strong>,or <strong>penalized least squares</strong>. In general, adding a Gaussian prior to the parameters of a model to encourage them to be small is called <span class="math">\(\ell_2\)</span> <strong>regularization</strong> or <strong>weight decay</strong>. Note that the offset term <span class="math">\(w_0\)</span> is not regularized, since this just affects the height of the function, not its complexity.</p>
+        <p>We will consider a variety of different priors in this book. Each of these corresponds to a different form of <strong>regularization</strong>. This technique is very widely used to prevent overfitting.</p>
+        <h2 id="multiple-outputs">Multiple outputs</h2>
+        <p>Now consider the case where we wish to predict <span class="math">\(K&gt;1\)</span> target variables,which we denote collectively by the target vector <span class="math">\(\vec{t}\)</span>.To use the same set of basis functions to model all the components of the target vector so that <span class="math">\[\vec{y}(\vec{x},\vec{w}) = \vec{W}^T\phi(x)\]</span> where <span class="math">\(\vec{y}\)</span> is a <span class="math">\(K\)</span>-dimensional column vector,<span class="math">\(\vec{W}\)</span> is an <span class="math">\(M\times K\)</span> matrix of parameters.</p>
+        <p>The conditional distribution of the target vector is an isotropic Gaussian <span class="math">\[p(\vec{t}|\vec{x},\vec{W},\beta) =
+            \mathcal{N}(\vec{t}|\vec{W}^T\phi(x,\beta^{-1}\vec{I}))\]</span></p>
+        <p>The log likelihood function is then given by <span class="math">\[\begin{aligned}
+            \ln p(\vec{T}|\vec{X},\vec{W},\beta) 
+            &amp;=\sum_{n=1}^{N}\ln \mathcal{N}(\vec{t_n}|\vec{W}^T\phi(x_n),\beta^{-1}\vec{I}) \\
+            &amp;=\dfrac{NK}{2}\ln(\dfrac{\beta}{2\pi}) 
+            -\dfrac{\beta}{2}\sum_{n=1}^{N}\parallel \vec{t_n}-\vec{W}^T\phi(x_n)\parallel^2\end{aligned}\]</span> We maximize this function with respect to <span class="math">\(\vec{W}\)</span>,giving <span class="math">\[\vec{W}_{ML} = (\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{T}\]</span></p>
+        <h2 id="numerically-stable-computation">Numerically stable computation *</h2>
+        <p><span class="math">\[\label{eqn:Ridge-regression-SVD}
+            \hat{\vec{w}}_{\mathrm{ridge}}=\vec{V}(\vec{Z}^T\vec{Z}+\lambda\vec{I}_N)^{-1}\vec{Z}^T\vec{y}\]</span></p>
+        <h2 id="connection-with-pca">Connection with PCA *</h2>
+        <h2 id="regularization-effects-of-big-data">Regularization effects of big data</h2>
+        <p>Regularization is the most common way to avoid overfitting. However, another effective approach — which is not always available — is to use lots of data. It should be intuitively obvious that the more training data we have, the better we will be able to learn.</p>
+        <p>In domains with lots of data, simple methods can work surprisingly well (Halevy et al. 2009). However, there are still reasons to study more sophisticated learning methods, because there will always be problems for which we have little data. For example, even in such a data-rich domain as web search, as soon as we want to start personalizing the results, the amount of data available for any given user starts to look small again (relative to the complexity of the problem).</p>
+        <h1 id="the-bias-variance-decomposition">The Bias-Variance Decomposition</h1>
+        <h3 id="representation">representation</h3>
+        <p>Data representation: N observations of x,wiritten <span class="math">\(X \equiv (x_1,x_2,...,x_n)^T\)</span> together with corresponding observations of the values of t,denoted <span class="math">\(t \equiv (t_1,t_2,...t_N)^T\)</span>. <span class="math">\[t_i = f(\vec{x_i}) + \epsilon\]</span> where the noise <span class="math">\( \epsilon \)</span> has zero mean and variance <span class="math">\( \sigma^2 \)</span>. Find a function <span class="math">\[\hat{f}(x)\]</span> that approximates the true function <span class="math">\[t = f(\vec{x})\]</span> as well as possible.Make “as well as possible” precise by measuring the mean squared error between y and <span class="math">\( \hat{f}(x) \)</span>,we want <span class="math">\( (t - \hat{f}(x))^2 \)</span> to be minimal. Hypothesis function(model representation): <span class="math">\(y(x,\bold w)= w_0+w_1x+w_2x^2+...+w_Mx^M = \sum_{j=0}^{M}w_jx^j\)</span> M is the order of the polynomial,and <span class="math">\(x^j\)</span> denotes <span class="math">\(x\)</span> raised to the power of <span class="math">\(j\)</span>.The polynomial coefficients <span class="math">\(w_0,...w_M\)</span> are collectively denoted by the vector <span class="math">\(\mathbf{w}\)</span>.</p>
+        <p>Error Function(Sum of squares of errors between predictions <span class="math">\(y(x_n,w)\)</span> for each data point <span class="math">\(x_n\)</span> and the corresponding target values <span class="math">\(t_n\)</span>,so that we minimize: <span class="math">\[E(\bold w)=\frac{1}{2}\sum_{n=1}^{N}\{y(x_n,\bold w)-t_n \}^2\]</span> root-mean-squre(RMS) error defined by <span class="math">\[E_{RMS} = \sqrt[2]{2E(\bold w^*)/N}\]</span> Penalized(regularized) error function <span class="math">\[\widetilde{E}(\textbf{w}) = \frac{1}{2}\sum_{n=1}^{N}\{y(x_n,\textbf{w}-t_n\}^2 + \frac{1}{2} \parallel \textbf{w} \parallel^2\]</span> where <span class="math">\(\parallel \textbf{w} \parallel^2 \equiv \textbf{w}^T\textbf{w}=w_0^2+w_1^2+...+w_M^2\)</span></p>
+        <h3 id="loss-function-for-regression">Loss function for regression</h3>
+        <p><span class="math">\[\mathbb{E}[\mathit{L}] = \iint\mathit{L}(t,y(\textbf{x}))p(\textbf{x},t)d\textbf{x}dt\]</span></p>
+        <p>A common choice of loss function in squared loss given by <span class="math">\[\begin{aligned}
+            \mathit{L}(t,y(\textbf{x})) = \{y(\textbf{x}) - t\}^2 \\
+            \mathbb{E}[\mathit{L}] = \iint\{y(\textbf{x}) - t\}^2 p(\textbf{x},t)d\textbf{x}dt.\end{aligned}\]</span> Minimize <span class="math">\( \mathbb{E}[\mathit{L}] \)</span> by using the calculus of variations to give <span class="math">\[\frac{\delta\mathbb{E}[\mathit{L}]}{\delta y(\mathbf{x}))} = 2 \int\{ y(\mathbf{x} -t) \}p(\mathbf{x},t)dt = 0\]</span> Solving for <span class="math">\( y(\textbf{x}) \)</span> and using the sum and product rules of probability,we obtain <span class="math">\[y(\textbf{x}) = \frac{\int tp(\textbf{x},t)dt}{p(\textbf{x})} = \int tp(t|\textbf{x})dt = \mathbb{E}[t|\textbf{x}]\]</span></p>
+        <p>Let’s derive this result in a slightly different way.Armed with knowledge that the optimal solution is the conditional expectation,we can expand the square term as follows <span class="math">\[\{y(\textbf{x} -t)\}^2
+            = \{y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] + \mathbb{E}[t|\textbf{x}] - t )\}^2 
+            = \{ y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] \}^2 + 2\{ y(\textbf{x}) - \mathbb{E}[t|\textbf{x}] \}\{ \mathbb{E}[t|\textbf{x}]-t \} + \{ \mathbb{E}[t|\textbf{x}] -t \}^2\]</span> where,<span class="math">\( \mathbb{E}[t|\textbf{x}] \)</span> denote <span class="math">\( \mathbb{E}_{t}[t|\textbf{x}] \)</span>.Substitute into the loss function and perform the integral over t,we see the cross-term vanishes <span class="math">\[\begin{aligned}
+            \label{eqn:squared loss function}
+            \mathbb{E}[\mathit{L}]                                                           
+            &amp;= \iint\{y(\textbf{x}) - t\}^2 p(\textbf{x},t)d\textbf{x}dt                    \\
+            &amp;= \int \{ y(\textbf{x}) -\mathbb{E}[t|\textbf{x}] \}^2 p(\textbf{x})d\textbf{x} + 
+            \int\{ \mathbb{E}[t|\textbf{x}] - t \}^2 p(\textbf{x})d\textbf{x}               \\
+            &amp;= \int \{ y(\textbf{x}) -h(\textbf{x}) \}^2 p(\textbf{x})d\textbf{x} +            
+            \int\{ h(\textbf{x}) - t \}^2 p(\textbf{x})d\textbf{x}                          \\
+            &amp;= \int \{ y(\textbf{x}) -h(\textbf{x}) \}^2 p(\textbf{x})d\textbf{x} +            
+            \int\{ h(\textbf{x}) - t \}^2 p(\textbf{x},t)d\textbf{x}dt                      \\\end{aligned}\]</span></p>
+        <h3 id="decomposition">Decomposition</h3>
+        <p>For a popular choice,we use squared loss function,for which the optimal prediction is given by the conditional expectation,which we denote by h(<strong>x</strong>) and which is given by <span class="math">\[h(\textbf{x}) = \mathbb{E}[t|\textbf{x}] = \int tp(t|\textbf{x})dt\]</span></p>
+        <p>Consider the integrand of the first term of [eqn:squared loss function],which for particular data set D takes the form <span class="math">\[\{ y(\textbf{x};D) - h(\textbf{x}) \} ^2\]</span> This quantity will be dependent on the particular data set D,so we take its average over the ensemble of data sets. If we add and subtract the quantity <span class="math">\( \mathbb{E_D}[y(\textbf{x};D)] \)</span> inside the braces,and then expand,we obtain <span class="math">\[\begin{aligned}
+            \{ y(\textbf{x};D) - h(\textbf{x}) \} ^2 \\
+            =&amp;\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] 
+            + \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
+            =&amp; \{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2 
+            + \{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2
+            + 2\{ y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)]\}\{ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})\} \\
+            =&amp; \underbrace{\{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2} 
+            + \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}   \\
+            =&amp;                    \color{red}{variance}                 +   \color{blue}{(bias)^2}  + (irreducible error)\end{aligned}\]</span> The decomposition of the expected squared loss <span class="math">\[\text{expected loss} = (bias)^2 + variance + noise\]</span> where <span class="math">\[\begin{aligned}
+            (bias)^2 = ... \\
+            variance = ... \\
+            noise = ...\end{aligned}\]</span></p>
+        <p>The function <span class="math">\( y(\textbf{x}) \)</span> we seek to determine enters only the first term,which will be minimized when <span class="math">\( y(\textbf{x}) \)</span> is equal to <span class="math">\( \mathbb{E}[t|\textbf{x}] \)</span>,in which case this term will vanish.The second term is the variance of distribution of t,averaged over <span class="math">\( \textbf{x} \)</span>,representing the intrinsic variabilility of the target data and can be regarded as noise.It’s the irreducible minimum value of the loss function.</p>
+        <p>More sophisticated loss function,Minkowski loss <span class="math">\[\mathbb{E}[\mathit{L_q}] = \iint| y(\textbf{x}) - t |^q p(\textbf{x},t)d\textbf{x}dt\]</span></p>
+        <h1 id="bayesian-linear-regression">Bayesian linear regression</h1>
+        <p>Hold-out data can be used to determine model complexity but it will be computationally expensive and wasteful of valuable data.We therefore turn to a Bayesian treatment of linear regression,which will avoid the over-fitting problem of maximum likelihood,and which will also lead to automatic methods of determining model complexity using the training data.</p>
+        <h2 id="parameter-distribution">Parameter distribution</h2>
+        <p>First introduce a prior probability distribution over the model parameters.The likelihood function <span class="math">\(p(\vec{t}|\vec{w})\)</span> defined by [eqn:linear regression likelihood] is the exponential of a quadratic function of <span class="math">\(\vec{w}\)</span>,so the corresponding conjugate prior is Gaussian <span class="math">\[p(\vec{w}) = \mathcal{N}(\vec{w}|\vec{m_0},\vec{S}_0)\]</span></p>
+        <p>The posterior distribution is proportional to the product of the likelihood and the prior.And the posterior will also be Gaussian due to the choice of conjugate Gaussian prior,which is derived in [sec:Gaussian distribution]. <span class="math">\[\label{eqn:Bayes linear regression posterior}
+            p(\vec{w}|\vec{t}) = \mathcal{N}(\vec{w}|\vec{m}_N,\vec{S}_N)\]</span> where <span class="math">\[\begin{aligned}
+            \vec{m}_N &amp;=\vec{S}_N(\vec{S}_0^{-1}\vec{m}_0+\beta\vec{\Phi}^T\vec{t})\\
+            \vec{S}_N^{-1} &amp;= \vec{S}_0^{-1}+\beta\vec{\Phi}^T\vec{\Phi}\end{aligned}\]</span> Thus the maximum posterior weigh vector is simply given by <span class="math">\(\vec{w}_{MAP}=\vec{m}_{N}\)</span>.If <span class="math">\(N=0\)</span> then the posterior distribution reverts to the prior.Furthermore,if data points arrive sequentially,then the posterior distribution at any stage acts as the prior distribution,such that the new posterior is again given.</p>
+        <p>A zero-mean isotropic Gaussian governed by a single precision parameter <span class="math">\(\alpha\)</span> so that <span class="math">\[p(\vec{w}|\alpha) = \mathcal{N}(\vec{w}|\vec{0},\alpha^{-1}\vec{I})\]</span> for which the posterior is given by <span class="math">\[\begin{aligned}
+            \vec{m}_N &amp;=\beta\vec{S}_N\vec{\Phi}^T\vec{t} \\
+            \vec{S}_N^{-1}&amp;=\alpha\vec{I}+\beta\vec{\Phi}^T\vec{\Phi}\end{aligned}\]</span></p>
+        <p>The log of posterior distribution is given by the sum of the log likelihood and the log of prior and,as a function of <span class="math">\(\vec{w}\)</span>,takes the form <span class="math">\[\log p(\vec{w}|\vec{t}) = 
+            -\dfrac{\beta}{2}\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x}_n) \}^2-\dfrac{\alpha}{2}\vec{w}^T\vec{w}+const\]</span> Maximization of this posterior w.r.t <span class="math">\(\vec{w}\)</span> is equivalent to minimization of the sum-of-squares error function with the addition of a quadratic regularization term,corresponding with <span class="math">\(\lambda=\alpha/\beta\)</span>.</p>
+        <h2 id="predictive-distribution">Predictive distribution</h2>
+        <p>Evaluate the <strong>predictive distribution</strong> defined by <span class="math">\[p(t|\vec{t},\alpha,\beta) = \int p(t|\vec{w},\beta)p(\vec{w}|\vec{t},\alpha,\beta)d\vec{w}\]</span> The conditional distribution <span class="math">\(p(t|\vec{x},\vec{w},\beta)\)</span> of the target variable is given by [eqn:linear regression representation],and the posterior weight distribution is given by [eqn:Bayes linear regression posterior].This involves the <strong>convolution</strong> of two Gaussian distributions.The predictive distribution take the form <span class="math">\[p(t|x,\vec{t},\alpha,\beta) = \mathcal{N}(t|\vec{m}_N^T\phi(x),\sigma_N^2(\vec{x})\]</span> where the variance <span class="math">\(\sigma_N^2(\vec{x})\)</span> is given by <span class="math">\[\sigma_N^2(\vec{x})=\dfrac{1}{\beta}+\phi(\vec{x})^T\vec{S}_N\phi(\vec{x})\]</span> The first term represents the noise on the data whereas the second term reflects the uncertainty associated with the parameters <span class="math">\(\vec{w}\)</span>. <span class="math">\(\sigma_{N+1}^2(\vec{x})\leq \sigma_N(\vec{x})\)</span>.In the limit <span class="math">\(N\rightarrow \infty\)</span>,the second term goes to zero.</p>
+        <p>Note that if both <span class="math">\(\vec{w}\)</span> and <span class="math">\(\beta\)</span> are treated as unknown,then we can introduce a conjugate prior distribution <span class="math">\(p(\vec{w},\beta)\)</span> given by Gaussian-gamma distribution,leading to a Student’s t-distribution predictive distribution.</p>
+        <h2 id="equivalent-kernel">Equivalent kernel</h2>
+        <p>The posterior mean solution [] has an interpretation that will set stage for kernel methods,including Gaussian processes.The predictive mean: <span class="math">\[y(\vec{x},\vec{w})=\vec{m}_N^T\vec{\phi}(\vec{x})
+            =\beta\vec{\phi}(\vec{x})^T\vec{S}_N\vec{\Phi}^T\vec{t}
+            =\sum_{n=1}^{N}\beta\vec{\phi}(\vec{x})^T\vec{S}_N\vec{\phi}(\vec{x}_n)t_n
+            =\sum_{n=1}^{N}\mathit{k}(\vec{x},\vec{x}_n)t_n\]</span> where <span class="math">\[k(\vec{x},\vec{x&#39;})
+            =\beta\vec{\phi}(\vec{x})^T\vec{S}_N\vec{\phi}(\vec{x&#39;})\]</span> is known as the <strong>smoother matrix</strong> or <strong>equivalent kernel</strong>.Regression functions,such as this,which make predictions by taking linear combinations of the training set target values are known <strong>linear smoothers</strong>.The kernel functions are localized around <span class="math">\(x\)</span>(local evidence weight more than distant evidence).</p>
+        <p>The covariance between <span class="math">\(y(\vec{x})\)</span> and <span class="math">\(y(\vec{x&#39;})\)</span> is given by <span class="math">\[\begin{aligned}
+            cov[y(\vec{x}),y(\vec{x&#39;})] &amp;=cov[\vec{\phi}(\vec{x})^T\vec{w},\vec{w}^T\vec{\phi}(\vec{x&#39;})] \\
+            &amp;=\phi(\vec{x})^T\vec{S}_N\phi(\vec{x&#39;})=\beta^{-1}\mathit{k}(\vec{x},\vec{x&#39;})\end{aligned}\]</span> We see that the predictive mean at nearby points will be highly correlated.</p>
+        <p>The formulation of linear regression in terms of kernel functions suggests an alternative approach,called <strong>Gaussian process</strong>.</p>
+    </body>
+</html>

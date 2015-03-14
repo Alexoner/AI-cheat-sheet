@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pandoc $1 -s --mathjax -o $(basename $1 .tex).html
