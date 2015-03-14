@@ -2,10 +2,10 @@
 % Compile with latex+dvipdfmx, pdflatex or xelatex
 % XeLaTeX is recommanded
 % Some Chinese fonts should be installed in your system (SimSun, SimHei, FangSong, KaiTi)
-\documentclass[UTF8]{ctexart}
-\begin{document}
-	文章内容。
-\end{document}
+%\documentclass[UTF8]{ctexart}
+%\begin{document}
+%	文章内容。
+%\end{document}
 
 
 % Compile with xelatex
@@ -49,3 +49,28 @@
 %		文章内容。
 %		\clearpage\end{CJK*}
 %\end{document}
+
+
+\documentclass{ctexart}
+
+%\setCJKmainfont{SimSun}
+%\setCJKsansfont{SimHei}
+%\setCJKmonofont{simfang}
+
+\begin{document}
+	
+\tableofcontents
+	
+\begin{abstract}
+		这是在文件的开头的介绍文字.本文的主要话题的简短说明.
+\end{abstract}
+	
+\section{ 前言 }
+	在该第一部分中的一些额外的元素可以被添加。巴贝尔包将采取的翻译服务.
+	
+\section{关于数学部分}
+	在本节中的一些数学会使用数学模型含中文字符显示。
+	
+	這是一個傳統的中國文字
+	
+\end{document}
