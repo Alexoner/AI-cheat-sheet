@@ -1,0 +1,224 @@
+\chapter{Mixture models and EM}
+\label{chap:EM}
+
+\section{Introduction}
+If we define a joint distribution over observed and latent variables,the corresponding distribution of the observed variables alone is marginalization.Mixture distributions can be interpreted in terms of discrete latent variables.As well as providing framework for building more complex probability distributions,mixture models can also be used to cluster data.
+
+\section{$K$-means Clusetering}
+\subsection{representation}
+Suppose we have a data set $\{\vec{x}_1,...,\vec{x}_N\}$ consisting of $N$ observations of a random $D$-dimensional Euclidean variable $\vec{x}$.Our goal is to partition the data set into some number $K$ of clusters.First introduce a set of $D$-dimensional vectors $\vec{\mu}_k$,where $k=1,...,K$,in which $\vec{\mu}_k$ is a prototype associated with the $k^{th}$ cluster,representing the centers of the clusters.
+
+Our goal is then to find an assignment of data points to clusters,as well as a set of vectors $\{\vec{\mu}_k\}$,such that the sum of squares of the distances of each data point to its closest vector $\vec{\mu}_k$,is a minimum.
+
+A corresponding set of binary indicator variables $r_{nk}\in \{0,1\}$,describing which of the $K$ clusters the data point $\vec{x}_n$ is assigned to,so that if data point $\vec{x}_n$ is assigned to cluster $k$ then $r_{nk}=1$,and $r_{nj}=0$ for $j\neq k$.This is the 1-of-$K$ coding scheme.
+
+
+\subsection{evaluation}
+Define the objective function,sometimes called a \textbf{distortion measure} as
+\begin{equation}
+J=\sum_{n=1}^{N}\sum_{k=1}^{K}r_{nk}\parallel \vec{x}_n-\vec{\mu}_k\parallel^2
+\end{equation}
+
+\subsection{optimization}
+Our goal is to find value for the $\{r_{nk}\}$ and the $\{\vec{\mu}_k\}$ so as to minimize $J$.We can do this through an iterative procedure in which each iteration involves two successive steps corresponding to successive optimizations with respect to the $r_{nk}$ and the $\vec{\mu}_k$.
+
+Consider first the determination of the $r_{nk}$.We simply assign the $n^{th}$ data point to the closest cluster centre.
+\begin{equation}
+r_{nk} = \begin{cases}
+1,\text{if }k=\arg\min_j\parallel \vec{x}_n-\vec{\mu}_j\parallel^2 \\
+0,\text{otherwise} \\
+\end{cases}
+\end{equation}
+Now consider the optimization of the $\vec{\mu}_k$ with the $_{nk}$ held fixed.Setting the objective function $J$'s derivative with respect to $\vec{\mu}_k$ to zero giving:
+\begin{align}
+	\nabla_{\vec{\mu}_k} J
+	&=2\sum_{n=1}^{N}r_{nk}(\vec{x}_n-\vec{\mu}_k)=0 \\
+	\Rightarrow \vec{\mu}_k 
+	&=\sum_n{r_{nk}\vec{x}_n} \over \sum_n{r_{nk}}
+\end{align}
+
+\begin{algorithm}
+	\caption{{\sc K-means} coordinate descent}
+	\label{algo:K-means}
+	%\DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead 
+	\KwIn{A set $\vec{X} = \{\vec{x}_1, \vec{x}_2, \ldots, \vec{x}_N\}$}
+	\KwOut{$\{r_{nk}\}$ and the $\{\vec{\mu}_k\}$ such that $J$ is minimized.}
+	 initialize $\vec{\mu}_k$\;
+	\Repeat{converged}{
+		%$C \gets \emptyset$\;
+		E(expectation).Minimize $J$ with respect to the $r_{nk}$.$r_{nk} = \begin{cases}
+			1,\text{if $k=\arg\min_j\parallel \vec{x}_n-\vec{\mu}_j\parallel^2$ } \\
+			0,\text{otherwise} \\
+		\end{cases}$,keeping $\vec{\mu}_k$ fixed \;
+		M(maximization).Minimize $J$ with respect to the $\vec{\mu}_k$:
+		$\vec{\mu}_k=\sum_n r_{nk}\vec{x}_n \over \sum_n r_{nk}$,keeping $r_{nk}$ fixed.\;
+ 	}
+
+\end{algorithm}
+
+The objective may converge to a local rather than global minimum(MacQueen 1967).
+
+Derive an on-line stochastic rather than the batch version of $K$-means,by applying Robbin-Monro procedure :
+\begin{align}
+\vec{\mu}_k^{new} = 
+\vec{\mu}_k^{old} + \eta_n(\vec{x}_n-\vec{\mu}_k^{old})
+\end{align}
+where $\eta_n$ is the learning rate parameter,which is typically made to decrease monotonically as more data points are considered.
+
+Generalize the $K$-means algorithm,introducing a general dissimilarity measure $\nu(\vec{x},\vec{x}')$
+\begin{align}
+\hat{J} = \sum_{n=1}^{N}\sum_{k=1}^{K}r_{nk}\nu(\vec{x}_n,\vec{\mu}_k)
+\end{align}
+which gives the \textbf{$K$-medoids} algorithm.The computation cost of E step is $O(KN)$.The M step is potentially more complex.So it is common to restrict each cluster prototype to be equal to one of the data vectors assigned to that cluster,requiring $O(N_k^2)$ evaluations of $\nu(\cdot,\cdot)$.
+
+\section{Mixtures of Gaussians}
+\subsection{representation}
+The Gaussian mixture distribution can be written as a linear superposition of Gaussians in the form
+\begin{align}\label{def:Gaussian mixture}
+p(\vec{x}) =
+\sum_{k=1}^{K}\pi_k\mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k)
+\end{align}
+Introduce a $K$-dimensional binary random variable $\vec{z}$ having a $1$-of-$K$ representation.
+\begin{align}
+z_k &\in \{ 0,1\} \\
+\sum_k z_k &=1
+\end{align}
+The marginal distribution over $\vec{z}$ is specified in terms of the mixing coefficients $\pi_k$,such that
+\begin{align}
+p(z_k=1) = \pi_k
+\end{align}
+where the parameters $\{ \pi_k\}$ must satisfy
+\begin{align}
+0 \leq &\pi_k \leq 1\\
+\sum_{k=1}^{K} &\pi_k = 1
+\end{align}
+Write this distribution in the form
+\begin{align}
+p(\vec{z}) = \prod_{k=1}^{K}\pi_k^{z_k}
+\end{align}
+The conditional distribution of $\vec{x}$ given a particular value for $\vec{z}$ is a Gaussian:
+\begin{align}
+p(\vec{x}|z_k=1) &= \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k) \\
+p(\vec{x}|\vec{z}) 
+&=\prod_{k=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k)^{z_k}
+\end{align}
+The joint distribution is given by $p(\vec{z})p(\vec{x}|\vec{z})$,and the marginal distribution of $\vec{x}$ is obtained by summing the joint distribution over states of $\vec{z}$:
+\begin{align}
+p(\vec{x}) = \sum_{\vec{z}}{p(\vec{z})p(\vec{x}|\vec{z})} =
+\sum_{k=1}^{K}\pi_k\mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k)
+\end{align}
+which is a Gaussian mixture \ref{def:Gaussian mixture} .
+
+The conditional probability of $\vec{z}$ given $\vec{x}$ can be evaluated by Bayes' theorem
+\begin{align}
+\gamma(z_k)\equiv p(z_k=1|\vec{x}) 
+&=p(z_k=1)p(\vec{x}|z_k=1) \over \sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1) \\
+&=\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k) \over 
+	\sum_{j=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)
+\end{align}
+We shall view $\pi_k$ as the prior probability of $z_k=1$,and the quantity $\gamma(z_k)$ as the corresponding posterior.$\gamma(z_k)$ can also be viewed as the \textbf{responsibility} that component $k$ takes for 'explaining' the observation $\vec{x}$.
+
+\subsection{Maximum likelihood}
+Assuming that the data points are drawn independently from the same distribution(i.i.d),the log of the likelihood function is given by
+\begin{align}\label{eqn:Gaussian mixture log likelihood}
+\ln(p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})) =
+\sum_{n=1}^{N}\ln\{\sum_{k=1}^{K}\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k) \}
+\end{align}
+
+It is worth emphasizing that there are significant problems associated with the maximum likelihood framework applied to GMM,due to the presence of \textbf{singularities}.If one of the components of the mixture model 'collapse' onto a specific data point($\sigma_j\rightarrow 0$),the log likelihood function will go to infinity.These singularities provide another example of severe over-fitting of maximum likelihood approach.A further issue is \textbf{identifiability}(Casella and Berger,2002),which is that a $K$-component mixture results in $K!$ equivalent solutions.
+
+\subsection{EM for Gaussian mixtures}
+An elegant and powerful method for finding the maximum likelihood solutions for models with latent variables is called the \textbf{expectation-maximization},or EM algorithm.
+
+Begin by writing down the conditions that must be satisfied at a maximum of the likelihood function.Setting the derivatives of $\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ \ref{eqn:Gaussian mixture log likelihood} with respect to the means $\vec{\mu}_k$ of the Gaussian components to zero,we obtain
+\begin{align}
+0&=-\sum_{n=1}^{N}\dfrac{\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}
+{\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}_n|\vec{\mu}_j,\vec{\Sigma}_j)}
+\vec{\Sigma}_k(\vec{x}_n-\vec{\mu}_k) \\
+&=-\sum_{n=1}^{N}\gamma(z_{nk})\vec{\Sigma}_k \\
+\therefore
+N_k=\sum_{n=1}^{N}\gamma(z_{nk})
+ \vec{\mu}_k&=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})\vec{x}_n \\
+\end{align}
+where we have made use of $\dfrac{e^x}{dx}=e^x$ and \ref{eqn:multivariate Gaussian}.We can interpret $N_k$ as the effective number of points assigned to cluster $k$.
+
+Now set the derivative of $\ln(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with respect to $\vec{\Sigma}_k$ to zero:
+\begin{align}
+\dfrac{\partial\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})}{\partial\vec{\Sigma}_k} 
+&=\sum_{n=1}^{N}\dfrac{\dfrac{\partial(\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k))}{\partial\vec{\Sigma}_k}}
+{\sum_{j=1}^{K}\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}\\
+\because
+ \dfrac{\partial \ln y}{\partial x} &= \dfrac{1}{y}\dfrac{\partial y}{\partial x} \\
+\therefore \dfrac{\partial y}{\partial x} &= y\dfrac{\partial\ln y}{\partial x}\\
+\because \dfrac{\partial(\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k))}{\partial\vec{\Sigma}_k} 
+&= \pi_k\dfrac{\partial\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k}\\
+&= \pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)
+\dfrac{\partial\ln\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k}\\
+\because 
+\mathcal{N}(\vec{x}|\vec{\mu},\vec{\Sigma})
+&=\dfrac{1}{(2\pi)^{D/2}}\dfrac{1}{\mid \vec{\Sigma}\mid^{1/2}}
+\exp\{-\dfrac{1}{2}(\vec{x}-\vec{\mu})^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}) \} \\
+\therefore \dfrac{\partial\ln\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k}
+&=-\dfrac{1}{2}(\dfrac{\ln(\mid\vec{\Sigma}_k)\mid}{\partial\vec{\Sigma}_k}
+ +\dfrac{\partial(\vec{x}_n-\vec{\mu}_j)\vec{\Sigma}^{-1}(\vec{x}_n-\vec{\mu}_j)}{\partial\vec{\Sigma}_k}) \\
+\because
+ \dfrac{\partial det(\vec{X})}{\vec{X}} &=det(\vec{X})(\vec{X}^{-1})^T \\
+\dfrac{\partial\vec{a}^T\vec{X}^{-1}\vec{b}}{\partial\vec{X}}
+&= -\vec{X}^{-T}\vec{a}\vec{b}^T\vec{X}^{-T} \\
+\therefore 
+\dfrac{\ln(\mid\vec{\Sigma}_k)\mid}{\partial\vec{\Sigma}_k}
+&=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}^{-1}\\
+\therefore 
+\dfrac{\partial\ln\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k} 
+&=-\dfrac{1}{2}(\vec{\Sigma}_k^{-1}-\vec{\Sigma}_k^{-1}(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T\vec{\Sigma}_k^{-1}) \\
+\therefore derivative&=\sum_{n=1}^{N}\gamma(z_{nk})(-1/2)[\vec{\Sigma}_k^{-1}-\vec{\Sigma}_k^{-1}(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T\vec{\Sigma}_k^{-1}] =0 \\
+\therefore \vec{\Sigma}_k&=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T
+\end{align}
+where we have made use of \ref{eqn:multivariate Gaussian} and \textbf{The Matrix Cookbook,2012}.
+
+Finally,we maximize $\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with respect to the mixing coefficients $\pi_k$.Achieve this using a Lagrange multiplier
+\begin{align}
+\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma}) +\lambda(\sum_{k=1}^{K}\pi_k-1) &=0 \\
+\therefore 0&=\sum_{n=1}^{N}\dfrac{\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}_n|\vec{\mu}_j,\vec{\Sigma}_j)} +\lambda
+\end{align}
+where again we see the appearance of the responsibilities.If we now multiply both sides by $\pi_k$ and sum over $k$ making use of constraint $\sum_{k=1}^{K}\pi_k = 1$,we find $\lambda = -N$.Then 
+\begin{align}
+\pi_k = \dfrac{N_k}{N}
+\end{align}
+There do suggest s ample iterative scheme for finding a solution to the maximum likelihood problem.
+
+\begin{algorithm}
+	\caption{EM for Gaussian Mixtures}
+	\label{algo:Gaussian Mixtures}
+	\DontPrintSemicolon
+	\Repeat{convergence of either the parameters or the log likelihood}{
+		1.Initialize the means $\vec{\mu}_k$,covariances $\vec{\Sigma}_k$ and mixing coefficients $\pi_k$,and evaluate the initial value of the log likelihood\;
+		2.\textbf{E step}.Evaluate the responsibilities using the current parameter values
+		\begin{align}
+		\gamma(z_k)\equiv p(z_k=1|\vec{x}) 
+		=p(z_k=1)p(\vec{x}|z_k=1) \over \sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1) \\
+		=\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k) \over 
+		\sum_{j=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)
+		\end{align} \;
+		3. \textbf{M step}. Re-estimate the parameters using the current responsibilities
+		\begin{align}
+		\vec{\mu}_k^{new} &= \dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})\vec{x}_n \\
+		\vec{\Sigma}_k^{new} &=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T \\
+		\pi_k^{new}&= \dfrac{N_k}{N}
+		\end{align}\;
+		4. Evaluate the log likelihood
+		\begin{align}
+		\ln(p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})) =
+		\sum_{n=1}^{N}\ln\{\sum_{k=1}^{K}\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k) \}
+		\end{align}\;
+	}
+\end{algorithm}
+
+
+
+
+
+
+
+
+
