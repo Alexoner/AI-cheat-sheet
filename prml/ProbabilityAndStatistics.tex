@@ -565,6 +565,21 @@ As $k \rightarrow \infty$, the distribution approaches $\delta(x-m)$. See Figure
 
 \section{The Gaussian Distribution}
 \label{sec:Gaussian distribution}
+The Gaussian distributions,also known as the normal distributions,is a widely used model for the distribution of continuous variables.In the case of single variable $x$,the Gaussian is in the form
+\begin{align}\label{eqn:univariate Gaussian distributions}
+\mathcal{N}(x|\mu,\sigma^2)=\dfrac{1}{(2\pi\sigma^2)^{1/2}}\exp\{-\dfrac{1}{(2\sigma)^2}(x-\mu)^2 \}
+\end{align}
+where $\mu$ is the mean and $\sigma^2$ is the variance.For a $D$-dimensional vector $\vec{x}$,the multivariate Gaussian distribution takes the form
+\begin{align}\label{eqn:multivariate Gaussian}
+	\mathcal{N}(\vec{x}|\vec{\mu},\vec{\Sigma})
+	=\dfrac{1}{(2\pi)^{D/2}}\dfrac{1}{\mid \vec{\Sigma}\mid^{1/2}}
+	\exp\{-\dfrac{1}{2}(\vec{x}-\vec{\mu})^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}) \}
+\end{align}
+where $\vec{\mu}$ is a $D$-dimensional mean vector,$\vec{\Sigma}$ is a $D\times D$ covariance matrix,and $\mid\vec{\Sigma}\mid$ denotes the determinant of $\vec{\Sigma}$.
+
+The Gaussian distribution arises in many different contexts and can be motivated from a variety of different perspectives,such as maximizing the entropy and the sum of multiple random variables.The \textbf{central limit theorem} tells us the latter.
+
+
 \subsection{Conditional Gaussian distributions}
 \subsection{Marginal Gaussian distributions}
 \subsection{Baye's theorem for Gaussian variables}
