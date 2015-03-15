@@ -168,6 +168,7 @@ Now set the derivative of $\ln(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with r
 \therefore 
 \dfrac{\ln(\mid\vec{\Sigma}_k)\mid}{\partial\vec{\Sigma}_k}
 %&=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\dfrac{\mid\vec{\Sigma}_k\mid\vec{\Sigma}_k^{-T}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}_k^{-1}\\
+&=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}^{-1}\\
 \therefore 
 \dfrac{\partial\ln\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k} 
 &=-\dfrac{1}{2}(\vec{\Sigma}_k^{-1}-\vec{\Sigma}_k^{-1}(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T\vec{\Sigma}_k^{-1}) \\
@@ -358,7 +359,6 @@ The \textbf{generalized EM},or GEM,algorithm addresses the problem of an intract
 \end{itemize}
 
 Generalize the E step by performing a \textbf{partial},rather than complete, optimization of $\mathcal{L}(q,\vec{\theta})$ with respect to $q(\vec{Z})$.
-
 
 
 
