@@ -1,0 +1,2 @@
+#!/bin/sh
+mk4ht xhmlatex $1 "../cfg/ht5mathjax.cfg"
