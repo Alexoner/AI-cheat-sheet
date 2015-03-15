@@ -10,10 +10,11 @@
 % RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\documentclass[graybox, envcountchap, twocolumn]{styles/svmult}
 \documentclass[graybox, envcountchap]{styles/svmult}
+%\documentclass{book}
 % general metadata:
 \author{onerhao@gmail.com}
 \title{Artificial Intelligence Cheat Sheet}
-\subtitle{Inference,equations, diagrams and tricks in machine learning,data mining,control}
+%\subtitle{Inference,equations, diagrams and tricks in machine learning,data mining,control}
 
 % choose options for [] as required from the list
 % in the Reference Guide
@@ -23,7 +24,7 @@
 \usepackage{textcomp}
 \newcommand\abs[1]{\left\lvert#1\right\rvert}
 \usepackage{longtable}
-\usepackage{algorithm2e}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \usepackage{tocbibind}
 \usepackage[toc]{multitoc}
 \renewcommand{\bibname}{References}
@@ -68,15 +69,15 @@
 
 \frontmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\include{titlepage}
+%\include{titlepage}
 %\include{dedic}
 %\include{foreword}
-\include{preface}
+%\include{preface}
 %\include{acknow}
 
 \tableofcontents
-\include{cblist}
-\include{acronym}
+%\include{cblist}
+%\include{acronym}
 \include{prml/notation}
 
 
@@ -88,11 +89,11 @@
 \include{prml/GaussianModels}
 \include{prml/BayesianStatistics}
 %\include{prml/FrequentistStatistics}
-%\include{prml/LinearRegression}
+\include{prml/LinearRegression}
 \input{"prml/Linear Models for Classification"}
 \include{prml/LogisticRegression}
 %\input{"ml/Directed graphical models (Bayes nets)"}
-%\input{"prml/Mixture models and the EM algorithm"}
+\input{"prml/Mixture models and EM"}
 %\include{ml/LatentLinearModels}
 %\include{ml/chapterSparseLinearModels}
 %\include{ml/Kernels}
