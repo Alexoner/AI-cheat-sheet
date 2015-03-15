@@ -1,9 +1,9 @@
 Artificial Intelligence cheat sheet
 ===================================
 
-This cheat sheet contains many formula equations,inference and diagrams on AI, which will help you quickly recall knowledge and ideas on machine learning.
+This cheat sheet contains many formula equations,inference and diagrams on
+AI.Most of them are based on `Pattern Recognition and Machine Learning` and `Machine Learning: A Probabilistic Perspective`.
 
-The cheat sheet will also appeal to someone who is preparing for a job interview related to machine learning.
 
 Sample Latex formula $$\int_{0}^{\infty}f(\vec{x},\vec{w})dx$$
 
