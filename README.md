@@ -1,9 +1,36 @@
-Artificial Intelligence cheat sheet
+#Artificial Intelligence cheat sheet
 ===================================
 
 This cheat sheet contains many formula equations,inference and diagrams on
-AI.Most of them are based on `Pattern Recognition and Machine Learning` and `Machine Learning: A Probabilistic Perspective`.
+AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Elements of Statisitical Learning` and `Machine Learning: A Probabilistic Perspective`.
 
+
+##TODO
+- [ ] Linear Models for Regression
+  - [x] Bayesian Linear Regression
+  - [ ] Bayesian Model Comparison
+  - [ ] The Evidence Approximation
+- [ ] Linear Models for Classification
+  - [x] Discriminant Functions
+  - [x] Generative Models
+  - [x] Discriminative Models
+  - [ ] Laplace Approximation
+  - [ ] Bayesian 
+- [ ] Neural Networks
+  - [ ] Convolutional networks
+- [ ] Kernel Methods
+- [ ] Sparse Kernel Machines
+- [ ] Graphical Models
+- [ ] Mixture Models and EM
+  - [x] K-means
+  - [x] Mixtures of Gaussians
+  - [ ] Complementary View
+  - [ ] General EM
+- [ ] Approximation Inference
+- [ ] Sampling Methods
+- [ ] Continuous Latent Variables
+- [ ] Sequential Data
+- [ ] Combining Models
 
 Sample Latex formula $$\int_{0}^{\infty}f(\vec{x},\vec{w})dx$$
 
