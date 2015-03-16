@@ -140,7 +140,7 @@ Begin by writing down the conditions that must be satisfied at a maximum of the 
 N_k=\sum_{n=1}^{N}\gamma(z_{nk})
  \vec{\mu}_k&=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})\vec{x}_n \\
 \end{align}
-where we have made use of $\dfrac{e^x}{dx}=e^x$ and \ref{eqn:multivariate Gaussian}.We can interpret $N_k$ as the effective number of points assigned to cluster $k$.
+where we have made use of $\dfrac{de^x}{dx}=e^x$ and \ref{eqn:multivariate Gaussian}.We can interpret $N_k$ as the effective number of points assigned to cluster $k$.
 
 Now set the derivative of $\ln(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with respect to $\vec{\Sigma}_k$ to zero:
 \begin{align}
@@ -167,7 +167,7 @@ Now set the derivative of $\ln(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with r
 &= -\vec{X}^{-T}\vec{a}\vec{b}^T\vec{X}^{-T} \\
 \therefore 
 \dfrac{\ln(\mid\vec{\Sigma}_k)\mid}{\partial\vec{\Sigma}_k}
-&=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}^{-1}\\
+&=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\dfrac{\mid\vec{\Sigma}_k\mid\vec{\Sigma}_k^{-T}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}_k^{-1}\\
 \therefore 
 \dfrac{\partial\ln\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k} 
 &=-\dfrac{1}{2}(\vec{\Sigma}_k^{-1}-\vec{\Sigma}_k^{-1}(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T\vec{\Sigma}_k^{-1}) \\
