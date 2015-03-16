@@ -23,6 +23,7 @@
 %\documentclass{article}
 %\usepackage{xeCJK}
 %\setCJKmainfont{SimSun}
+%\setCJKmainfont{WenQuanYi Micro Hei}
 %\begin{document}
 %	文章内容
 %\end{document}
@@ -51,8 +52,11 @@
 %\end{document}
 
 
-\documentclass{ctexart}
+\documentclass[UTF8,nofonts]{ctexart}
 
+\setmainfont{DejaVu Serif}
+\setCJKmainfont{WenQuanYi Micro Hei}
+\setCJKsansfont{文泉驿等宽微米黑}
 %\setCJKmainfont{SimSun}
 %\setCJKsansfont{SimHei}
 %\setCJKmonofont{simfang}
@@ -62,7 +66,7 @@
 \tableofcontents
 	
 \begin{abstract}
-		这是在文件的开头的介绍文字.本文的主要话题的简短说明.
+		这是在文件的开头的介绍文字.本文的主要话题的简短说明.See,this is the abstract
 \end{abstract}
 	
 \section{ 前言 }

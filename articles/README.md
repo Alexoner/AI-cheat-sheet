@@ -18,6 +18,7 @@ The easiest way is (for Simplified Chinese document only):
 \tableofcontents
  
 \begin{abstract}
+
 这是在文件的开头的介绍文字.本文的主要话题的简短说明.
 \end{abstract}
  
@@ -30,6 +31,8 @@ The easiest way is (for Simplified Chinese document only):
 這是一個傳統的中國文字
  
 \end{document}
+```
+
 ```latex
 % UTF-8 encoding
 % Compile with latex+dvipdfmx, pdflatex or xelatex
@@ -37,11 +40,12 @@ The easiest way is (for Simplified Chinese document only):
 % Some Chinese fonts should be installed in your system (SimSun, SimHei, FangSong, KaiTi)
 \documentclass[UTF8]{ctexart}
 \begin{document}
+
 文章内容。
 \end{document}
 ```
 
-The document type is a ctexart (Chinese TeX Article), this is the 
+The document type is a **ctexart** (Chinese TeX Article), this is the 
 recommended manner of typing Chinese documents, but is not the only one 
 and may have some limitations. The next sections will clearly explain 
 these and other environments for Chinese LATEX typesetting.
@@ -49,17 +53,20 @@ these and other environments for Chinese LATEX typesetting.
 
 It is designed for Chinese typesetting. Font sizes, indentation, name translation, line spacing, ... everything is set.
 
-There might be some problems on Linux with default font setting (for windows). Then you can define the fonts mannually using xeCJK.
-
 ```latex
 \documentclass[UTF8,nofonts]{ctexart}
-\setCJKmainfont{SimSun} % or any font you have.
+
+\setCJKmainfont{WenQuanYi Micro Hei}
+\setCJKsansfont{文泉驿等宽微米黑}\setCJKmainfont{SimSun} % or any font you have.
 \setCJKsansfont{SimHei}
 \setCJKmonofont{FangSong}
 \begin{document}
+
 文章内容。
 \end{document}
 ```
+There might be some problems on Linux with default font setting (for windows). Then you can define the fonts mannually using xeCJK.
+
 
 ## Traditional and Simplified Chinese,the CJK package
 If you just want to typeset only a few Chinese charecter, you can use CJK with pdfLaTeX or xeCJK with XeLaTeX.
@@ -98,12 +105,14 @@ The xeCJK package only works when compiled with XƎLATEX.
 ```latex
 % Compile with xelatex
 % UTF-8 encoding
-\documentclass{article}
+\documentclass[a4paper]{article}
 \usepackage{xeCJK}
+\setmainfont{DejaVu Serif}
 \setCJKmainfont{SimSun}
 \setCJKsansfont{simhei.ttf}
 \setCJKmonofont{simfang.ttf}
 \begin{document}
+
 文章内容
 \end{document}
 ```
@@ -117,8 +126,11 @@ or
 \documentclass{article}
 \usepackage{CJKutf8}
 \AtBeginDvi{\input{zhwinfonts}}
+
 \begin{document}
+
 \begin{CJK*}{UTF8}{zhsong}
+
 文章内容。
 \clearpage\end{CJK*}
 \end{document}
@@ -153,7 +165,9 @@ You can also insert Latin text in your document
 \vspace{0.5cm}
  
 \noindent
+
 \begin{CJK*}{UTF8}{bsmi}
+
 這是一個傳統的中國文字
 \end{CJK*}
  
