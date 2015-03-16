@@ -31,6 +31,8 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
 - [ ] Continuous Latent Variables
 - [ ] Sequential Data
 - [ ] Combining Models
+  - [ ] Boosting
+  - [ ] Random Forests
 
 Sample Latex formula $$\int_{0}^{\infty}f(\vec{x},\vec{w})dx$$
 
