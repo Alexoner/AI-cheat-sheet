@@ -214,6 +214,60 @@ There do suggest s ample iterative scheme for finding a solution to the maximum 
 	}
 \end{algorithm}
 
+\section{Latent Variables View of EM}
+\subsection{representation}
+We denote the set of all observed data by $\vec{X}$,in which the $n^{th}$ row represents $\vec{x}_n^T$,and denote the set of all latent variables by $\vec{Z}$,with corresponding rows $\vec{z}_n^T$.The set of all model parameters is denoted by $\vec{\theta}$,so the log likelihood function is given by
+\begin{align}
+\ln p(\vec{X}|\vec{\theta}) &=
+\ln\{\sum_{\vec{z}}p(\vec{X},\vec{Z}|\vec{\theta}) \}
+\end{align}
+Replace the sum over $\vec{Z}$ with an integral for continuous latent variables.
+
+$\{\vec{X},\vec{Z}\}$ is called the \textbf{complete} data set,and $\{\vec{X}\}$ is \textbf{incomplete}.We consider complete-data log likelihood functions' expected value under the posterior distribution of the latent variables,corresponding to the E step.In the subsequent M step,maximize this expectation.The expectation of complete-data log likelihood
+\begin{align}
+\mathcal{Q}(\vec{\theta},\vec{\theta}^{old}) &=
+\sum_{\vec{z}}p(\vec{Z}|\vec{X},\vec{\theta}^{old})\ln p(\vec{X},\vec{Z}|\vec{\theta})
+\end{align}
+Maximize this
+\begin{align}
+\vec{\theta}^{new} &=\arg\max\limits_{\vec{\theta}}\mathcal{Q}(\vec{\theta},\vec{\theta}^{old})
+\end{align}
+\begin{algorithm}
+	\label{General EM algorithm}
+	\caption{General EM algorithm}
+	\DontPrintSemicolon
+	\KwIn{$p(\vec{X},\vec{Z}|\vec{\theta})$,$\vec{Z}$}
+	\KwOut{output}
+	\Repeat{converged}{
+		1. Choose an initial setting for the parameters $\vec{\theta}^{old}$.\;
+		2. \textbf{E step} Evaluate $p(\vec{Z}|\vec{X},\vec{\theta}^{old})$.\;
+		3. \textbf{M step} Evaluate $\vec{\theta}^{new}$ given by
+		\begin{align}
+		\mathcal{Q}(\vec{\theta},\vec{\theta}^{old}) &=
+		\sum_{\vec{z}}p(\vec{Z}|\vec{X},\vec{\theta}^{old})\ln p(\vec{X},\vec{Z}|\vec{\theta})
+		\end{align}
+		where
+		\begin{align}
+		\vec{\theta}^{new} &=\arg\max\limits_{\vec{\theta}}\mathcal{Q}(\vec{\theta},\vec{\theta}^{old})
+		\end{align} \;
+		4. 
+		\begin{align}
+		\vec{\theta}^{old} \gets \vec{\theta}^{new}
+		\end{align}
+	}
+\end{algorithm}
+When finding MAP(maximum posterior) solutions,maximize the quantity $\mathcal{Q}(\vec{\theta},\vec{\theta}^{old})+\ln p(\vec{\theta})$ in M step.
+
+\section{The EM Algorithm in General}
+The \textbf{expectation maximization} algorithm,or EM,is a general technique for finding maximum likelihood solutions for probabilistic models having latent variables.
+
+
+
+
+
+
+
+
 
 
 
