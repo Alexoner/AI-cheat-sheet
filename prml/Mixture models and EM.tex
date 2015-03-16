@@ -262,8 +262,33 @@ When finding MAP(maximum posterior) solutions,maximize the quantity $\mathcal{Q}
 \section{The EM Algorithm in General}
 The \textbf{expectation maximization} algorithm,or EM,is a general technique for finding maximum likelihood solutions for probabilistic models having latent variables.
 
+Given the same setting as previous,our goal is to maximize the likelihood function
+\begin{align}
+p(\vec{X}|\vec{\theta}) &=\sum_{\vec{Z}}p(\vec{X},\vec{Z}|\vec{\theta}) 
+\end{align}
+Replace the summation by integration as appropriate to apply to continuous latent variables.
 
-
+Introduce a distribution $q(\vec{Z})$ over the latent variables,and the decompose the log complete-data likelihood function
+\begin{align}
+\because \ln p(\vec{X}|\vec{\theta}) &=\ln p(\vec{X},\vec{Z}|\vec{\theta}) -\ln p(\vec{Z}|\vec{X},\vec{\theta}) \\
+\end{align}
+take the expectation over values of $\vec{Z}$ by multiplying both sides by $q(\vec{Z})$ and summing(or integrting) over $\vec{Z}$ we get
+\begin{align}
+\ln p(\vec{X}|\vec{\theta}) &=\sum_{\vec{Z}}q(\vec{Z})\ln p(\vec{X},\vec{Z}|\vec{\theta})-\sum_{\vec{Z}}q(\vec{Z})\ln p(\vec{Z}|\vec{X}) \\
+&=Q+H \\
+&=\mathcal{L}(q,\vec{\theta})+KL(q\parallel p)
+\end{align}
+where
+\begin{align}
+\mathcal{L}(q,\vec{\theta})
+&=\sum_{\vec{Z}}q(\vec{Z})\ln
+\{\dfrac{p(\vec{X},\vec{Z}|\vec{\theta})}{q(\vec{Z})} \} \\
+KL(q\parallel p)
+&=-\sum_{\vec{Z}}{q(\vec{Z})\ln
+	\{\dfrac{p(\vec{Z}|\vec{X},\vec{\theta})}
+		 {q(\vec{Z})}\}}
+\end{align}
+Note that $\mathcal{L}(q,\vec{\theta})$ is a functional of the distribution $p(\vec{Z})$ and KL is the Kullback-Leibler divergence between $q(\vec{Z})$ and the posterior $p(\vec{Z}|\vec{X},\vec{\theta})$.
 
 
 
