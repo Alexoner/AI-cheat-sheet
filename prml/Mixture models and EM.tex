@@ -112,9 +112,9 @@ which is a Gaussian mixture \ref{def:Gaussian mixture} .
 The conditional probability of $\vec{z}$ given $\vec{x}$ can be evaluated by Bayes' theorem
 \begin{align}
 \gamma(z_k)\equiv p(z_k=1|\vec{x}) 
-&=p(z_k=1)p(\vec{x}|z_k=1) \over \sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1) \\
-&=\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k) \over 
-	\sum_{j=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)
+&=\dfrac{p(z_k=1)p(\vec{x}|z_k=1)} {\sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1)} \\
+&=\dfrac{\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k)}  
+	{\sum_{j=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)}
 \end{align}
 We shall view $\pi_k$ as the prior probability of $z_k=1$,and the quantity $\gamma(z_k)$ as the corresponding posterior.$\gamma(z_k)$ can also be viewed as the \textbf{responsibility} that component $k$ takes for 'explaining' the observation $\vec{x}$.
 
@@ -351,8 +351,8 @@ where $\ln p(\vec{X})$ is constant.We can optimize the right-hand side alternati
 \subsection{generalized EM}
 The \textbf{generalized EM},or GEM,algorithm addresses the problem of an intractable M step.Instead of aiming to maximize $\mathcal{L}(q,\vec{\theta})$ with respect to $\vec{\theta}$,it seeks instead to change the parameters in such a way as to increase its value.
 \begin{itemize}
-	\item[Nonlinear optimization] conjugate gradients algorithm in M step
-	\item[expectation conditional maximization(ECM)] makint several constrained optimizations within each M step.
+	\item[1]Nonlinear optimization. conjugate gradients algorithm in M step
+	\item[2]expectation conditional maximization(ECM). Making several constrained optimizations within each M step.
 \end{itemize}
 
 Generalize the E step by performing a \textbf{partial},rather than complete, optimization of $\mathcal{L}(q,\vec{\theta})$ with respect to $q(\vec{Z})$.
