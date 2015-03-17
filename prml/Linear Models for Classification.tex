@@ -22,6 +22,24 @@ In the machine learning literature $f(\cdot)$ is known as an \textbf{activation 
 \section{Discriminant Functions}
 A discriminant is a function that takes an input vector $\vec{x}$ and assigns it to be one of $K$ classes,denoted  $\mathcal{C}_k$.
 \subsection{Two classes}
+Linear discriminant function
+\begin{align}
+y(\vec{x}) = \vec{x}^T\vec{x}+w_0
+\end{align}
+where $\vec{w}$ is called a \textbf{weight vector},and $w_0$ is $bias$.The negative of the bias is sometimes called \textbf{threshold}.
+
+The value of $y(\vec{x})$ gives a signed measure of the perpendicular distance $r$ of point $\vec{x}$ from the decision surface.Consider an arbitrary point $\vec{x}$ and let $\vec{x}_\perp$ be its orthogonal projection onto the decision surface,then
+\begin{align}
+\vec{x} &= \vec{x}_\perp + r\dfrac{\vec{w}}{\parallel\vec{w}\parallel} \\
+\end{align}
+Multiplying both sides by $\vec{w}^T$ and adding $\vec{w}_0$,
+\begin{align}\label{eqn:distance from point to hyperplane}
+y(\vec{x}) &= y(\vec{x}_{\perp}) + r\dfrac{\vec{w}\cdot\vec{w}}{\parallel\vec{w}\parallel} \\
+&= r\parallel\vec{w}\parallel\\
+\therefore
+r &= \dfrac{y(\vec{x})}{\parallel\vec{w}\parallel}
+\end{align}
+
 \subsection{Multiple classes}
 Consider the extension of linear discriminants to $ K >2$ classes,building a $K$-class discriminants by combining a number of two-class discriminant functions on which leads to some serious difficulties(Duda and Hart,1973).
 
