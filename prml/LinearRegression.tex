@@ -430,12 +430,12 @@ If we add and subtract the quantity $ \mathbb{E_D}[y(\textbf{x};D)] $ inside the
 \{ y(\textbf{x};D) - h(\textbf{x}) \} ^2 \\
 =&\{y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)] 
 	+ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})  \}^2         \\
-=& \{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2 
+=& \{ y(\textbf{x};D) -\mathbb{E}_{\mathbb{D}}[y(\textbf{x};D)]    \}^2 
 	+ \{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2
 	+ 2\{ y(\textbf{x};D) - \mathbb{E_D}[y(\textbf{x};D)]\}\{ \mathbb{E_D}[y(\textbf{x};D)] -h(\textbf{x})\} \\
-=& \underbrace{\{ y(\textbf{x};D) -\mathbb{E}[y(\textbf{x};D)]    \}^2} 
-	+ \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}   \\
-=&                    \color{red}{variance}                 +   \color{blue}{(bias)^2}  + (irreducible error)
+=& \underbrace{\{ y(\textbf{x};D) -\mathbb{E}_{\mathbb{D}}[y(\textbf{x};D)]    \}^2}_\text{\color{red}{variance}} 
+	+ \underbrace{\{ \mathbb{E_D}[y(\textbf{x};D)] - h(\textbf{x})\}^2}_\text{\color{blue}$(bias)^2$} 
+	+0\\
 \end{align}
 The decomposition of the expected squared loss
 \begin{equation}
