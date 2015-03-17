@@ -7,6 +7,8 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
 
 ##TODO
 - [ ] Linear Models for Regression
+  - [x] Maximum Likelihood
+  - [x] Maximum Posterior
   - [x] Bayesian Linear Regression
   - [ ] Bayesian Model Comparison
   - [ ] The Evidence Approximation
@@ -15,7 +17,7 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
   - [x] Generative Models
   - [x] Discriminative Models
   - [ ] Laplace Approximation
-  - [ ] Bayesian 
+  - [ ] Bayesian Logistic Regression
 - [ ] Neural Networks
   - [ ] Convolutional networks
 - [ ] Kernel Methods
