@@ -21,11 +21,11 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
 - [ ] Kernel Methods
 - [ ] Sparse Kernel Machines
 - [ ] Graphical Models
-- [ ] Mixture Models and EM
+- [x] Mixture Models and EM
   - [x] K-means
   - [x] Mixtures of Gaussians
-  - [ ] Complementary View
-  - [ ] General EM
+  - [x] Complementary View
+  - [x] General EM
 - [ ] Approximation Inference
 - [ ] Sampling Methods
 - [ ] Continuous Latent Variables
