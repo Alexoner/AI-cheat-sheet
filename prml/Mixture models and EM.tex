@@ -278,7 +278,7 @@ take the expectation over values of $\vec{Z}$ by multiplying both sides by $q(\v
 &=\mathcal{L}(q,\vec{\theta})+KL(q\parallel p)
 \end{align}
 where
-\begin{align}
+\begin{align}\label{eqn:complete-data log likelihood decomposition}
 \mathcal{L}(q,\vec{\theta})
 &=\sum_{\vec{Z}}q(\vec{Z})\ln
 \{\dfrac{p(\vec{X},\vec{Z}|\vec{\theta})}{q(\vec{Z})} \} \\
@@ -287,9 +287,18 @@ KL(q\parallel p)
 	\{\dfrac{p(\vec{Z}|\vec{X},\vec{\theta})}
 		 {q(\vec{Z})}\}}
 \end{align}
-Note that $\mathcal{L}(q,\vec{\theta})$ is a functional of the distribution $p(\vec{Z})$ and KL is the Kullback-Leibler divergence between $q(\vec{Z})$ and the posterior $p(\vec{Z}|\vec{X},\vec{\theta})$.
+Note that $\mathcal{L}(q,\vec{\theta})$ is a functional of the distribution $p(\vec{Z})$ and KL is the Kullback-Leibler divergence between $q(\vec{Z})$ and the posterior $p(\vec{Z}|\vec{X},\vec{\theta})$.KL divergence will be nonnegative according to Jenson's inequality about convex function.
+\begin{align}
+\because KL(q\parallel q)&\geq,\text{with equality if,and only if,}q(\vec{Z})=p(\vec{Z}|\vec{X},\vec{\theta})\\
+\therefore
+\mathcal{L}	(q,\vec{\theta})&\leq\ln p(\vec{X}|\vec{\theta})
+\end{align}
+in other words that $\mathcal{L}(q,\vec{\theta})$ is a lower bound on $\ln p(\vec{X}|\vec{\theta})$.
 
+The EM is a two-stage \textbf{iterative} optimization technique for finding \textbf{maximum likelihood} solutions.With the decomposition \ref{eqn:complete-data log likelihood decomposition},
+in the E step,the \textbf{lower bound} $\mathcal{L}(q,\vec{\theta}^{old})$ is maximized with respect to $q(\vec{Z})$ holding $\vec{\theta}^{old}$ fixed.
 
+In the subsequent M step,the distribution $q(\vec{Z})$ is held fixed and the lower bound $\mathcal{L}(q,\vec{\theta})$ is maximized with respect to $\vec{\theta}$.The nonzero
 
 
 
