@@ -298,13 +298,64 @@ in other words that $\mathcal{L}(q,\vec{\theta})$ is a lower bound on $\ln p(\ve
 The EM is a two-stage \textbf{iterative} optimization technique for finding \textbf{maximum likelihood} solutions.With the decomposition \ref{eqn:complete-data log likelihood decomposition},
 in the E step,the \textbf{lower bound} $\mathcal{L}(q,\vec{\theta}^{old})$ is maximized with respect to $q(\vec{Z})$ holding $\vec{\theta}^{old}$ fixed.
 
-In the subsequent M step,the distribution $q(\vec{Z})$ is held fixed and the lower bound $\mathcal{L}(q,\vec{\theta})$ is maximized with respect to $\vec{\theta}$.The nonzero
+In the subsequent M step,the distribution $q(\vec{Z})$ is held fixed and the lower bound $\mathcal{L}(q,\vec{\theta})$ is maximized with respect to $\vec{\theta}$.The nonzero KL divergence causes the log likelihood function increase more than the lower bound,as shown in figure\begin{SCfigure}
+	\centering
+	\caption{Illustration of the M step of the EM
+		algorithm. The distribution $q(\vec{Z})$
+		is held fixed and the lower bound
+		$\mathcal{L}(q,\vec{\theta})$ is maximized with respect
+		to the parameter vector $\vec{\theta}$ to give
+		a revised value $\vec{\theta}^{new}$. Because the
+		KL divergence is nonnegative, this
+		causes the log likelihood ln p(X|θ)
+		to increase by at least as much as
+		the lower bound does}
+	\includegraphics{prml/Figure9.13.jpg}
+\end{SCfigure}
 
+Substitute $q(\vec{Z}) = p(\vec{Z}|\vec{X},\vec{\theta}^{old})$ into the lower bound,then after the E step,
+\begin{align}
+\mathcal{L}(q,\vec{\theta}) 
+&= \sum_{\vec{Z}}p(\vec{Z}|\vec{X},\vec{\theta}^{old})\ln p(\vec{X},\vec{Z}|\vec{\theta})
+	-\sum_{\vec{Z}}p(\vec{Z}|\vec{X},\vec{\theta}^{old})\ln p(\vec{Z}|\vec{X},\vec{\theta}^{old}) \\
+&= \mathcal{Q}(\vec{\theta},\vec{\theta}^{old})	 + const
+\end{align}
+where the constant is the negative entropy of the $q$ distribution.
+\begin{SCfigure*}
+	\caption{The EM algorithm involves alternately computing a lower bound on the log likelihood for the current parameter values and then maximizing this bound to obtain the new parameter values.The \color{red} red curve depicts the incomplete-data log likelihood function to maximize.\color{blue} curve where its value equals the log likelihood at $\vec{\theta}^{old}$ indicates the E step.In the M step,the lower bound is maximized giving $\vec{\theta}^{new}$.The \color{green} shows the subsequent E step,constructing a tangential bound at $\vec{\theta}^{new}$ }
+	\includegraphics{prml/Figure9.14.jpg}
+\end{SCfigure*}
 
+For the particular case of independent,identically distributed data set,$\vec{X}=(\vec{x}_1^T,\vec{x}_2^T,\cdots,\vec{x}_n^T)^T$ and $\vec{Z}=(\vec{z}_1^T,\vec{z}_2^T,\cdots,\vec{z}_n^T)^T$.Using the sum and product rules,the posterior in E step take the form
+\begin{align}
+p(\vec{Z}|\vec{X},\vec{\theta}) &= \dfrac{p(\vec{X},\vec{Z}|\vec{\theta})}{\sum_{\vec{Z}}p(\vec{X},\vec{Z}|\vec{\theta})}
+=\dfrac{\prod_{n=1}^{N}p(\vec{x}_n,\vec{z}_n|\vec{\theta})}{\sum_{\vec{Z}}\prod_{n=1}^{N}p(\vec{x}_n,\vec{z}_n|\vec{\theta})}
+=\prod_{n=1}^{N}p(\vec{z}_n|\vec{x}_n,\vec{\theta})
+\end{align}
+will also factorize with respect to $n$.
 
+\subsection{Maximum posterior}
+Maximize the posterior distribution $p(\vec{\theta}|\vec{X})$ with EM for models with a prior $p(\vec{\theta})$ over parameters.
+\begin{align}
+\because p(\vec{\theta}|\vec{X})&=p(\vec{\theta},\vec{X})/p(\vec{X}) \\
+\therefore \ln p(\vec{\theta}|\vec{X})&=\ln p(\vec{\theta},\vec{X})-\ln p(\vec{X})
+	=\ln p(\vec{\theta})+\ln p(\vec{X}|\vec{\theta})-\ln p(\vec{X})
+\end{align}
+decomposed as
+\begin{align}
+\ln p(\vec{\theta}|\vec{X}) &= \mathcal{L}(q,\vec{\theta})+KL(q\parallel p) +\ln p(\vec{\theta}) -\ln p(\vec{X})\\
+&\geq \mathcal{L}(q,\vec{\theta}) +\ln p(\vec{\theta}) -\ln p(\vec{X})
+\end{align}
+where $\ln p(\vec{X})$ is constant.We can optimize the right-hand side alternatively with respect to $q$ and $\vec{\theta}$ in E-step and M-step.
 
+\subsection{generalized EM}
+The \textbf{generalized EM},or GEM,algorithm addresses the problem of an intractable M step.Instead of aiming to maximize $\mathcal{L}(q,\vec{\theta})$ with respect to $\vec{\theta}$,it seeks instead to change the parameters in such a way as to increase its value.
+\begin{itemize}
+	\item[Nonlinear optimization] conjugate gradients algorithm in M step
+	\item[expectation conditional maximization(ECM)] makint several constrained optimizations within each M step.
+\end{itemize}
 
-
+Generalize the E step by performing a partial optimization of $\mathcal{L}(q,\vec{\theta})$ with respect to $q(\vec{Z})$.
 
 
 
