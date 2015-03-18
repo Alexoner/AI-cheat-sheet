@@ -22,6 +22,8 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
   - [ ] Convolutional networks
 - [ ] Kernel Methods
 - [ ] Sparse Kernel Machines
+  - [ ] Maximum Margin Classifiers
+  - [ ] Relevance Vector Machines
 - [ ] Graphical Models
 - [x] Mixture Models and EM
   - [x] K-means
