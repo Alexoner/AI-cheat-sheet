@@ -77,7 +77,6 @@ Having solved the quadratic programming problem,the threshold parameter $b$
 \begin{align}
 t_n(\sum_{m\in \mathcal{S}}{a_m t_m k(\vec{\vec{x}_n,\vec{x}_m})+b}) =1
 \end{align}
-<<<<<<< 58975f18f060def54bb412a52dc81f595e54c56d
 where $\mathcal{S}$ denotes the set of indices of the support vectors.Multiply through by $t_n$,making use of $t_n2=1$,and then average these equations over all support vectors
 \begin{align}
 b=\dfrac{1}{N_{\mathcal{S}}}\sum_{n\in\mathcal{S}}(t_n-\sum_{m\in\mathcal{S}}a_m t_m \mathcal{k}(\vec{x}_n,\vec{x}_m))
@@ -318,9 +317,87 @@ There are at most $\nu N$ data points falling outside the insensitive tube,which
 TODO
 where $\mathcal{S}$ denotes the set of indices of the support vectors.
 
+\subsection{Overlapping class distributions}
+In practice,the class-conditional distributions may overlap,in which case exact separation of the training data can lead to poor generalization.Introduce \textbf{slack variables}, $\xi_n\geq 0$ where $n=1,...N$,one for each training data points.We allow points on the 'wrong side' but with a penalty that increases of the distance from the boundary.
+\begin{align}
+\xi_n = \mid t_n-y(\vec{x}_n)\mid
+\end{align}
+\begin{SCfigure*}
+	\caption{slack variables $\epsilon_n\geq 0$.Data points with circles around them are support vectors}
+	\includegraphics[]{prml/Figure7.3.jpg}
+\end{SCfigure*}
 
+Then the classification constraint are replaced by
+\begin{align}
+t_n y(\vec{x}_n) \geq 1-\epsilon_n,n=1,...,N
+\end{align}
+This is described as relaxing the hard margin constraint to give a \textbf{soft margin} and allows misclassification of training set data points.
 
+Maximize the margin with softly penalized points on the wrong side of the margin boundary.
+\begin{align}
+C\sum_{n=1}^{N}\xi_n +\dfrac{1}{2}\parallel\vec{w}\parallel^2
+\end{align}
+where the parameter $C$ controls the trade-off between the slack variable penalty and the margin,minimizing errors and controlling model complexity.In the limit $C\longrightarrow \infty$,the model gets more complex,less data points are misclassified.
 
+Minimization with constraint
+\begin{align}
+L(\vec{w},b\vec{a}) =\dfrac{1}{2}\parallel\vec{w}\parallel^2+C\sum_{n=1}^{N}\xi_n-\sum_{n=1}^{N}a_n\{t_n y(\vec{x}_n)-1+\xi_n \} -\sum_{n=1}^{N}\mu_n\xi_n
+\end{align}
+where $\{a_n\geq 0\}$ and $\{\mu_n \geq 0 \}$ are Lagrange multipliers.The KKT set of conditions are given by
+\begin{align}
+a_n &\geq 0 \\
+t_n y(\vec{x}_n)-1+\xi_n &\geq 0 \\
+a_n(t_n y(\vec{x}_n)-1+\xi_n) &= 0 \\
+\mu_n &\geq 0 \\
+\xi_n &\geq 0 \\
+\mu_n\xi_n &=0
+\end{align}
+where $n=1,...,N$.
+
+Optimize out $\vec{w},b$ and $\{\xi_n\}$
+\begin{align}
+\dfrac{\partial L}{\partial\vec{w}} &=0 &\Rightarrow \vec{w}=\sum_{n=1}^{N}a_n t_n \\ 
+\dfrac{\partial L}{\partial b}&=0 &\Rightarrow \sum_{n=1}^{N}a_n t_n =0 \\
+\dfrac{\partial L}{\partial \xi_n} &=0 &\Rightarrow a_n = C-\mu_n
+\end{align}
+Eliminated,the dual Lagrangian is in the form
+\begin{align}\label{eqn:SVM Lagrangian}
+\hat{L}(\vec{a}) = \sum_{n=1}^{N}a_n -\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}a_n a_m t_n t_m \mathcal{k}(\vec{x}_n,\vec{x}_m)
+\end{align}
+which is identical to the separable case,with different constraints:
+\begin{align}
+0\leq a_n \leq C\\
+\sum_{n=1}^{N}a_n t_n = 0
+\end{align}
+for $n=1,...,N$,where the former are known as \textbf{box constraints}.
+
+A subset of data points having $a_n =0$ do not contribute to the predictive model.Support vectors have $a_n > 0$ and satisfy
+\begin{align}
+t_n y(\vec{x}_n) &= 1-\xi_n
+\end{align}
+if $a_n <C$,then implies that $\mu_n > 0$,which requires $\xi_n =0$ and hence such points lie on the margin.Points with $a_n=C$ can lie inside the margin and can either be correctly classified if $\xi_n \leq 1$ or misclassified if $\xi_n >1$.
+
+To determine $b$,we note that support vectors for which $0\leq a_n \leq C$ have $\xi_n =0$ so that $t_n y(\vec{x}_n)=1$ and hence satisfy
+\begin{align}
+t_n(\sum_{m\in\mathcal{S}}a_m t_m \mathcal{k}(\vec{x}_n,\vec{x}_m)+b) =1
+\end{align}
+A numerically stable solution is obtained by averaging:
+\begin{align}
+	b=\dfrac{1}{N_{\mathcal{M}}}\sum_{n\in\mathcal{M}} (t_n - \sum_{m\in\mathcal{S}}a_m t_m \mathcal{k}(\vec{x}_n,\vec{x}_m))
+\end{align}
+where $\mathcal{M}$ denotes the set of indices of data points having $0\leq a_n \leq C$.
+
+\subsubsection{$\nu$-SVM}
+Maximize
+\begin{align}
+\hat{L}(\vec{a})=-\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}a_n a_m t_n t_m\mathcal{k}(\vec{x}_n,\vec{x}_m)
+\end{align}
+subject to the constraints
+\begin{align}
+0\leq a_n \leq 1/N\\
+\sum_{n=1}^{N}a_n t_n = 0 \\
+\sum_{n=1}^{N}a_n \geq \nu
+\end{align}
 
 
 
