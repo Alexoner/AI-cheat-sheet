@@ -356,9 +356,9 @@ where $n=1,...,N$.
 
 Optimize out $\vec{w},b$ and $\{\xi_n\}$
 \begin{align}
-\dfrac{\partial L}{\partial\vec{w}} &=0 &\Rightarrow \vec{w}=\sum_{n=1}^{N}a_n t_n \\ 
-\dfrac{\partial L}{\partial b}&=0 &\Rightarrow \sum_{n=1}^{N}a_n t_n =0 \\
-\dfrac{\partial L}{\partial \xi_n} &=0 &\Rightarrow a_n = C-\mu_n
+\dfrac{\partial L}{\partial\vec{w}} =0 &\Rightarrow \vec{w}=\sum_{n=1}^{N}a_n t_n \\ 
+\dfrac{\partial L}{\partial b}=0 &\Rightarrow \sum_{n=1}^{N}a_n t_n =0 \\
+\dfrac{\partial L}{\partial \xi_n} =0 &\Rightarrow a_n = C-\mu_n
 \end{align}
 Eliminated,the dual Lagrangian is in the form
 \begin{align}\label{eqn:SVM Lagrangian}
@@ -398,9 +398,16 @@ subject to the constraints
 \sum_{n=1}^{N}a_n t_n = 0 \\
 \sum_{n=1}^{N}a_n \geq \nu
 \end{align}
+The parameter $\nu$,which replaces $C$,can be interpreted as both an upper bound on the fraction of \textbf{margin errors} and a lower bound on the fraction of support vectors.
 
+\subsubsection{Optimization}
+\begin{description}
+	\item[\textbf{chunking}]Lagrangian is unchanged if we remove the rows and columns of the kernel matrix corresponding to Lagrange multipliers.Implemented using \textbf{protected conjugate gradients}.
+	\item[\textbf{Decomposition methods}] solves a series of smaller quadratic programming problems but are designed so that each of these is of a fixed size.
+	\item[\textbf{sequantial minimal optimization} or SMO] Takes the concept of chunking to the extreme limit and considers just two Lagrange multipliers at a time.Heuristics are given for choosing the pair of Lagrange multipliers to be considered at each step.
+\end{description}
 
-
+Support vector machines don't manage to avoid the curse of dimensionality because there are constraints amongst the feature values that restrict the effective dimensionality of feature space.
 
 
 
