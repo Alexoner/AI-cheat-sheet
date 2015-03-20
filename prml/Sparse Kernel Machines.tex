@@ -100,7 +100,7 @@ In practice,the class-conditional distributions may overlap,in which case exact 
 
 Then the classification constraint are replaced by
 \begin{align}
-t_n y(\vec{x}_n) \geq 1-\epsilon_n,n=1,...,N
+t_n y(\vec{x}_n) \geq 1-\xi_n,n=1,...,N
 \end{align}
 This is described as relaxing the hard margin constraint to give a \textbf{soft margin} and allows misclassification of training set data points.
 
@@ -180,7 +180,50 @@ The parameter $\nu$,which replaces $C$,can be interpreted as both an upper bound
 
 Support vector machines don't manage to avoid the curse of dimensionality because there are constraints amongst the feature values that restrict the effective dimensionality of feature space.
 
-\subsubsection{Logistic Regression}
+\subsubsection{Relation to Logistic Regression}
+The objective function can be written 
+\begin{align}
+\sum_{n=1}^{N}E_{SV}(y_n t_n) +\lambda\parallel\vec{w}\parallel^2
+\end{align}
+where $\lambda=(2C)^{-1}$,and $E_{SV}(\cdot)$ is the \textbf{hinge} error function defined by
+\begin{align}
+E_{SV}(y_n t_n)= [1-y_n t_n]_{+}
+\end{align}
+where $[\cdot]_+$ denotes the positive part.
+
+For logistic regression,target variable $t\in \{-1,1\}$,so
+\begin{align}
+p(t|y)=\sigma(yt)
+\end{align}
+Construct an error function by taking the negative logarithm of likelihood function with a quadratic regularizer
+\begin{align}
+\sum_{n=1}^{N}E_{LR}(y_n t_n)+\lambda\parallel\vec{w}\parallel^2
+\end{align}
+where
+\begin{align}
+E_{LR}(yt)=\ln(1+\exp(-yt))
+\end{align}
+\begin{SCfigure*}
+	\caption{Plot of the ‘hinge’ error function used in support vector machines, shown in blue, along with the error function for logistic regression, rescaled by a factor of 1/ ln(2) so that it passes through the point (0, 1), shown in red. Also shown are the misclassification error in black and the squared error in green.}
+	\includegraphics{prml/Figure7.5.jpg}
+\end{SCfigure*}
+
+\subsubsection{Multiclass SVMs}
+\begin{description}
+	\item[\textbf{one-versus-the-rest}] approach:$K$ separate SVMs for each class.
+	\item[\textbf{one-versus-one}].$K(K-1)/2$ different 2-class SVMs on possible pairs of classes,which can lead to ambiguities.
+	\item[\textbf{single-class}] support vector machines,which solve an unsupervised learning problem related to probability density estimation.
+\end{description}
+
+\subsubsection{SVMs for regression}
+
+
+
+
+
+
+
+
 
 
 
