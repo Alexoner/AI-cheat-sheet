@@ -1,3 +1,112 @@
+<header class="post-header">
+  <h1 class="post-title"><a href="/">Deep learning Reading List</a></h1>
+  <p class="post-meta">
+
+  </p>
+</header>
+
+<div class="post-main">
+<p>文章来自<a href="http://jmozah.github.io/links/">J Mohamed Zahoor</a>的深度学习阅读书单。
+Following is a growing list of some of the materials i found on the web for Deep Learning beginners. </p>
+
+<!-- more -->
+
+<h3 id="free-online-books">Free Online Books</h3>
+
+<ol>
+  <li><a href="http://www.iro.umontreal.ca/~bengioy/dlbook/">Deep Learning</a> by Yoshua Bengio, Ian Goodfellow and Aaron Courville</li>
+  <li><a href="http://neuralnetworksanddeeplearning.com/">Neural Networks and Deep Learning</a> by  Michael Nielsen</li>
+  <li><a href="http://research.microsoft.com/pubs/209355/DeepLearning-NowPublishing-Vol7-SIG-039.pdf">Deep Learning</a> by Microsoft Research</li>
+  <li><a href="http://deeplearning.net/tutorial/deeplearning.pdf">Deep Learning Tutorial</a> by LISA lab, University of Montreal</li>
+</ol>
+
+<h3 id="courses">Courses</h3>
+
+<ol>
+  <li><a href="https://class.coursera.org/ml-005">Machine Learning</a> by Andrew Ng in Coursera</li>
+  <li><a href="https://class.coursera.org/neuralnets-2012-001">Neural Networks for Machine Learning</a> by Geoffrey Hinton in Coursera</li>
+  <li><a href="https://www.youtube.com/playlist?list=PL6Xpj9I5qXYEcOhn7TqghAJ6NAPrNmUBH">Neural networks class</a> by Hugo Larochelle from Université de Sherbrooke</li>
+  <li><a href="http://cilvr.cs.nyu.edu/doku.php?id=deeplearning:slides:start">Deep Learning Course</a> by CILVR lab @ NYU</li>
+</ol>
+
+<h3 id="video-and-lectures">Video and Lectures</h3>
+
+<ol>
+  <li><a href="https://www.youtube.com/watch?v=RIkxVci-R4k">How To Create A Mind</a> By Ray Kurzweil - Is a inspiring talk </li>
+  <li><a href="https://www.youtube.com/watch?v=n1ViNeWhC24">Deep Learning, Self-Taught Learning and Unsupervised Feature Learning</a> By Andrew Ng</li>
+  <li><a href="https://www.youtube.com/watch?v=vShMxxqtDDs&amp;index=3&amp;list=PL78U8qQHXgrhP9aZraxTT5-X1RccTcUYT">Recent Developments in Deep Learning</a> By Geoff Hinton</li>
+  <li><a href="https://www.youtube.com/watch?v=sc-KbuZqGkI">The Unreasonable Effectiveness of Deep Learning</a> by Yann LeCun</li>
+  <li><a href="https://www.youtube.com/watch?v=4xsVFLnHC_0">Deep Learning of Representations</a> by Yoshua bengio</li>
+  <li><a href="https://www.youtube.com/watch?v=6ufPpZDmPKA">Principles of Hierarchical Temporal Memory</a> by Jeff Hawkins</li>
+  <li><a href="https://www.youtube.com/watch?v=2QJi0ArLq7s&amp;list=PL78U8qQHXgrhP9aZraxTT5-X1RccTcUYT">Machine Learning Discussion Group - Deep Learning w/ Stanford AI Lab</a> by Adam Coates</li>
+  <li><a href="http://vimeo.com/80821560">Making Sense of the World with Deep Learning</a> By Adam Coates</li>
+  <li><a href="https://www.youtube.com/watch?v=wZfVBwOO0-k">Demystifying Unsupervised Feature Learning </a> By Adam Coates</li>
+  <li><a href="https://www.youtube.com/watch?v=3boKlkPBckA">Visual Perception with Deep Learning</a> By Yann LeCun</li>
+</ol>
+
+<h3 id="papers">Papers</h3>
+<ol>
+  <li><a href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf">ImageNet Classification with Deep Convolutional Neural Networks</a></li>
+  <li><a href="http://www.cs.toronto.edu/~hinton/absps/esann-deep-final.pdf">Using Very Deep Autoencoders for Content Based Image Retrieval</a></li>
+  <li><a href="http://www.iro.umontreal.ca/~lisa/pointeurs/TR1312.pdf">Learning Deep Architectures for AI</a></li>
+  <li><a href="http://deeplearning.cs.cmu.edu/">CMU’s list of papers</a></li>
+</ol>
+
+<h3 id="tutorials">Tutorials</h3>
+<ol>
+  <li><a href="http://deeplearning.stanford.edu/wiki/index.php/UFLDL_Tutorial">UFLDL Tutorial 1</a></li>
+  <li><a href="http://ufldl.stanford.edu/tutorial/supervised/LinearRegression/">UFLDL Tutorial 2</a></li>
+  <li><a href="http://www.socher.org/index.php/DeepLearningTutorial/DeepLearningTutorial">Deep Learning for NLP (without Magic)</a></li>
+  <li><a href="http://www.toptal.com/machine-learning/an-introduction-to-deep-learning-from-perceptrons-to-deep-networks">A Deep Learning Tutorial: From Perceptrons to Deep Networks</a></li>
+</ol>
+
+<h3 id="websites">WebSites</h3>
+<ol>
+  <li><a href="http://deeplearning.net/">deeplearning.net</a></li>
+  <li><a href="http://deeplearning.stanford.edu/">deeplearning.stanford.edu</a></li>
+</ol>
+
+<h3 id="datasets">Datasets</h3>
+<ol>
+  <li><a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> Handwritten digits</li>
+  <li><a href="http://ufldl.stanford.edu/housenumbers/">Google House Numbers</a> from street view</li>
+  <li><a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 and CIFAR-100</a> </li>
+  <li><a href="http://www.image-net.org/">IMAGENET</a></li>
+  <li><a href="http://groups.csail.mit.edu/vision/TinyImages/">Tiny Images</a> 80 Million tiny images </li>
+  <li><a href="http://yahoolabs.tumblr.com/post/89783581601/one-hundred-million-creative-commons-flickr-images">Flickr Data</a> 100 Million Yahoo dataset</li>
+  <li><a href="http://www.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/">Berkeley Segmentation Dataset 500</a></li>
+</ol>
+
+<h3 id="frameworks">Frameworks</h3>
+<ol>
+  <li><a href="http://caffe.berkeleyvision.org/">Caffe</a> </li>
+  <li><a href="http://torch.ch/">Torch7</a></li>
+  <li><a href="http://deeplearning.net/software/theano/">Theano</a></li>
+  <li><a href="https://code.google.com/p/cuda-convnet2/">cuda-convnet</a> </li>
+  <li><a href="http://libccv.org/doc/doc-convnet/">Ccv</a></li>
+  <li><a href="http://numenta.org/nupic.html">NuPIC</a></li>
+  <li><a href="http://deeplearning4j.org/">DeepLearning4J</a></li>
+</ol>
+
+<h3 id="miscellaneous">Miscellaneous</h3>
+<ol>
+  <li><a href="https://plus.google.com/communities/112866381580457264725">Google Plus - Deep Learning Community</a></li>
+  <li><a href="http://on-demand-gtc.gputechconf.com/gtcnew/on-demand-gtc.php?searchByKeyword=shelhamer&amp;searchItems=&amp;sessionTopic=&amp;sessionEvent=4&amp;sessionYear=2014&amp;sessionFormat=&amp;submit=&amp;select=+">Caffe Webinar</a></li>
+  <li><a href="http://meta-guide.com/software-meta-guide/100-best-github-deep-learning/">100 Best Github Resources in Github for DL</a></li>
+  <li><a href="https://code.google.com/p/word2vec/">Word2Vec</a></li>
+  <li><a href="https://registry.hub.docker.com/u/tleyden5iwx/caffe/">Caffe DockerFile</a></li>
+  <li><a href="https://github.com/TorontoDeepLearning/convnet">TorontoDeepLEarning convnet</a></li>
+  <li><a href="http://www.cs.cmu.edu/~cil/v-images.html">Vision data sets</a></li>
+  <li><a href="http://code.cogbits.com/wiki/doku.php">Fantastic Torch Tutorial</a> My personal favourite. Also check out <a href="https://github.com/clementfarabet/gfx.js">gfx.js</a></li>
+  <li><a href="https://github.com/torch/torch7/wiki/Cheatsheet">Torch7 Cheat sheet</a></li>
+</ol>
+
+
+</div>
+
+
+
+
 <div class="post-main">
 <p>some free data science books!</p>
 
