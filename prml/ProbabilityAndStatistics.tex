@@ -31,14 +31,17 @@ We denote a random event by defining a \textbf{random variable} $X$.
 
 \textbf{Continuous random variable}: the value of $X$ is real-valued.
 
-\textbf{prior probability distribution}
+
+\begin{description}
+\item[\textbf{prior probability distribution}]
 In Bayesian statistical inference, a prior probability distribution, often called simply the prior, of an uncertain quantity p is the probability distribution that would express one's uncertainty about p \textbf{before} some evidence is taken into account.
 
-\textbf{posterior probability distribution}
+\item[\textbf{posterior probability distribution}]
 In Bayesian statistics, the posterior probability of a random event or an uncertain proposition is the conditional probability that is assigned \textbf{after} the relevant evidence or background is taken into account.
 
-\textbf{likelihood function}
+\item[\textbf{likelihood function}]
 In statistics, a likelihood function (often simply the likelihood) is a function of the parameters of a statistical model.The likelihood of a set of parameter values, θ, given outcomes x, is equal to the probability of those observed outcomes given those parameter values
+\end{description}
 
 \subsection{Fundamental rules}
 In this section,we review the basic rule of probability.
@@ -62,8 +65,18 @@ Define the \textbf{conditional probability} of event A,given that event B is tru
 \begin{equation}
 p(A|B)= \frac{p(A,B)}{p(B)},if p(B) > 0
 \end{equation}
-\subsubsection{CDF}
 
+\subsubsection{sum rule}
+\begin{equation}
+p(X) = \sum_{Y}p(X,Y)
+\end{equation}
+
+\subsubsection{product rule}
+\begin{equation}
+p(X,Y) = p(Y|X)p(X)
+\end{equation}
+
+\subsubsection{CDF}
 \begin{equation}
 F(x) \triangleq P(X \leq x)=\begin{cases}
 \sum_{u \leq x}p(u) & \text{, discrete}\\
@@ -76,6 +89,28 @@ F(x) \triangleq P(X \leq x)=\begin{cases}
 For descrete random variable, We denote the probability of the event that $X=x$ by $P(X=x)$, or just $p(x)$ for short. Here $p(x)$ is called a \textbf{probability mass function} or \textbf{PMF}.A probability mass function is a function that gives the probability that a discrete random variable is exactly equal to some value\footnote{\url{http://en.wikipedia.org/wiki/Probability_mass_function}}. This satisfies the properties $0 \leq p(x) \leq 1$ and $\sum_{x \in \mathcal{X}} p(x)=1$.
 
 For continuous variable, in the equation $F(x)=\int_{-\infty}^{x} f(u)\mathrm{d}u$, the function $f(x)$ is called a \textbf{probability density function} or \textbf{PDF}. A probability density function is a function that describes the relative likelihood for this random variable to take on a given value\footnote{\url{http://en.wikipedia.org/wiki/Probability_density_function}}.This satisfies the properties $f(x) \geq 0$ and $\int_{-\infty}^{\infty} f(x)\mathrm{d}x=1$.
+
+\subsubsection{probability densities}
+probability densities
+\begin{equation}
+p(x\in (a,b)) = \int_{a}^{b}p(x)dx
+\end{equation}
+The probability density function p(x) must satisfy the two conditions
+\begin{equation}
+\begin{cases}
+p(x) \geq 0               \\
+\int_{-\infty}^{\infty}p(x)dx = 1
+\end{cases}
+\end{equation}
+
+Combinations of discrete and continuous variables.
+\begin{equation}
+p(x) = \int_p(x,y)dy	
+\end{equation}
+\begin{equation}
+p(x,y) = p(y|x)p(x)
+\end{equation}
+
 
 
 \subsection{Mutivariate random variables}
@@ -145,21 +180,13 @@ f_{X|Y}(x|y)=\dfrac{f(x,y)}{f_Y(y)}
 \end{equation}
 
 \subsection{Bayes rule}
-\begin{equation}
-\begin{split}
-p(Y=y|X=x) & =\dfrac{p(X=x,Y=y)}{p(X=x)} \\
-           & =\dfrac{p(X=x|Y=y)p(Y=y)}{\sum_{y'}p(X=x|Y=y')p(Y=y')}
-\end{split}
-\end{equation}
+%\begin{equation}
+%\begin{split}
+%p(Y=y|X=x) & =\dfrac{p(X=x,Y=y)}{p(X=x)} \\
+%           & =\dfrac{p(X=x|Y=y)p(Y=y)}{\sum_{y'}p(X=x|Y=y')p(Y=y')}
+%\end{split}
+%\end{equation}
 
-sum rule
-\begin{equation}
-                                  p(X) = \sum_{Y}p(X,Y)
-\end{equation}
-product rule
-\begin{equation}
-                                  p(X,Y) = p(Y|X)p(X)
-\end{equation}
 Bayes' theorem
 \begin{equation}
                                   p(Y|X) = \frac{p(X|Y)p(Y)}{p(X)}
@@ -168,26 +195,6 @@ Denominator in Bayes' theorem
 \begin{equation}
                                   p(X) = \sum_Y{p(X|Y)p(Y)}
 \end{equation}
-probability densities
-\begin{equation}
-                         p(x\in (a,b)) = \int_{a}^{b}p(x)dx
-\end{equation}
-The probability density function p(x) must satisfy the two conditions
-\begin{equation}
-\begin{cases}
-                                  p(x) \geq 0               \\
-                                  \int_{-\infty}^{\infty}p(x)dx = 1
-\end{cases}
-\end{equation}
-
-Combinations of discrete and continuous variables.
-\begin{equation}
-                                  p(x) = \int_p(x,y)dy	
-\end{equation}
-\begin{equation}
-                                  p(x,y) = p(y|x)p(x)
-\end{equation}
-
 
 Bayesian probabilities
 So far, we have viewed probabilities in terms of the frequencies of random,repeatable events,which we shall refer to as the classical or frequentist interpretation of probability.Now we turn to the more general Bayesian view,in which probabilities provide a quantification of uncertainty.
@@ -204,10 +211,17 @@ can be viewed as a function of the parameter vector $\mathbf{w}$,in which case i
 posteroir \propto likelihood \times prior
 \end{equation}
 where all of these quantities are viewed as functions of $\vec{w}$.
- Integrating both side with respect to $\mathbf{w}$
- \begin{equation}
-p(D) = \int p(D|\mathbf{w}) p(\mathbf{w})d\mathbf{w} 
- \end{equation}
+Summing both side with respect to $\mathbf{w}$
+\begin{align}
+& p(\mathcal{D})p(\vec{w}|\mathcal{D}) &= p(\mathcal{D}|\vec{w})p(\vec{w}) \\
+&\Rightarrow \sum_{\vec{w}}p(\mathcal{D})p(\vec{w}|\mathcal{D}) &= \sum_{\vec{w}}p(\mathcal{D}|\vec{w})p(\vec{w}) \\
+&\Rightarrow p(\mathcal{D})&= \sum_{\vec{w}}p(\mathcal{D}|\vec{w})p(\vec{w}) \\
+\end{align}
+Integrating both side with respect to $\mathbf{w}$
+\begin{align}
+\int p(\mathcal{D})p(\vec{w}|\mathcal{D})d{\vec{w}} &= \int p(\mathcal{D}|\vec{w})p(\vec{w}) d{\vec{w}} \\ 
+p(\mathcal{D}) &= \int p(\mathcal{D}|\mathbf{w}) p(\mathbf{w})d\mathbf{w} 
+ \end{align}
 
 A widely used frequentist estimator is \textbf{maximum likelihood},in which $\mathbf{w}$ is set to the value that maximizes the likelihood function $p(\mathcal{D}|w)$.In the machine learning literature,the negative log of the likelihood function is called an \textbf{error function}.
 
