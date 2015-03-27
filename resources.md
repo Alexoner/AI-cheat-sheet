@@ -1,3 +1,15 @@
+##TODO
+### Simple implementation
+18大数据挖掘的经典算法以及代码实现:
+    [https://github.com/linyiqun/DataMiningAlgorithm]
+
+    https://github.com/zhouxc/Stanford-Machine-Learning-Course
+
+### projects to focus
+https://github.com/rasbt/pattern_classification
+
+
+
 <header class="post-header">
   <h1 class="post-title"><a href="/blog/2014/09/22/Reading_lists_for_new_LISA_students.html">Reading lists for new LISA students</a></h1>
   <p class="post-meta">
