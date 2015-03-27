@@ -228,23 +228,23 @@ Given that
 \vec{\tilde{x_1}} & \vec{\tilde{x_1}} & ... &\vec{\tilde{x_D}}
 \end{bmatrix}\\
 \vec{y} = \begin{bmatrix}
-y_1 \\
-y_2 \\
+t_1 \\
+t_2 \\
 ... \\
-y_n
+t_n
 \end{bmatrix} 
 \end{eqnarray}
-We seek a vector $\hat{\vec{y}} \in \mathbb{R}^N$ that lies in the column linear space of $\vec{X}$ and is as close as possible to $\vec{y}$,i.e.,we want to find
+We seek a vector $\hat{\vec{t}} \in \mathbb{R}^N$ that lies in the column linear space of $\vec{X}$ and is as close as possible to $\vec{t}$,i.e.,we want to find
 \begin{eqnarray}
-\hat{\vec{y}} \in span(\vec{X}) \\
-\Rightarrow \hat{\vec{y}} = \vec{X}\vec{w} = w_1\vec{\tilde{x_1}}+\cdot\cdot\cdot+w_D\vec{\tilde{x_D}} \\
-\vec{\hat{y}}=\arg\min\limits_{\hat{\vec{y}} \in \text{span} (\{\vec{\tilde{x_1}},...,\vec{\tilde{x_D}}\})}
+\hat{\vec{t}} \in span(\vec{X}) \\
+\Rightarrow \hat{\vec{t}} = \vec{X}\vec{w} = w_1\vec{\tilde{x_1}}+\cdot\cdot\cdot+w_D\vec{\tilde{x_D}} \\
+\vec{\hat{t}}=\arg\min\limits_{\hat{\vec{t}} \in \text{span} (\{\vec{\tilde{x_1}},...,\vec{\tilde{x_D}}\})}
 \end{eqnarray}
 
-To minimize the norm of the residual, $\vec{y}-\hat{\vec{y}}$, we want the residual vector to be orthogonal to every column of $\vec{X}$,so˜ $\tilde{\vec{x}}_j(\vec{y}-\hat{\vec{y}})=0$ for $j=1:D$. Hence
+To minimize the norm of the residual, $\vec{t}-\hat{\vec{t}}$, we want the residual vector to be orthogonal to every column of $\vec{X}$,so˜ $\tilde{\vec{x}}_j(\vec{t}-\hat{\vec{t}})=0$ for $j=1:D$. Hence
 \begin{equation}\begin{split}
-\tilde{\vec{x}}_j(\vec{y}-\hat{\vec{y}})=0 & \Rightarrow \vec{X}^T(\vec{y}-\vec{X}\vec{w})=0 \\
-                                           & \Rightarrow \vec{w}=(\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y}
+\tilde{\vec{x}}_j(\vec{t}-\hat{\vec{t}})=0 & \Rightarrow \vec{X}^T(\vec{t}-\vec{X}\vec{w})=0 \\
+                                           & \Rightarrow \vec{w}=(\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{t}
 \end{split}\end{equation}
 
 
