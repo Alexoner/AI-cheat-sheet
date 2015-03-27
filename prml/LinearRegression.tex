@@ -537,7 +537,97 @@ cov[y(\vec{x}),y(\vec{x'})] &=cov[\vec{\phi}(\vec{x})^T\vec{w},\vec{w}^T\vec{\ph
 \end{align}
 We see that the predictive mean at nearby points will be highly correlated.
 
-The formulation of linear regression in terms of kernel functions suggests an alternative approach,called \textbf{Gaussian process}.
+The formulation of linear regression in terms of kernel functions suggests an alternative approach,called \textbf{Gaussian process}:Instead of introducing a set of basis functions,which implicitly determines an equivalent kernel,we can instead define a localized kernel directly and use this to make predictions for new input vectors $\vec{x}$,given the observed training set.
+
+The effective kernel defines the weights by which the training set target values are combined in order to make a prediction at a new value of $x$,and it can be shown that these weights sum to one,
+\begin{align}
+\sum\limits_{n=1}^{N}\mathcal{k}(\vec{x},\vec{x}_n) = 1
+\end{align}
+for all values of $\vec{x}$.
+
+General kernel functions share an important property,namely that it can be expressed in the form an inner product with respect to a vector $\varPsi(\vec{x}) $ of nonlinear functions,so that
+\begin{align}
+\mathcal{k}(\vec{x},\vec{z}) = \varPsi(\vec{x})^T\varPsi(\vec{z})
+\end{align}
+where $\varPsi(\vec{x})=\beta^{1/2}\vec{S}_n^{1/2}\phi(\vec{x})$
+
+\section{Bayesian Model Comparison}
+The over-fitting associated with maximum likelihood can be avoided by \textbf{marginalizing(summing or integrating)} over the model parameters instead of making point estimates of their values,no need for validation.
+
+Suppose we wish to compare a set of $L$ models $\{\mathcal{M}_i\},i=1,...L$ over observed data $\mathcal{D}$.Evaluate the posterior distribution
+\begin{align}
+p(\mathcal{M}_i|\mathcal{D})\propto p(\mathcal{M}_i)p(\mathcal{D}|\mathcal{M}_i)
+\end{align}
+The prior allows us to express a preference for different models.$p(\mathcal{D}|\mathcal{M}_i)$ is the \textbf{model evidence},which expresses the preference shown by the data for different models.It is also called the \textbf{marginal likelihood}.The ratio of model evidences $p(\mathcal{D}|\mathcal{M}_i)/p(\mathcal{D}|\mathcal{M}_j)$ for two models is \textbf{Bayes factor}.
+The predictive distribution
+\begin{align}
+& p(t|\vec{x},\mathcal{D})p(\mathcal{M}_i|\mathcal{D})&=p(t|\vec{x},\mathcal{M}_i,\mathcal{D})p(\mathcal{M}_i|\mathcal{D}) \\
+&\Rightarrow \sum\limits_{i=1}^{L}p(t|\vec{x},\mathcal{D})p(\mathcal{M}_i|\mathcal{D})&=\sum\limits_{i=1}^{L}p(t|\vec{x},\mathcal{M}_i,\mathcal{D})p(\mathcal{M}_i|\mathcal{D}) \\
+&\Rightarrow p(t|\vec{x},\mathcal{D})&=\sum\limits_{i=1}^{L}p(t|\vec{x},\mathcal{M}_i,\mathcal{D})p(\mathcal{M}_i|\mathcal{D}) \\
+\end{align}
+This is an example of a \textbf{mixture distribution} in which the overall predictive distribution is obtained by averaging the predictive distributions of individual models weighted by the posterior probabilities $p(\mathcal{M}_i|\mathcal{D})$ of those models.
+
+To use the single most probable model alone to make predictions is known as \textbf{model selection}.Model evidence
+\begin{align}
+p(\mathcal{D}|\mathcal{M}_i)=\int p(\mathcal{D}|\mathcal{\vec{w}})p(\vec{w}|\mathcal{M}_i)d\vec{w}
+\end{align}
+because
+\begin{align}
+p(\vec{w}|\mathcal{D},\mathcal{M}_i)=\dfrac{p(\mathcal{D}|\vec{w},\mathcal{M}_i)p(\vec{w}|\mathcal{M}_i)}{p(\mathcal{D}|\mathcal{M}_i)}
+\end{align}
+
+Assume the posterior distribution over parameters is sharply peaked around the most probable value $w_{MAP}$,with width $\Delta w_{posterior}$,then we can approximate the integral by the value of integrand at its maximum times the width of the peak.And further assume that the prior is flat with width $\Delta w_{prior}$ so that $p(w)=1/\Delta w_{prior}$,then we have
+\begin{align}
+p(\mathcal{D})=\int p(\mathcal{D}|w)p(w)dw \simeq p(\mathcal{D}|w_{MAP})p(w_{MAP})\Delta w_{posterior} \simeq p(\mathcal{D}|w_{MAP})\dfrac{\Delta w_{posterior}}{\Delta w_{prior}}
+\end{align}
+\begin{SCfigure*}
+	\caption{model evidence approximation}
+	\includegraphics{prml/Figure3.12}
+\end{SCfigure*}
+
+and so taking logs
+\begin{align}
+\ln p(\mathcal{D}) \simeq \ln p(\mathcal{D}|w_{MAP}) +\ln(\dfrac{\Delta w_{posterior}}{\Delta w_{prior}})
+\end{align}
+If we have a set of $M$ parameters,assuming that all parameters have the same ratio of $\Delta w_{posterior}/\Delta w_{prior}$,we obtain
+\begin{align}
+\ln p(\mathcal{D}) \simeq \ln p(\mathcal{D}|w_{MAP}) +M\ln(\dfrac{\Delta w_{posterior}}{\Delta w_{prior}})
+\end{align}
+As we increase the complexity of the model,the first term representing the fit to the data,increases(?),whereas the second term will decrease due to the dependence on $M$.The optimal model is given by a trade-off between these two competing terms.
+\begin{SCfigure*}
+	\caption{Model complexity increases}
+	\includegraphics{prml/Figure3.13}
+\end{SCfigure*}
+Average the Bayes factor over the distribution of data sets
+\begin{align}
+\int p(\mathcal{D}|\mathcal{M}_1)\ln\dfrac{p(\mathcal{D}|\mathcal{M}_1)}{p(\mathcal{D}|\mathcal{M}_2)}
+\end{align}
+This quantity is $Kullback-Leibler$ divergence,and will be bigger than or equal to $0$ if $\mathcal{M}_1$ is the correct model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
