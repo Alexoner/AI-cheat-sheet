@@ -37,7 +37,7 @@ Now consider the optimization of the $\vec{\mu}_k$ with the $_{nk}$ held fixed.S
 	&=\sum_n{r_{nk}\vec{x}_n} \over \sum_n{r_{nk}}
 \end{align}
 
-\begin{algorithm}
+\begin{algorithm}[H]
 	\caption{{\sc K-means} coordinate descent}
 	\label{algo:K-means}
 	%\DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead 
@@ -187,7 +187,7 @@ where again we see the appearance of the responsibilities.If we now multiply bot
 \end{align}
 There do suggest s ample iterative scheme for finding a solution to the maximum likelihood problem.
 
-\begin{algorithm}
+\begin{algorithm}[H]
 	\caption{EM for Gaussian Mixtures}
 	\label{algo:Gaussian Mixtures}
 	\DontPrintSemicolon
@@ -232,7 +232,7 @@ Maximize this
 \begin{align}
 \vec{\theta}^{new} &=\arg\max\limits_{\vec{\theta}}\mathcal{Q}(\vec{\theta},\vec{\theta}^{old})
 \end{align}
-\begin{algorithm}
+\begin{algorithm}[H]
 	\label{General EM algorithm}
 	\caption{General EM algorithm}
 	\DontPrintSemicolon
