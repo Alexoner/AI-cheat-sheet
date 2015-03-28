@@ -176,7 +176,7 @@ Now set the derivative of $\ln(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with r
 \end{align}
 where we have made use of \ref{eqn:multivariate Gaussian} and \textbf{The Matrix Cookbook,2012}.
 
-Finally,we maximize $\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with respect to the mixing coefficients $\pi_k$.Achieve this using a Lagrange multiplier
+Finally,we maximize $\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ \ref{eqn:Gaussian mixture log likelihood} with respect to the mixing coefficients $\pi_k$.Achieve this using a Lagrange multiplier
 \begin{align}
 \ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma}) +\lambda(\sum_{k=1}^{K}\pi_k-1) &=0 \\
 \therefore 0&=\sum_{n=1}^{N}\dfrac{\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}_n|\vec{\mu}_j,\vec{\Sigma}_j)} +\lambda
@@ -196,9 +196,9 @@ There do suggest s ample iterative scheme for finding a solution to the maximum 
 		2.\textbf{E step}.Evaluate the responsibilities using the current parameter values
 		\begin{align}
 		\gamma(z_k)\equiv p(z_k=1|\vec{x}) 
-		=p(z_k=1)p(\vec{x}|z_k=1) \over \sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1) \\
-		=\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k) \over 
-		\sum_{j=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)
+		&={p(z_k=1)p(\vec{x}|z_k=1) \over \sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1)} \\
+		&={\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k) \over 
+		\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)}
 		\end{align} \;
 		3. \textbf{M step}. Re-estimate the parameters using the current responsibilities
 		\begin{align}

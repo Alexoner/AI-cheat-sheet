@@ -67,12 +67,54 @@ Consider a two-class classification problem,in which the training data comprises
 \end{algorithm}
 
 \subsection{Minimizing exponential error}
+Consider the exponential error function defined by
+\begin{align}
+E=\sum_{n=1}^{N}\exp\{-t_n f_m(\vec{x}_n)\}
+\end{align}
+where $f_m(\vec{x})$ is a classifier defined in terms of a linear combination of base classifiers $y_l(\vec{x})$ of the form
+\begin{align}
+f_m(\vec{x})=\dfrac{1}{2}\sum_{l=1}^{m}\alpha_l y_l(\vec{x})
+\end{align}
+and $t_n\in \{-1,1\}$ are the training set target values.Our goal is to minimize $E$ with respect to the weighting coefficients $\alpha_l$ and parameters of the base classifiers $y_l(\vec{x})$.
+
+Separating off the contribution from base classifier $y_m(\vec{x})$,
+\begin{align}
+E&=\sum_{n=1}^{N}\exp\{-t_n f_m(\vec{x}_n)\} \\
+&=\sum_{n=1}^{N}\exp\{-t_n \dfrac{1}{2}\sum_{l=1}^{m}\alpha_l y_l(\vec{x}) \} \\
+&=\sum_{n=1}^{N}\exp\{-t_n f_{m-1}(\vec{x}_n)-\dfrac{1}{2}t_n \alpha_m y_m(\vec{x}_n)\} \\
+&=\sum_{n=1}^{N}w_n^{(m)}\exp\{-\dfrac{1}{2}t_n \alpha_m y_m(\vec{x}_n)\}
+\end{align}
+where the coefficients $w_n^{(m)}=\exp\{-t_n f_{m-1}(\vec{x}_n)\}$ can be viewed as constants because we are optimizing only $\alpha_m$ and $y_m(\vec{x})$.Denote by $\mathcal{T}_m$ the set of data points correctly classified by $y_m(\vec{x})$ and misclassified points by $\mathcal{M}_m$,then we in turn rewrite the error function
+\begin{align}
+E &=e^{-\alpha_m/2}\sum_{n\in\mathcal{T}_m}w_n^{(m)}+e^{\alpha_m/2}\sum_{n\in\mathcal{M}_m}w_n^{(m)} \\
+&=(e^{\alpha_m/2}-e^{-\alpha_m/2})\sum_{n=1}^{N}w_n^{(m)}I(y_m(\vec{x}_n)\neq t_n)+e^{-\alpha_m/2}\sum_{n=1}^{N}w_n^{(m)}
+\end{align}
+Then we can minimize this with respect to $y_m(\vec{x}_n)$ and $\alpha_m$.
+\begin{align}
+\because w_n^{(m)}=\exp\{-t_n f_{m-1}(\vec{x}_n)\} \\
+\therefore w_n^{(m+1)}=\exp\{-t_n f_{m}(\vec{x}_n)\} \\
+\therefore w_n^{(m+1)}=w_n^{(m)}\exp\{-\dfrac{1}{2}t_n\alpha_m y_m(\vec{x}_n)\}
+\end{align}
+Making use of the fact that
+\begin{align}
+t_n y_m(\vec{x})=1-2I(y_m(\vec{x}_n)\neq t_n)
+\end{align}
+we see updates at the next iteration
+\begin{align}
+w_n^{(m+1)}=w_n^{(m)}\exp(-\alpha_m/2)\exp\{\alpha_m I(y_m(\vec{x}_n)\neq t_n)\}
+\end{align}
+Because the term $\exp(-\alpha_m/2)$ is independent of $n$,so can be discarded.
 
 \subsection{Error functions for boosting}
 
 
 
 \section{Tree-based Models}
+
+
+
+
+
 
 \section{Conditional Mixture Models}
 
