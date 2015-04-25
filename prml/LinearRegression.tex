@@ -101,22 +101,35 @@ We see that maximizing the likelihood function under a conditional Gaussian nois
 \nabla\log p(\vec{t}|\vec{w},\beta)
 =\sum_{n=1}^{N}\{t_n-\vec{w}^T\phi(\vec{x_n}) \}\phi(\vec{x_n})^T
 \end{equation}
+Setting the gradient respect to $\vec{w}$ to zero gives
+\begin{align}
+0=\sum_{n=1}^{N}t_n\phi(\vec{x}_n)^T-\vec{w}^T(\sum_{n=1}^{N}\vec{\phi}(\vec{x}_n)\vec{\phi}(\vec{x}_n)^T)
+\end{align}
+Solving for $\vec{w}$ we obtain
+\begin{align}
+\vec{w}_{ML}=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}
+\end{align} 
+which are known as the \textbf{normal equations}.
 
-Let's drop constants with respect to $\vec{w}$ and NLL can be written as
+Note that $\vec{t}=(t_1,t_2,\cdots,t_N)^T$, $\vec{\Phi}=\left(\begin{array}{c}\vec{\phi}_1^T \\ \vec{\phi}_2^T \\ \vdots \\ \vec{\phi}_N^T\end{array}\right)$
+ 
+$\vec{\Phi}$ is an $N\times M$ matrix,called the \textbf{design matrix},whose elements are given by $\Phi_{nj}=\phi_j(\vec{x_n})$ so that
 \begin{equation}
-\text{NLL}(\vec{w}) = \dfrac{1}{2}\sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{\phi}_i)^2
+\vec{\Phi}=
+\begin{bmatrix}
+\phi_0(\vec{x_1}) &	\phi_1(\vec{x_1}) &...&\phi_{M-1}(\vec{x_1}) \\
+\phi_0(\vec{x_2}) & \phi_1(\vec{x_2}) &...&\phi_{M-1}(\vec{x_2}) \\
+\vdots &\vdots &\vdots&\vdots \\
+\phi_0(\vec{x_N})& \phi_1(\vec{x_{N}})& \cdot &\phi_{M-1}(\vec{x_N})\\
+\end{bmatrix}
 \end{equation}
 
-Define $\vec{y}=(t_1,t_2,\cdots,t_N)$, $\vec{\Phi}=\left(\begin{array}{c}\vec{\phi}_1^T \\ \vec{\phi}_2^T \\ \vdots \\ \vec{\phi}_N^T\end{array}\right)$, then we can rewritten the objective in a form that is more amendable to differentiation:
+\begin{proof}
 \begin{align}
-\text{NLL}(\vec{w}) &= \dfrac{1}{2}(\vec{t}-\vec{\Phi}\vec{w})^T(\vec{t}-\vec{\Phi}\vec{w})\\
-&= \dfrac{1}{2} [\vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} - \vec{t}^T\vec{\Phi}\vec{w}- \vec{w}^T\vec{x}^T\vec{t}  +\vec{t}^T\vec{t}]			\\
-\Rightarrow
-\dfrac{\partial}{\partial \vec{w}}\text{NLL} &= \dfrac{1}{2} \vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} -\vec{w}^T(\vec{\Phi}^T\vec{t}) 
+\because \sum_{n=1}^{N}t_n\phi(\vec{x}_n)^T &=\vec{t}^T\vec{\Phi}
 \end{align}
-
-where
-$\begin{cases}
+\begin{align}	
+\begin{cases}
 \vec{\Phi} = \begin{bmatrix}
 &\vec{\Phi_1^T} \\
 &\vec{\Phi_2^T} \\
@@ -134,18 +147,33 @@ $\begin{cases}
 & ... \\
 &\vec{\Phi_N^T}
 \end{bmatrix}  = \sum\limits_{i=1}^{N}\vec{\phi_i}\vec{\phi_i^T} = \textbf{sum of squares matrix} \\
-\end{cases}$
+\end{cases}
+\end{align}
+\begin{align}
+\therefore 
+\vec{w}^T = \vec{t}^T\vec{\Phi}(\vec{\Phi}^T\vec{\Phi})^{-1}
+\therefore
+\vec{w}_{ML}=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}
+\end{align}	
+\end{proof}
 
-Note that $\vec{\Phi}$ is an $N\times M$ matrix,called the \textbf{design matrix},whose elements are given by $\Phi_{nj}=\phi_j(\vec{x_n})$ so that
+
+\begin{proof}
+Let's drop constants with respect to $\vec{w}$ and NLL can be written as
 \begin{equation}
-\vec{\Phi}=
-\begin{bmatrix}
-\phi_0(\vec{x_1}) &	\phi_1(\vec{x_1}) &...&\phi_{M-1}(\vec{x_1}) \\
-\phi_0(\vec{x_2}) & \phi_1(\vec{x_2}) &...&\phi_{M-1}(\vec{x_2}) \\
-\vdots &\vdots &\vdots&\vdots \\
-\phi_0(\vec{x_N})& \phi_1(\vec{x_{N}})& \cdot &\phi_{M-1}(\vec{x_N})\\
-\end{bmatrix}
+\text{NLL}(\vec{w}) = \dfrac{1}{2}\sum\limits_{i=1}^N (y_i-\vec{w}^T\vec{\phi}_i)^2
 \end{equation}
+
+Then we can rewritten the objective in a form that is more amendable to differentiation:
+\begin{align}
+\text{NLL}(\vec{w}) &= \dfrac{1}{2}(\vec{t}-\vec{\Phi}\vec{w})^T(\vec{t}-\vec{\Phi}\vec{w})\\
+&= \dfrac{1}{2} [\vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} - \vec{t}^T\vec{\Phi}\vec{w}- \vec{w}^T\vec{x}^T\vec{t}  +\vec{t}^T\vec{t}]			\\
+\Rightarrow
+\dfrac{\partial}{\partial \vec{w}}\text{NLL} &= \dfrac{1}{2} \vec{w^T} (\vec{\Phi}^T\vec{\Phi})\vec{w} -\vec{w}^T(\vec{\Phi}^T\vec{t}) 
+\end{align}
+
+where
+
 
 
 
@@ -155,6 +183,7 @@ When $\mathcal{D}$ is small(for example, $N < 1000$), we can use the following e
 \end{equation}
 
 The corresponding solution $\hat{\vec{w}}_{\mathrm{OLS}}$ to this linear system of equations is called the \textbf{ordinary least squares} or \textbf{OLS} or \textbf{normal equation} solution.
+\end{proof}
 
 \begin{proof}
 We now state without proof some facts of matrix derivatives (we won’t need all of these at this section).
