@@ -111,6 +111,27 @@ Solving for $\vec{w}$ we obtain
 \end{align} 
 which are known as the \textbf{normal equations}.
 
+Make the bias parameter explicit,the error function
+\begin{align}
+E_D(\vec{w})=\dfrac{1}{2}\sum_{n=1}^{N}\{t_n-w_0-\sum_{j=1}^{M-1}w_j\phi_j(\vec{x}_n)\}^2
+\end{align}
+Setting the derivative with respect to $w_0$ equal to zero,we obtain
+\begin{align}
+w_0 = \bar{t}-\sum_{j=1}^{M-1}w_j\bar{\phi_j}
+\end{align}
+Then we have
+\begin{align}
+y&=\vec{w}^T\vec{\phi} \\
+y&=\sum_{j=1}^{M}w_j \phi_j+w_0 \\
+y&=\sum_{j=1}^{M}w_j \phi_j+\bar{t}-\sum_{j=1}^{M-1}w_j\bar{\phi_j} \\
+y-\bar{y}&=\sum_{j=1}^{M}w_j(\phi_j-\bar{\phi}_j)
+\end{align}
+which indicates that we can normalize the features by subtracting the mean of $\vec{\Phi}$ while training to reduce computation complexity but obtain the same weight parameter.
+
+
+
+
+
 Note that $\vec{t}=(t_1,t_2,\cdots,t_N)^T$, $\vec{\Phi}=\left(\begin{array}{c}\vec{\phi}_1^T \\ \vec{\phi}_2^T \\ \vdots \\ \vec{\phi}_N^T\end{array}\right)$
  
 $\vec{\Phi}$ is an $N\times M$ matrix,called the \textbf{design matrix},whose elements are given by $\Phi_{nj}=\phi_j(\vec{x_n})$ so that
