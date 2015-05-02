@@ -12,31 +12,62 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
   - [x] Bayesian Linear Regression
   - [ ] Bayesian Model Comparison
   - [ ] The Evidence Approximation
+
 - [ ] Linear Models for Classification
   - [x] Discriminant Functions
   - [x] Generative Models
   - [x] Discriminative Models
   - [ ] Laplace Approximation
   - [ ] Bayesian Logistic Regression
+
 - [ ] Neural Networks
-  - [ ] Convolutional networks
+  - [ ] Feed-forward Network Functions
+  - [ ] Network Training 
+    - [ ] Parameter optimization
+    - [ ] Local quadratic approxmiation
+    - [ ] Use of gradient information
+    - [ ] Gradient descent optimization
+  - [ ] Error BackPropagation
+    - [ ] Evaluation of error-function derivatives
+    - [ ] Example
+    - [ ] Efficiency of backpropagation
+    - [ ] Jacobian matrix
+  - [ ] The Hessian Matrix
+  - [ ] Regularization in Neural Networks
+    - [ ] ...
+    - [ ] Early stopping
+    - [ ] Convolutional networks
+  - [ ] Mixture Density Networks
+  - [ ] Bayesian Neural Networks
+
 - [ ] Kernel Methods
+
 - [ ] Sparse Kernel Machines
   - [x] Maximum Margin Classifiers
   - [ ] Relevance Vector Machines
+
 - [ ] Graphical Models
+
 - [x] Mixture Models and EM
   - [x] K-means
   - [x] Mixtures of Gaussians
   - [x] Complementary View
   - [x] General EM
+
 - [ ] Approximation Inference
+
 - [ ] Sampling Methods
+
 - [ ] Continuous Latent Variables
+
 - [ ] Sequential Data
+
 - [ ] Combining Models
-  - [ ] Boosting
+  - [x] Boosting
   - [ ] Random Forests
+
+- [ ] Latent Dirichlet Allocation
+  - [ ] Gamma function
 
 Sample Latex formula $$\int_{0}^{\infty}f(\vec{x},\vec{w})dx$$
 
