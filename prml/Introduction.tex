@@ -148,6 +148,23 @@ In many applications,however,the supply of data for training and testing will be
 
 
 \section{The Curse of Dimensionality}
+The common theme that arise when analyzing and organizing data in \textbf{high-dimensional spaces} is that when the \textbf{demensionality increases},the \textbf{volume of the space} increases so fast (\textbf{grows exponentially with the dimensionality}) that the available data become sparse.
+
+\begin{figure}
+	\includegraphics[ ]{figures/prml/Figure1.21a.jpg}
+	\includegraphics[ ]{figures/prml/Figure1.21b.jpg}
+	\includegraphics[ ]{figures/prml/Figure1.21c.jpg}
+	\caption{Illustration of the curse of dimensionality:the number of regions of a regular grid grows exponentially with the dimensionality $D$ of the space.}
+\end{figure}
+The volume of a sphere of radius $r$ in $D$ dimensions must scale as $r^D$,and so we write
+\begin{align}
+V_D(r) = K_D r^D
+\end{align}
+The fraction of the volume of the sphere that lies between radius $r=1-\epsilon$ and $r=1$
+\begin{align}
+\dfrac{V_D(1)-V_D(1-\epsilon)}{V_D(1)}=1-(1-\epsilon)^D
+\end{align}
+for large $D$ this fraction tends to $1$ even for small values of $\epsilon$.Thus most of the volume of a sphere is concentrated in a thin shell near the surface!
 
 \section{Decision Theory}
 Probability theory provides us with a consistent mathematical framework for quantifying and manipulating uncertainty.And when combined with probability theory,decision theory allows us to make optimal decisions in situations involving uncertainty such as those encountered in pattern recognition.
