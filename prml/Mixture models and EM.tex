@@ -276,6 +276,7 @@ take the expectation over values of $\vec{Z}$ by multiplying both sides by $q(\v
 \ln p(\vec{X}|\vec{\theta}) 
 &=\sum_{\vec{Z}}q(\vec{Z})\ln p(\vec{X}|\vec{\theta}) \\
 &=\sum_{\vec{Z}}q(\vec{Z})\ln p(\vec{X},\vec{Z}|\vec{\theta})-\sum_{\vec{Z}}q(\vec{Z})\ln p(\vec{Z}|\vec{X}) \\
+&=\sum_{\vec{Z}}q(\vec{Z})(\ln \dfrac {p(\vec{X},\vec{Z})}{p(\vec{Z})}+\ln p(\vec{Z}))-\sum_{\vec{Z}}q(\vec{Z})\ln p(\vec{Z}|\vec{X}) \\
 &=Q+H \\
 &=\mathcal{L}(q,\vec{\theta})+KL(q\parallel p)
 \end{align}
