@@ -232,7 +232,6 @@ We therefore minimize
 C\sum\limits_{n=1}^{N}E_{\epsilon}(y(\vec{x}_n)-t_n)+\dfrac{1}{2}\mid\vec{w}\mid^2
 \end{align}
 where $y(\vec{x})$ is the prediction function.The (inverse) regularization parameter denoted $C$,appears in front of the error term.
-<<<<<<< 6726de63a5a9a4471dba1cfef8f5bad85191250c
 
 Introducing two \textbf{slack variables} for each data point $\vec{x}_n$.The condition for target points to lie inside the $\epsilon$-tube is that $y_n -\epsilon \leq t_n \leq y_n+\epsilon$,and for those outside:
 \begin{align}
@@ -527,89 +526,6 @@ subject to constraints
 \end{align}
 There are at most $\nu N$ data points falling outside the insensitive tube,which at least $\nu N$ data points are support vectors and so lie either on the tube or outside it.
 
-=======
-
-Introducing two \textbf{slack variables} for each data point $\vec{x}_n$.The condition for target points to lie inside the $\epsilon$-tube is that $y_n -\epsilon \leq t_n \leq y_n+\epsilon$,and for those outside:
-\begin{align}
-&\begin{cases}
-\xi_n &\geq 0\\
-\hat{\xi_n} &\geq 0,n=1,...,N\\
-\end{cases}\\
-& y(\vec{x}_n)+\epsilon < t_n \leq y(\vec{x}_n)+\epsilon +\xi_n \\
-& y(\vec{x}_n)-\epsilon > t_n \geq y(\vec{x}_n)-\epsilon -\hat{\xi_n}
-\end{align}
-\begin{SCfigure*}
-	\caption{Illustration of SVM regression, showing the regression curve together with the $\epsilon$-insensitive tube. }
-	\includegraphics[]{prml/Figure7.7.jpg}
-\end{SCfigure*}
-
-The error function for support vector regression can then be written as
-\begin{align}
-C\sum\limits_{n=1}^{N}(\xi_n+\hat{\xi_n})+\dfrac{1}{2}\parallel\vec{w}\parallel^2
-\end{align}
-which must be minimized subject to the constraints.Introducing Lagrange multipliers
-\begin{align}\label{eqn:svm regression Lagrangian}
-L =& C\sum\limits_{n=1}^{N}(\xi_n+\hat{\xi_n})+\dfrac{1}{2}\parallel\vec{w}\parallel^2
-- \sum\limits_{n=1}^{N}(\mu_n\xi_n+\hat{\mu_n}\hat{\xi_n}) \\
-&-\sum\limits_{n=1}^{N}a_n(\epsilon+\xi_n+y_n-t_n) -\sum\limits_{n=1}^{N}\hat{a_n}(\epsilon+\hat{\xi_n}+y_n-t_n)
-\end{align}
-Substitute for $y(\vec{x})$ using \ref{eqn:maximum margin classifier regpresentation} and set the derivatives of the Lagrangian with respect to $\vec{x},b,\xi_n,\hat{\xi_n}$ to zero,giving
-\begin{align}
-\dfrac{\partial L}{\partial\vec{w}} =0 &\Rightarrow \vec{w}=\sum_{n=1}^{N}(a_n-\hat{a_n})\phi(\vec{x}_n) \\
-\dfrac{\partial L}{\partial b} =0 &\Rightarrow \sum_{n=1}^{N}(a_n-\hat{a_n})=0 \\
-\dfrac{\partial L}{\partial\xi_n} =0 &\Rightarrow a_n+\mu_n=0 \\
-\dfrac{\partial L}{\partial\hat{\xi_n}} =0 &\Rightarrow \hat{a_n}+\hat{\mu_n}=0 \\
-\end{align}
-Using these to eliminate the corresponding variables,we see the dual problem of maximizing 
-\begin{align}
-\hat{L}(\vec{a},\hat{\vec{a}}) =&-\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}(a_n-\hat{a_n})(a_m-\hat{a_m})\mathcal{k}(\vec{x}_n,\vec{x}_m) \\
- &-\epsilon\sum_{n=1}^{N}(a_n+\hat{a_n})+\sum_{n=1}^{N}(a_n-\hat{a_n})t_n
-\end{align}
-with respect to $\{a_n\},\{\hat{a_n}\}	$.We have the \textbf{box constraints}
-\begin{align}
-0\leq a_n \leq C\\
-0\leq \hat{a_n}\leq C
-\end{align}
-After substitution,the predictions can be made using
-\begin{align}
-y(\vec{x})=\sum_{n=1}^{N}(a_n-\hat{a_n})\mathcal{k}(\vec{x},\vec{x}_n)+b
-\end{align}
-
-The corresponding $karush-Kuhn-Tucker$(KKT) conditons for \ref{eqn:svm regression Lagrangian},which state that \textbf{at the solution the product of the dual variables and the constraints must vanish} are given by
-\begin{align}
-a_n(\epsilon+\xi_n+y_n-t_n) &= 0\\
-\hat{a_n}(\epsilon+\hat{\xi_n}-y_n+t_n) &= 0\\
-(C-a_n)\xi_n & = 0\\
-(C-\hat{a_n})\hat{\xi_n} &=0
-\end{align}
-
-The support vectors are those data points that contribute to predictions,in other words those for which either $a_n \neq 0$ or $\hat{a_n} \neq 0$.These are points lying on the boundary of the $\epsilon$-tube or outside the tube.
-
-The parameter $b$ satisfies 
-\begin{align}
-\epsilon+y_n-t_n= 0
-\end{align}
-for points $0<a_n<C$.Solving for it
-\begin{align}
-b &= t_n-\epsilon-\vec{w}^T\phi(\vec{x}_n) \\
-  &= t_n-\epsilon-\sum_{m=1}^{N}(a_m-\hat{a_m})\mathcal{k}(\vec{x}_n,\vec{x}_m)
-\end{align}
-
-An alternative formulation of SVM regression is $\nu$ SVM.
-\begin{align}
-\hat{L}(\vec{a},\hat{\vec{a}}) =&-\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}(a_n-\hat{a_n})(a_m-\hat{a_m})\mathcal{k}(\vec{x}_n,\vec{x}_m) \\
-&-0\times\epsilon\sum_{n=1}^{N}(a_n+\hat{a_n})+\sum_{n=1}^{N}(a_n-\hat{a_n})t_n
-\end{align}
-subject to constraints
-\begin{align}
-0\leq a_n &\leq C/N\\
-0\leq \hat{a_n} &\leq C/N \\
-\sum_{n=1}^{N}(a_n-\hat{a_n}) &=0 \\
-\sum_{n=1}^{N}(a_n+\hat{a_n}) &\leq \nu C \\
-\end{align}
-There are at most $\nu N$ data points falling outside the insensitive tube,which at least $\nu N$ data points are support vectors and so lie either on the tube or outside it.
-
->>>>>>> support vector machines for regression
 \section{Relevance Vector Machines}
 TODO
 
