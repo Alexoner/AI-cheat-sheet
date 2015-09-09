@@ -167,7 +167,10 @@ Now set the derivative of $\ln(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ with r
 &= -\vec{X}^{-T}\vec{a}\vec{b}^T\vec{X}^{-T} \\
 \therefore 
 \dfrac{\ln(\mid\vec{\Sigma}_k)\mid}{\partial\vec{\Sigma}_k}
+<<<<<<< HEAD
 %&=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\dfrac{\mid\vec{\Sigma}_k\mid\vec{\Sigma}_k^{-T}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}_k^{-1}\\
+=======
+>>>>>>> formula
 &=\dfrac{\dfrac{\partial\mid\vec{\Sigma}_k\mid}{\partial\vec{\Sigma}_k}}{\mid\vec{\Sigma}_k\mid} =\dfrac{\mid\vec{\Sigma}_k\mid\vec{\Sigma}_k^{-T}}{\mid\vec{\Sigma}_k\mid} =\vec{\Sigma}_k^{-1}\\
 \therefore 
 \dfrac{\partial\ln\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\partial\vec{\Sigma}_k} 
@@ -338,6 +341,7 @@ p(\vec{Z}|\vec{X},\vec{\theta}) &= \dfrac{p(\vec{X},\vec{Z}|\vec{\theta})}{\sum_
 \end{align}
 will also factorize with respect to $n$.
 
+<<<<<<< HEAD
 $\{\vec{X},\vec{Z}\}$ is called the \textbf{complete} data set,and $\{\vec{X}\}$ is \textbf{incomplete}.We consider complete-data log likelihood functions' expected value under the posterior distribution of the latent variables,corresponding to the E step.In the subsequent M step,maximize this expectation.The expectation of complete-data log likelihood
 \begin{align}
 \mathcal{Q}(\vec{\theta},\vec{\theta}^{old}) &=
@@ -451,6 +455,8 @@ p(\vec{Z}|\vec{X},\vec{\theta}) &= \dfrac{p(\vec{X},\vec{Z}|\vec{\theta})}{\sum_
 \end{align}
 will also factorize with respect to $n$.
 
+=======
+>>>>>>> formula
 \subsection{Maximum posterior}
 Maximize the posterior distribution $p(\vec{\theta}|\vec{X})$ with EM for models with a prior $p(\vec{\theta})$ over parameters.
 \begin{align}
