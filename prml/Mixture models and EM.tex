@@ -20,22 +20,32 @@ J=\sum_{n=1}^{N}\sum_{k=1}^{K}r_{nk}\parallel \vec{x}_n-\vec{\mu}_k\parallel^2
 \end{equation}
 
 \subsection{optimization}
-Our goal is to find value for the $\{r_{nk}\}$ and the $\{\vec{\mu}_k\}$ so as to minimize $J$.We can do this through an iterative procedure in which each iteration involves two successive steps corresponding to successive optimizations with respect to the $r_{nk}$ and the $\vec{\mu}_k$.
+Our goal is to find value for the $\{r_{nk}\}$ and the $\{\vec{\mu}_k\}$ so as to minimize $J$.We can do this through an iterative procedure in which each iteration involves two successive steps corresponding to successive optimizations with respect to the $r_{nk}$ and the $\vec{\mu}_k$,which can be interpreted as parameters of each cluster's probability distribution.
 
-Consider first the determination of the $r_{nk}$.We simply assign the $n^{th}$ data point to the closest cluster centre.
+Consider first the determination of the $r_{nk}$,which can be interpreted as likelihood function of each cluster.We simply assign the $n^{th}$ data point to the closest cluster centre.
 \begin{equation}
 r_{nk} = \begin{cases}
 1,\text{if }k=\arg\min_j\parallel \vec{x}_n-\vec{\mu}_j\parallel^2 \\
 0,\text{otherwise} \\
 \end{cases}
 \end{equation}
+Note that
+\begin{align}
+\arg\min_j\parallel \vec{x}_n-\vec{\mu}_j\parallel^2
+&= \arg\min_j(\parallel \vec{x}_n\parallel ^2-2\parallel \vec{x}_n\parallel\parallel \vec{\mu}_j\parallel + \parallel\vec{\mu}_j\parallel^2)  \\
+&=\arg\min_j(-2\parallel \vec{x}_n\parallel\parallel \vec{\mu}_j\parallel + \parallel\vec{\mu}_j\parallel^2)   \\
+&=\arg\max_j(\vec{x}_n^T\vec{\mu}_j-\dfrac{\vec{\mu}_j^T\vec{\mu}_j}{2})
+\end{align}
 Now consider the optimization of the $\vec{\mu}_k$ with the $_{nk}$ held fixed.Setting the objective function $J$'s derivative with respect to $\vec{\mu}_k$ to zero giving:
 \begin{align}
 	\nabla_{\vec{\mu}_k} J
 	&=2\sum_{n=1}^{N}r_{nk}(\vec{x}_n-\vec{\mu}_k)=0 \\
-	\Rightarrow \vec{\mu}_k 
-	&=\sum_n{r_{nk}\vec{x}_n} \over \sum_n{r_{nk}}
+	\Rightarrow 
+	\vec{\mu}_k &=\dfrac{\sum_n{r_{nk}\vec{x}_n}}{\sum_n{r_{nk}}} \\
+	\Rightarrow
+	\vec{\mu}_k^T &= \dfrac{\sum_n{r_{nk}\vec{x}_n^T}}{\sum_n{r_{nk}}}
 \end{align}
+which can be vectorized when implementing.
 
 \begin{algorithm}[H]
 	\caption{{\sc K-means} coordinate descent}

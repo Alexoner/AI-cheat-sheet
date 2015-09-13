@@ -457,7 +457,7 @@ See the following contents.
 \subsubsection{Newton-Raphson update}
 For logistic regression,there is no longer a closed-form solution,due to the nonlinearity of the logistic sigmoid function.The error function is concave,and can be minimized by an efficient iterative technique based on the \textbf{Newton-Raphson} iterative optimization scheme,which  uses a local quadratic approximation to the log likelihood function.
 \begin{equation}
-\vec{w}^{(new)} = \vec{w}^(old)-\vec{H}^{-1}\nabla E(\vec{w})
+\vec{w}^{(new)} = \vec{w}^{(old)}-\vec{H}^{-1}\nabla E(\vec{w})
 \end{equation}
 where $\vec{H}$ is the Hessian matrix whose elements comprise the second derivatives of $E(\vec{w})$ with respect to the components of $\vec{w}$.
 
@@ -487,7 +487,7 @@ We see that the Hessian depends on $\vec{w}$ and is positive definite.
 
 The Newton-Raphson update formula for the logistic regression model then becomes
 \begin{align}
-\vec{w}^{(new)} &= \vec{w}^{(old)} -(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1} \\
+\vec{w}^{(new)} &= \vec{w}^{(old)} -(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1}\vec{\Phi}^T(\vec{y}-\vec{t}) \\
 &=(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1}\{\vec{\Phi}^T\vec{R}\vec{\Phi}\vec{w}^{(old)} -\vec{\Phi}^T(\vec{y}-\vec{t}) \} \\
 &=(\vec{\Phi}^T\vec{R}\vec{\Phi})^{-1}\vec{\Phi}^T\vec{R}\vec{z}
 \end{align}
@@ -513,10 +513,11 @@ a_n(\vec{w}) &\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}\bigg|_{w^{(old)}}(t
 In our discussion of generative models for multiclass classification,the posterior probabilities are given by a softmax transformation of linear functions of the feature variables,so that
 \begin{align}
 p(\mathcal{C}_k|\phi) = y_k(\phi) &= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
-&=\dfrac{1}{1+\sum_{j\neq k}\exp(a_j-a_k)}
+&=\dfrac{\exp(a_k)}{sum} \\
+%&=\dfrac{1}{1+\sum_{j\neq k}\exp(a_j-a_k)}
 \end{align}
 
-where the 'activations' $a_k$ are given by
+where $sum$ denotes $\sum_j\exp(a_j)$ the 'activations' $a_k$ are given by
 \begin{equation}
 a_k = \vec{w}_k^T\phi
 \end{equation}
@@ -524,11 +525,12 @@ a_k = \vec{w}_k^T\phi
 Here we consider the use of maximum likelihood to determine the parameters $\{\vec{w}_k\}$ of this model directly.The derivatives of $y_k$ with respect to all of the activations $a_j$ are given by 
 \begin{align}
 \dfrac{\partial y_k}{\partial a_j} 
-&=\dfrac{\partial\dfrac{1}{1+\sum_{i\neq k}\exp(a_i-a_k)}}{\partial a_j}\\
-&=-\dfrac{e^{a_i-a_k}}{(1+\sum_{i\neq k}e^{a_i-a_k})^2}\\	
+&=\dfrac{e^{a_k}\vec{I}_{kj}sum-e^{a_k}e^{a_j}}{sum^2} \\
+%&=\dfrac{\partial\dfrac{1}{1+\sum_{i\neq k}\exp(a_i-a_k)}}{\partial a_j}\\
+%&=-\dfrac{e^{a_i-a_k}}{(1+\sum_{i\neq k}e^{a_i-a_k})^2}\\	
 &=y_k(I_{kj}-y_j)
 \end{align}
-where  are the elements of the identity matrix.
+where $\vec{I}_{kj}$ are the elements of the identity matrix.
 
 Next we write down the likelihood function,using the $1-of-K$ coding scheme.
 \begin{equation}
