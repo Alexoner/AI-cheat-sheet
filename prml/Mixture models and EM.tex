@@ -121,6 +121,7 @@ which is a Gaussian mixture \ref{def:Gaussian mixture} .
 
 The conditional probability of $\vec{z}$ given $\vec{x}$ can be evaluated by Bayes' theorem
 \begin{align}
+\label{eqn:responsibility}
 \gamma(z_k)\equiv p(z_k=1|\vec{x}) 
 &=\dfrac{p(z_k=1)p(\vec{x}|z_k=1)} {\sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1)} \\
 &=\dfrac{\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k)}  
@@ -147,7 +148,7 @@ Begin by writing down the conditions that must be satisfied at a maximum of the 
 \vec{\Sigma}_k(\vec{x}_n-\vec{\mu}_k) \\
 &=-\sum_{n=1}^{N}\gamma(z_{nk})\vec{\Sigma}_k \\
 \therefore
-N_k=\sum_{n=1}^{N}\gamma(z_{nk})
+N_k&=\sum_{n=1}^{N}\gamma(z_{nk}) \\
  \vec{\mu}_k&=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})\vec{x}_n \\
 \end{align}
 where we have made use of $\dfrac{de^x}{dx}=e^x$ and \ref{eqn:multivariate Gaussian}.We can interpret $N_k$ as the effective number of points assigned to cluster $k$.
@@ -189,9 +190,10 @@ where we have made use of \ref{eqn:multivariate Gaussian} and \textbf{The Matrix
 Finally,we maximize $\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ \ref{eqn:Gaussian mixture log likelihood} with respect to the mixing coefficients $\pi_k$.Achieve this using a Lagrange multiplier
 \begin{align}
 \ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma}) +\lambda(\sum_{k=1}^{K}\pi_k-1) &=0 \\
-\therefore 0&=\sum_{n=1}^{N}\dfrac{\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}{\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}_n|\vec{\mu}_j,\vec{\Sigma}_j)} +\lambda
+\therefore \sum_{n=1}^{N}\dfrac{\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}
+{\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}_n|\vec{\mu}_j,\vec{\Sigma}_j)} +\lambda &= 0
 \end{align}
-where again we see the appearance of the responsibilities.If we now multiply both sides by $\pi_k$ and sum over $k$ making use of constraint $\sum_{k=1}^{K}\pi_k = 1$,we find $\lambda = -N$.Then 
+where again we see the appearance of the responsibilities \ref{eqn:responsibility}.If we now multiply both sides by $\pi_k$ and sum over $k$ making use of constraint $\sum_{k=1}^{K}\pi_k = 1$,we find $\lambda = -N$.Then 
 \begin{align}
 \pi_k = \dfrac{N_k}{N}
 \end{align}
@@ -201,7 +203,7 @@ There do suggest s ample iterative scheme for finding a solution to the maximum 
 	\caption{EM for Gaussian Mixtures}
 	\label{algo:Gaussian Mixtures}
 	\DontPrintSemicolon
-	\Repeat{convergence of either the parameters or the log likelihood}{
+	\Repeat{\text{convergence of either the parameters or the log likelihood}}{
 		1.Initialize the means $\vec{\mu}_k$,covariances $\vec{\Sigma}_k$ and mixing coefficients $\pi_k$,and evaluate the initial value of the log likelihood\;
 		2.\textbf{E step}.Evaluate the responsibilities using the current parameter values
 		\begin{align}
@@ -216,6 +218,10 @@ There do suggest s ample iterative scheme for finding a solution to the maximum 
 		\vec{\Sigma}_k^{new} &=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})(\vec{x}_n-\vec{\mu}_k)(\vec{x}_n-\vec{\mu}_k)^T \\
 		\pi_k^{new}&= \dfrac{N_k}{N}
 		\end{align}\;
+		where 
+		\begin{align}
+		N_k&=\sum_{n=1}^{N}\gamma(z_{nk})
+		\end{align}
 		4. Evaluate the log likelihood
 		\begin{align}
 		\ln(p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})) =

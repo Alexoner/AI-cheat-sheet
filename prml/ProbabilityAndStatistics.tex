@@ -592,10 +592,109 @@ where $\mu$ is the mean and $\sigma^2$ is the variance.For a $D$-dimensional vec
 where $\vec{\mu}$ is a $D$-dimensional mean vector,$\vec{\Sigma}$ is a $D\times D$ covariance matrix,and $\mid\vec{\Sigma}\mid$ denotes the determinant of $\vec{\Sigma}$.
 
 The Gaussian distribution arises in many different contexts and can be motivated from a variety of different perspectives,such as maximizing the entropy and the sum of multiple random variables.The \textbf{central limit theorem} tells us the latter.
-
+\subsection{Linear Transformation based on Eigenvector}
 
 \subsection{Conditional Gaussian distributions}
+\begin{theorem}
+If two sets of variables are jointly multivariate Gaussian, then the conditional distribution of one set conditioned on the other is again Gaussian. Similarly, the marginal distribution of either set is also Gaussian.
+\end{theorem}
+The multivariate normal distribution is given by
+\begin{align}
+\frac{1}{(2\pi)^{D/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2} (\vec{x}-\vec{\mu})^T \Sigma^{-1} (\vec{x}-\vec{\mu})\right)
+\end{align}
+Write $\vec{x}$ as
+\begin{equation}
+\vec{x} = \left[ \begin{array}{c} \vec{x}_a\\ \vec{x}_b \end{array} \right],
+\vec{x} = \left[ \begin{array}{c} \vec{\mu}_a\\ \vec{\mu}_b \end{array} \right]
+\end{equation}
+Consider the conditional distribution $p(\vec{x}_a|\vec{x}_b)$ and marginal distribution $p(\vec{x}_a)$.
+Separate the components of the covariance matrix $\vec{\Sigma}$ into partitioned block matrix
+\begin{align}
+\vec{\Sigma} = \left[ \begin{array}{cc} \vec{\Sigma}_{aa} & \vec{\Sigma}_{ab} \\ \vec{\Sigma}_{ba} & \vec{\Sigma}_{bb} \end{array}\right]
+\end{align}
+where $\vec{\Sigma},\vec{\Sigma}_{aa},\vec{\Sigma}_{bb}$ are all symmetric and $\vec{\Sigma}_{ab} = \vec{\Sigma}_{ab}^T$.
+
+From the product rule of probability, we see that this conditional distribution can be evaluated from the joint distribution $p(\vec{x}) = p(\vec{x}_a,\vec{x}_b)$ simple by fixing $\vec{x}_b$ to the observed value and \textbf{normalizing} the resulting expression to obtain a valid probability distribution over $\vec{x}_a$.To evaluate the conditional probability from the joint probability,for any arbitrary $\vec{x}_b$,we can use \textbf{product and sum} rule of probability
+\begin{align}
+p(\vec{x}_b) &= \int p(\vec{x}_a,\vec{x}_b) d\vec{x}_a \\
+p(\vec{x}_a\vec{x}_b) &= \dfrac{p(\vec{x}_a,\vec{x}_b)}{p(\vec{x}_b)}
+\end{align}
+Because $p(\vec{x}_b)$ is observed value,so we have
+\begin{align}
+p(\vec{x}_a\vec{x}_b) &\sim \dfrac{p(\vec{x}_a,\vec{x}_b)}{p(\vec{x}_b)} \\
+&\sim p(\vec{x}_a,\vec{x}_b)
+\end{align}
+which has the \textbf{exponential quadratic form},and hence the corresponding conditional distribution will be Gaussian.
+\begin{align}
+&-\dfrac{1}{2}(\vec{x}-\vec{\mu})\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}) \\
+&=-\dfrac{1}{2}\left[ \begin{array}{cc} 
+(\vec{x}_a-\vec{\mu}_a)^T & (\vec{x}_b-\vec{\mu}_b)^T 
+\end{array}\right]
+\left[ \begin{array}{cc} 
+\vec{\varLambda}_{aa} & \vec{\varLambda}_{ab}  \\
+\vec{\varLambda}_{ba} & \vec{\varLambda}_{bb}    
+\end{array}\right]
+\left[ \begin{array}{cc} 
+(\vec{x}_a-\vec{\mu}_a) \\
+(\vec{x}_b-\vec{\mu}_b)
+\end{array}\right] \\
+&=-\dfrac{1}{2}\left[ \begin{array}{cc} 
+(\vec{x}_a-\vec{\mu}_a)^T\vec{\varLambda}_{aa}+(\vec{x}_b-\vec{\mu}_b)^T\vec{\varLambda}_{ba} &
+(\vec{x}_a-\vec{\mu}_a)^T\vec{\varLambda}_{ab}+(\vec{x}_b-\vec{\mu}_b)^T\vec{\varLambda}_{bb}    
+\end{array}\right]
+\left[ \begin{array}{cc} 
+(\vec{x}_a-\vec{\mu}_a) \\
+(\vec{x}_b-\vec{\mu}_b)
+\end{array}\right] \\
+&=-\dfrac{1}{2}((\vec{x}_a-\vec{\mu}_a)^T\vec{\varLambda}_{aa}(\vec{x}_a-\vec{\mu}_a)
++(\vec{x}_b-\vec{\mu}_b)^T\vec{\varLambda}_{ba}(\vec{x}_a-\vec{\mu}_a) \\
+&+ (\vec{x}_a-\vec{\mu}_a)^T\vec{\varLambda}_{ab}(\vec{x}_b-\vec{\mu}_b)
++(\vec{x}_b-\vec{\mu}_b)^T\vec{\varLambda}_{bb}(\vec{x}_b-\vec{\mu}_b) )
+\end{align}
+With the operation called 'completing the square' of the exponent form in a General Gaussian distribution $\mathcal{N}(\vec{x}|\vec{\mu,\vec{\Sigma}})$
+\begin{align}
+-\dfrac{1}{2}(\vec{x}-\vec{\mu})^T\vec{\Sigma}^{-1}(\vec{x}-\vec{\mu}) &= 
+-\dfrac{1}{2}\vec{x}^T\vec{\Sigma}^{-1}\vec{x}+\vec{x}^T\vec{\Sigma}\vec{\mu} + \text{const}
+\end{align}
+Based on this,we can apply \textbf{method of undetermined coefficients} to determinate the super parameters.Covariance matrix is in the corresponding second-order term in $\vec{x}_a$,and mean vector is in the corresponding linear term in $\vec{x}_a$. 
+
+We need to make use of \textbf{Schur complement} for the inverse covariance matrix(\textbf{precision matrix})
+\begin{align}
+\left[ \begin{array}{cc} 
+\vec{A} & \vec{B} \\
+\vec{C} & \vec{D}  
+\end{array}\right]^{-1}
+= \left[ \begin{array}{cc} 
+\vec{M} & -\vec{M}\vec{B}\vec{D}^{-1} \\
+-\vec{D}^{-1}\vec{C}\vec{M} & \vec{D}^{-1}\vec{C}\vec{M}\vec{B}\vec{D}^{-1}
+\end{array}\right]^{-1} \\
+\end{align}
+where
+\begin{align}
+\vec{M} = (\vec{A}-\vec{B}\vec{D}^{-1}\vec{C})^{-1}
+\end{align}
+Then the precision matrix
+\begin{align}
+\left[ \begin{array}{cc}
+ \vec{\Sigma}_{aa} & \vec{\Sigma}_{ab} \\
+ \vec{\Sigma}_{ba} & \vec{\Sigma}_{bb} 
+ \end{array}\right]^{-1} =
+ \left[ \begin{array}{cc} \vec{\varLambda}_{aa} & \vec{\varLambda}_{ab} \\
+  \vec{\varLambda}_{ba} & \vec{\varLambda}_{bb} \end{array}\right]
+\end{align}
+can be evaluated.
+
 \subsection{Marginal Gaussian distributions}
+Wrapping up,given joint Gaussian distribution,we can obtain partitioned Gaussians.
+Conditional distribution:
+\begin{align}
+p(\vec{x}_a|\vec{x}_b) &= \mathcal{N}(\vec{x}|\vec{\mu}_{a|b},\vec{\varLambda}_{aa}^{-1}) \\
+\vec{\mu}_{a|b} &= \vec{\mu}_a-\vec{\varLambda}_{aa}^{-1}\vec{\varLambda}_{ab}(\vec{x}_b-\vec{\mu}_b)
+\end{align}
+Marginal distribution:
+\begin{align}
+p(\vec{x}_a) = \mathcal{N}(\vec{x}_a|\vec{\mu}_a,\vec{\Sigma}_{aa})
+\end{align}
 \subsection{Baye's theorem for Gaussian variables}
 
 \section{The exponential family}
