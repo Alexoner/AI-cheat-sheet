@@ -72,9 +72,23 @@ p(X) = \sum_{Y}p(X,Y)
 \end{equation}
 
 \subsubsection{product rule}
-\begin{equation}
-p(X,Y) = p(Y|X)p(X)
-\end{equation}
+\begin{align}
+p(X,Y) &= p(Y|X)p(X) \\
+p(A,B|C) &= p(A|C)p(B|AC) = p(B|C)p(A|BC)
+\end{align}
+\begin{proof}
+	$p(X,Y) = p(Y|X)p(X)$ is by definition.
+	\begin{align}
+		p(A,B|C) &= \dfrac{p(A,B,C)}{p(C)} \\
+		&=\dfrac{p(A,C)p(B|A,C)}{p(C)}\\
+		&=p(A|C)p(B|A,C)
+	\end{align}
+		\begin{align}
+		p(C|A,B) &= \dfrac{p(A,B,C)}{p(A,B)} \\
+		&=\dfrac{\dfrac{p(A,B,C)}{p(B)}}{\dfrac{p(A,B)}{p(B)}}\\
+		&=\dfrac{p(A,C|B)}{p(A|B)}
+		\end{align}
+\end{proof}
 
 \subsubsection{CDF}
 \begin{equation}
