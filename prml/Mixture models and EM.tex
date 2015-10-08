@@ -125,7 +125,7 @@ The conditional probability of $\vec{z}$ given $\vec{x}$ can be evaluated by Bay
 \gamma(z_k)\equiv p(z_k=1|\vec{x}) 
 &=\dfrac{p(z_k=1)p(\vec{x}|z_k=1)} {\sum_{j=1}^{K}p(z_j=1)p(\vec{x}|z_j=1)} \\
 &=\dfrac{\pi_k \mathcal{N}(\vec{x}|\vec{\mu}_k,\vec{\Sigma}_k)}  
-	{\sum_{j=1}^{K}\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)}
+	{\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}|\vec{\mu}_j,\vec{\Sigma}_j)}
 \end{align}
 We shall view $\pi_k$ as the prior probability of $z_k=1$,and the quantity $\gamma(z_k)$ as the corresponding posterior.$\gamma(z_k)$ can also be viewed as the \textbf{responsibility} that component $k$ takes for 'explaining' the observation $\vec{x}$.
 
@@ -143,13 +143,13 @@ An elegant and powerful method for finding the maximum likelihood solutions for 
 
 Begin by writing down the conditions that must be satisfied at a maximum of the likelihood function.Setting the derivatives of $\ln p(\vec{X}|\vec{\pi},\vec{\mu},\vec{\Sigma})$ \ref{eqn:Gaussian mixture log likelihood} with respect to the means $\vec{\mu}_k$ of the Gaussian components to zero,we obtain
 \begin{align}
-0&=-\sum_{n=1}^{N}\dfrac{\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}
+\because 0&=-\sum_{n=1}^{N}\dfrac{\pi_k\mathcal{N}(\vec{x}_n|\vec{\mu}_k,\vec{\Sigma}_k)}
 {\sum_{j=1}^{K}\pi_j\mathcal{N}(\vec{x}_n|\vec{\mu}_j,\vec{\Sigma}_j)}
-\vec{\Sigma}_k(\vec{x}_n-\vec{\mu}_k) \\
-&=-\sum_{n=1}^{N}\gamma(z_{nk})\vec{\Sigma}_k \\
-\therefore
+\vec{\Sigma}_k^{-1}(\vec{x}_n-\vec{\mu}_k) \\
+\therefore 0&=-\sum_{n=1}^{N}\gamma(z_{nk})(\vec{x}_n-\vec{\mu}_k) \\
+\because
 N_k&=\sum_{n=1}^{N}\gamma(z_{nk}) \\
- \vec{\mu}_k&=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})\vec{x}_n \\
+\therefore \vec{\mu}_k&=\dfrac{1}{N_k}\sum_{n=1}^{N}\gamma(z_{nk})\vec{x}_n \\
 \end{align}
 where we have made use of $\dfrac{de^x}{dx}=e^x$ and \ref{eqn:multivariate Gaussian}.We can interpret $N_k$ as the effective number of points assigned to cluster $k$.
 

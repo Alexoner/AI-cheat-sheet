@@ -552,9 +552,10 @@ Evaluate the \textbf{predictive distribution} defined by
 \begin{equation}
 p(t|\vec{t},\alpha,\beta) = \int p(t|\vec{w},\beta)p(\vec{w}|\vec{t},\alpha,\beta)d\vec{w}
 \end{equation}
+The right hand quantity can be interpreted as the marginalization by integration of the joint distribution of $p(t,\vec{w}|\vec{t},\alpha,\beta)$ over $\vec{w}$.And the joint distribution can be solved by the Bayesian theorem for Gaussian.
 The conditional distribution $p(t|\vec{x},\vec{w},\beta)$ of the target variable is given by \ref{eqn:linear regression representation},and the posterior weight distribution is given by \ref{eqn:Bayes linear regression posterior}.This involves the \textbf{convolution} of two Gaussian distributions.The predictive distribution take the form
 \begin{equation}
-p(t|x,\vec{t},\alpha,\beta) = \mathcal{N}(t|\vec{m}_N^T\phi(x),\sigma_N^2(\vec{x})
+p(t|x,\vec{t},\alpha,\beta) = \mathcal{N}(t|\vec{m}_N^T\phi(x),\sigma_N^2(\vec{x}))
 \end{equation}
 where the variance $\sigma_N^2(\vec{x})$ is given by
 \begin{equation}
@@ -653,6 +654,8 @@ Average the Bayes factor over the distribution of data sets
 \int p(\mathcal{D}|\mathcal{M}_1)\ln\dfrac{p(\mathcal{D}|\mathcal{M}_1)}{p(\mathcal{D}|\mathcal{M}_2)}
 \end{align}
 This quantity is $Kullback-Leibler$ divergence,and will be bigger than or equal to $0$ if $\mathcal{M}_1$ is the correct model.
+
+\section{Model Evidence}
 
 
 

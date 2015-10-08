@@ -351,12 +351,33 @@ We can apply Jensen's inequality to the KL-divergence to give
 KL(p\parallel q) = -\int p(\vec{x}) \ln\{\dfrac{q(\vec{x})}{p(\vec{x})}\}d\vec{x} \geq -\ln \int q(\vec{x})d\vec{x} = 0
 \end{equation}
 where we have used the fact that $-\ln x$ is a convex function,together with the normalization condition $\int q(\vec{x})d\vec{x} = 1$.
+\begin{theorem}[log sum inequality]
+	Let $a_1,...,a_n$ and $b_1,...,b_n$ be nonnegative numbers.Denote the sum of all $a_i$ by $a$ and sum of all $b_i$ by $b$.The log sum inequality states that
+	\begin{align}
+	\sum_{i=1}^n a_i\log\frac{a_i}{b_i}\geq a\log\frac{a}{b},
+	\end{align}
+\end{theorem}
+\begin{proof}
+	Setting $f(x) = x\log x$,we have
+		\begin{align}
+		\sum_{i=1}^n a_i\log\frac{a_i}{b_i} & {} = \sum_{i=1}^n b_i f\left(\frac{a_i}{b_i}\right)
+		= b\sum_{i=1}^n \frac{b_i}{b} f\left(\frac{a_i}{b_i}\right) \\
+		& {} \geq b f\left(\sum_{i=1}^n \frac{b_i}{b}\frac{a_i}{b_i}\right) = b f\left(\frac{1}{b}\sum_{i=1}^n a_i\right)
+		= b f\left(\frac{a}{b}\right) \\
+		& {} = a\log\frac{a}{b},
+		\end{align}
+where the inequality follows Jensen's inequality\ref{ineqn:Jensen's inequality} since $f$ is convex.
+So we have
+\begin{align}
+D_{\mathrm{KL}}(P\|Q) \equiv \sum_{i=1}^n p_i \log_2 \frac{p_i}{q_i} \geq 1\log\frac{1}{1} = 0.
+\end{align}
+\end{proof}
 
 Suppose we try to approximate this distribution using some parametric distribution $q(\vec{x}|\vec{\theta})$.Then the expectation of KL-divergence with respect to $p(\vec{x})$ can be approximated by a finite sum over these training points,so that
 \begin{equation}
 KL(p\parallel q) \simeq \sum_{n=1}^{N}\{-\ln q(\vec{x_n}|\vec{\theta}) + \ln p(\vec{x_n})\}
 \end{equation}
-The second term on the right-hand side is independent of $\theta$,and the first term is the negative log likelihood function for $\theta$ under the distribution $q(\vec{x}|\vec{\theta})$ evaluated using the training set.Thus minimizing this KL-divergence is equivalent to maximizing the likelihood function.
+The second term on the right-hand side is independent of $\theta$,and the first term is the negative log likelihood function for $\theta$ under the distribution $q(\vec{x}|\vec{\theta})$ evaluated using the training set.Thus \textbf{minimizing this KL-divergence is equivalent to maximizing the likelihood function}.
 
 
 If ,for a joint distribution,the variables $\vec{x}$ and $\vec{y}$ are not independent,we can gain some idea of whether they are 'close' to being independent by considering the KL-divergence between the joint distribution and the product of the marginals,given by
