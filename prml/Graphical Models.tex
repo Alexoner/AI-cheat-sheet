@@ -1,0 +1,85 @@
+\chapter{Graphical Models}
+\label{chap:Graphical Models}
+
+\section{Introduction}
+
+\section{Directed Graph}
+
+\section{Undirected Graph}
+
+\section{Inference in Graphical Models}
+\subsection{Factor graphs}
+The joint distribution over a set of variables in the form of a product of factors
+\begin{align}
+p(\vec{x}) = \prod_s f_s(\vec{x}_s)
+\end{align}
+where $\vec{x}_s$ denotes a set of the variables.We shall denote individual variable by $x_i$,which can comprise groups of variables(such as vectors and matrices).Each factor $f_s$ is a function of a corresponding set of variable $\vec{x}_s$.
+Directed graphs have factors $f_s(\vec{x}_s)$ as local conditional distributions.Undirected graphs' factors are potential function over the maximal cliques.
+
+\subsection{The Sum-product algorithm}
+\textbf{sum-product} algorithm solves the problem of evaluating the \textbf{local marginals} over nodes or subsets of nodes.And \textbf{max-sum} algorithm find the \textbf{most probable state},evaluating the maximal joint distribution.
+
+The marginal is obtained by
+\begin{align}
+p(x) = \sum_{\vec{x}\backslash x}{p(\vec{x})}
+\end{align}
+where $\backslash x$ denotes the set of variables in $\vec{x}$ omitting $x$.
+
+Join distribution 
+\begin{align}
+p(\vec{x}) =\prod_{s\in \text{ne}(x)}{F_s(x,\vec{X}_s)}
+\end{align}
+
+Then interchanging the sums and products,we obtain
+\begin{align}
+p(x) &= \prod_{s\in\text{ne}(x)}{\left[\sum_{X_s}F_s(x,X_s)\right]} \\
+&= \prod_{s\in\text{ne}(x)}\mu_{f_s\rightarrow x}(x)
+\end{align}
+View \textbf{messages} from the factor nodes $f_s$ to the variable node $x$ as
+\begin{align}
+\mu_{f_s\rightarrow x}(x)\equiv \sum_{X_s}F_s(x,X_s)
+\end{align}
+
+Recursive inference in the sub-graph leads to 
+\begin{align}
+\mu_{f_s\rightarrow x}(x) &= \sum_{x_1}\ldots\sum_{x_M} f_s(x,x_1,\ldots,x_M)\prod_{m\in \text{ne}(f_s)\backslash x} \mu_{x_m\rightarrow f_s}(x_m) 
+\end{align}
+where $\text{ne}(x)$ denotes the set of neighbor variables.
+And define \textbf{messages} from variable nodes to factor nodes
+\begin{align}
+\mu_{x_m\rightarrow f_s}(x_m) &\equiv \sum_{X_{sm}}G_m(x_m,X_{sm})
+\end{align}
+
+Again,making use of (sub)-graph factorization,we have
+\begin{align}
+\mu_{x_m\rightarrow f_s}(x_m) &= \prod_{l\in \text{ne}(x_m)\backslash f_s}\left[\sum_{X_{ml}}F_l(x_m,X_{ml}) \right] \\
+&-\prod_{l\in \text{ne}(x_m)\backslash f_s}\mu_{f_l\rightarrow x_m}(x_m)
+\end{align}
+
+
+\subsection{Max-sum algorithm}
+The \textbf{sum-product} algorithm allows us to take a joint distribution $p(\vec(x))$ expressed as a factor graph and efficiently find marginal component variables.\textbf{Max-sum} find a setting of variables that has the largest probability,which is an application of \textbf{dynamic programming}.
+Maximize the joint distribution
+\begin{align}
+\vec{x}^{max} = \arg\max_{\vec{x}}p(\vec{x})
+\end{align}
+Joint distribution
+\begin{align}
+p(\vec{x}) &= \prod_{s\in \text{ne}(x)}F_s(x,X_s)
+\end{align}
+Maximum logarithm,making use of \textbf{distributive law} for multiplication
+\begin{align}
+\max\ln p(\vec{x}) &=\max\sum\ln F_s(x,X_s) \\
+&=\sum\max\ln F_s(x,X_s)
+\end{align}
+Making use of recursion,factorize $F_s(x,X_s)$ with sub-graph,we can obtain
+\begin{align}
+\mu_{f\rightarrow x} &= \max_{x_1,\ldots,x_M}\left[\ln f(x,x_1,\ldots,x_M) + \sum_{m\in \text{ne}(f_s)\backslash x} {\mu_{x_m\rightarrow f}(x_m)} \right]
+\end{align}
+
+
+
+
+
+
+

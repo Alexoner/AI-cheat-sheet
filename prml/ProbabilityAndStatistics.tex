@@ -376,6 +376,7 @@ Multinomial & - & - & $\vec{x} \in \{0,1,\cdots,n\}^K, \sum_{k=1}^K x_k=n$ \\
 
 
 \subsection{The Poisson distribution}
+Poisson distribution is a discrete probability distribution that expresses the probability of a given number of events occurring in a \textbf{fixed interval} of time and/or space if these events occur with a \textbf{known average rate} and \textbf{independently} of the time since the last event.
 \begin{definition}
 We say that $X \in \{0,1,2,\cdots\}$ has a \textbf{Poisson distribution} with parameter $\lambda>0$, written as $X \sim \text{Poi}(\lambda)$, if its pmf is
 \begin{equation}
@@ -404,6 +405,26 @@ Poisson & $X \sim \text{Poi}(\lambda)$ & $x \in \{0,1,2,\cdots\}$ & $e^{-\lambda
 \end{tabular}
 \end{table*}
 
+The Poisson distribution can be derived as a \textbf{limiting case to the binomial distribution} as the number of trials goes to infinity and the expected number of successes remains fixed,known as \textbf{law of rare events}.Assume that there exists a small enough subinterval for which the probability of an event occurring twice is "negligible".Given only the information of expected number of total events in the whole interval,denoted as $\lambda$,\textbf{divide the whole interval into n subintervals} $I_1,I_2,...,I_n$ of equal size,such that $n > \lambda$. The occurrence of an event in the whole interval can be seen as a \textbf{Bernoulli trial}, where the $i$th  trial corresponds to looking whether an event happens at the subinterval $I_i$ with probability $p= \lambda / n$.Then the number of events $x$ that occur obey \textbf{binomial distribution} $X\sim B(x;n,p)$.
+\begin{eqnarray*}
+	& P(x) &= B(x;n,p)\\
+	&=&C_n^x \left( p \right)^x \left( 1-p \right)^{n-x} \\
+	&=&\frac{n!}{x!(n-x)!}p^x(1-p)^{n-x}\\
+	&=&\frac{n(n-1)(n-2) \cdots (n-x+1)}{x!} \cdot \frac{\lambda^x}{n^x} \left( 1 - \frac{\lambda}{n} \right)^{n-x} \\
+	&=&\frac{n}{n} \cdot \frac{n-1}{n} \cdots \frac{n-x+1}{n} \cdot \frac{\lambda^x}{x!}\left( 1 - \frac{\lambda}{n} \right)^{n-x} \\
+	&=&\frac{n}{n} \cdot \frac{n-1}{n} \cdots \frac{n-x+1}{n} \cdot \frac{\lambda^x}{x!}
+		\left(\left( 1 - \frac{\lambda}{n} \right)^{-\frac{n}{\lambda}}\right)^{-\lambda}\left( 1 - \frac{\lambda}{n} \right)^{-x}
+\end{eqnarray*}
+For $n \rightarrow \infty$,we have
+\begin{align}
+& (1-\frac{1}{n})(1-\frac{2}{n})\cdots(1-\frac{x-1}{n})&\rightarrow 1 \\
+& \left(\left( 1 - \frac{\lambda}{n} \right)^{-\frac{n}{\lambda}}\right)^{-\lambda} &\rightarrow e^{-\lambda} \\
+& (1-\frac{\lambda}{n})^{-x}&\rightarrow 1
+\end{align}
+So we have
+\begin{align}
+\lim_{n \rightarrow \infty} P(x) = \frac{e^{-\lambda} \lambda^x}{x!}
+\end{align}
 
 \subsection{The empirical distribution}
 The \textbf{empirical distribution function}\footnote{\url{http://en.wikipedia.org/wiki/Empirical_distribution_function}}, or \textbf{empirical cdf}, is the cumulative distribution function associated with the empirical measure of the sample. Let $\mathcal{D}=\{x_1,x_2,\cdots,x_N\}$ be a sample set, it is defined as 
