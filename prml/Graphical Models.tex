@@ -32,15 +32,17 @@ p(\vec{x}) =\prod_{s\in \text{ne}(x)}{F_s(x,\vec{X}_s)}
 
 Then interchanging the sums and products,we obtain
 \begin{align}
-p(x) &= \prod_{s\in\text{ne}(x)}{\left[\sum_{X_s}F_s(x,X_s)\right]} \\
+\text{objective} &= p(x)=\sum_{\vec{x}\backslash x}{p(\vec{x})} \\
+&= \prod_{s\in\text{ne}(x)}{\left[\sum_{X_s}F_s(x,X_s)\right]} \\
 &= \prod_{s\in\text{ne}(x)}\mu_{f_s\rightarrow x}(x)
 \end{align}
 View \textbf{messages} from the factor nodes $f_s$ to the variable node $x$ as
 \begin{align}
-\mu_{f_s\rightarrow x}(x)\equiv \sum_{X_s}F_s(x,X_s)
+\mu_{f_s\rightarrow x}(x) &\equiv \sum_{X_s}F_s(x,X_s) \\
+F_s(x,X_s) &= f_s(x,x_1,\ldots,x_M)G_1(x_1,X_{s1})\ldots G_M(x_M,X_{sM})
 \end{align}
 
-Recursive inference in the sub-graph leads to 
+Recursive inference in the sub-graph and interchanging sums and products leads to 
 \begin{align}
 \mu_{f_s\rightarrow x}(x) &= \sum_{x_1}\ldots\sum_{x_M} f_s(x,x_1,\ldots,x_M)\prod_{m\in \text{ne}(f_s)\backslash x} \mu_{x_m\rightarrow f_s}(x_m) 
 \end{align}
@@ -53,7 +55,7 @@ And define \textbf{messages} from variable nodes to factor nodes
 Again,making use of (sub)-graph factorization,we have
 \begin{align}
 \mu_{x_m\rightarrow f_s}(x_m) &= \prod_{l\in \text{ne}(x_m)\backslash f_s}\left[\sum_{X_{ml}}F_l(x_m,X_{ml}) \right] \\
-&-\prod_{l\in \text{ne}(x_m)\backslash f_s}\mu_{f_l\rightarrow x_m}(x_m)
+&=\prod_{l\in \text{ne}(x_m)\backslash f_s}\mu_{f_l\rightarrow x_m}(x_m)
 \end{align}
 
 
@@ -67,15 +69,17 @@ Joint distribution
 \begin{align}
 p(\vec{x}) &= \prod_{s\in \text{ne}(x)}F_s(x,X_s)
 \end{align}
-Maximum logarithm,making use of \textbf{distributive law} for multiplication
+Making use of \textbf{distributive law} for multiplication with max operator,similarly to add operator
 \begin{align}
-\max\ln p(\vec{x}) &=\max\sum\ln F_s(x,X_s) \\
+\text{objective} &= \max\ln p(\vec{x}) =\max\sum\ln F_s(x,X_s) \\
 &=\sum\max\ln F_s(x,X_s)
 \end{align}
 Making use of recursion,factorize $F_s(x,X_s)$ with sub-graph,we can obtain
 \begin{align}
-\mu_{f\rightarrow x} &= \max_{x_1,\ldots,x_M}\left[\ln f(x,x_1,\ldots,x_M) + \sum_{m\in \text{ne}(f_s)\backslash x} {\mu_{x_m\rightarrow f}(x_m)} \right]
+\mu_{f\rightarrow x} &= \max_{x_1,\ldots,x_M}\left[\ln f(x,x_1,\ldots,x_M) + \sum_{m\in \text{ne}(f_s)\backslash x} {\mu_{x_m\rightarrow f}(x_m)} \right] \\
+\mu_{x\rightarrow f}(x) &= \sum_{l\in \text{ne}(x)\backslash f}{\mu_{f_l\rightarrow x}}(x).
 \end{align}
+where $\mu_{f\rightarrow x} \equiv \max\ln F_s(x,X_s)$
 
 
 
