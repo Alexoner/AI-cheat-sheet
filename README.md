@@ -21,14 +21,14 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
   - [ ] Bayesian Logistic Regression
 
 - [ ] Neural Networks
-  - [ ] Feed-forward Network Functions
+  - [x] Feed-forward Network Functions
   - [ ] Network Training 
     - [ ] Parameter optimization
     - [ ] Local quadratic approxmiation
-    - [ ] Use of gradient information
-    - [ ] Gradient descent optimization
-  - [ ] Error BackPropagation
-    - [ ] Evaluation of error-function derivatives
+    - [x] Use of gradient information
+    - [x] Gradient descent optimization
+  - [x] Error BackPropagation
+    - [x] Evaluation of error-function derivatives
     - [ ] Example
     - [ ] Efficiency of backpropagation
     - [ ] Jacobian matrix
@@ -42,11 +42,11 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
 
 - [ ] Kernel Methods
 
-- [ ] Sparse Kernel Machines
+- [x] Sparse Kernel Machines
   - [x] Maximum Margin Classifiers
   - [ ] Relevance Vector Machines
 
-- [ ] Graphical Models
+- [x] Graphical Models
 
 - [x] Mixture Models and EM
   - [x] K-means
@@ -60,7 +60,7 @@ AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Element
 
 - [ ] Continuous Latent Variables
 
-- [ ] Sequential Data
+- [x] Sequential Data
 
 - [ ] Combining Models
   - [x] Boosting
