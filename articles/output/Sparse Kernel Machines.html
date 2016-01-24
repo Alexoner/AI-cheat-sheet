@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="chap:Sparse Kernel Machines">Sparse Kernel Machines</h1>
+<h2 id="introduction">Introduction</h2>
+<p>One of significant limitations of kernel methods is that the kernel function <span class="math inline">\(\mathcal{k}(\vec{x}_n,\vec{x}_m)\)</span> must be evaluated for all possible pairs <span class="math inline">\(\vec{x}_n\)</span> and <span class="math inline">\(\vec{x}_m\)</span> of training points,computationally infeasible.Kernel-based algorithms that have <strong>sparse</strong> solutions predict for new inputs depend only on the kernel function evaluated at a subset of the training data points,such as <strong>suport vector machine</strong>(SVM).</p>
+<h2 id="maximum-margin-classifiers">Maximum Margin Classifiers</h2>
+<p>Two-class classification problem using linear models <span class="math display">\[\begin{aligned}
+\label{eqn:maximum margin classifier regpresentation}
+y(x) = \vec{w}^T\phi(x)+b\end{aligned}\]</span> where <span class="math inline">\(\phi(x)\)</span> denotes a fixed feature-space transformation,and <span class="math inline">\(b\)</span> is bias parameter.</p>
+<p>For linear separable feature space,the parameters satisfies <span class="math inline">\(y(\vec{x}_n)&gt;0\)</span> for points having <span class="math inline">\(t_n=+1\)</span> and <span class="math inline">\(y(\vec{x}_n)&lt;0\)</span> for <span class="math inline">\(t_n=-1\)</span>,so that <span class="math inline">\(t_ny(\vec{x}_n)&gt;0\)</span> for all points.</p>
+<p><strong>Margin</strong> is the smallest distance between the decision boundary and any of the samples.The maximum margin solution can be motivated using <strong>computational learning theory</strong>,also known as <strong>statistical learning theory</strong>.</p>
+<p><img src="prml/Figure7.1a.jpg" alt="image" /> <img src="prml/Figure7.1b.jpg" alt="image" /></p>
+<p>The <strong>funtional margin</strong> <span class="math inline">\(t_ny(\vec{x}) &gt; 0\)</span> for data points correctly classified.The maximize it <span class="math display">\[\begin{aligned}
+\vec{w},b = \arg\max\limits_{\vec{w},b}\{\dfrac{1}{\parallel\vec{w}\parallel}\min_n
+[t_n(\vec{w}^T\phi(\vec{x}_n)+b)] \}\end{aligned}\]</span> We can rescale parameters to set <span class="math display">\[\begin{aligned}
+t_n(\vec{w}^T\phi(\vec{x}_n)+b) &amp;= 1\end{aligned}\]</span> for point closet to the surface.Then all data points satisfies the constraint <span class="math display">\[\begin{aligned}
+\label{ineqn:margin constraint}
+t_n(\vec{w}^T\phi(\vec{x}_n)+b) \geq 1,n=1,...,N.\end{aligned}\]</span> This is the <strong>canonical representation of the decision hyperplane</strong>.The optimization problem is equivalent to <span class="math display">\[\begin{aligned}
+\arg\min\limits_{\vec{w},b}\dfrac{1}{2}\parallel\vec{w}\parallel^2\end{aligned}\]</span> subject to constraints [ineqn:margin constraint],which is a <strong>quadratic programming</strong> problem.</p>
+<p>Introducing Lagrange multipliers <span class="math inline">\(a_n\geq 0\)</span> <span class="math display">\[\begin{aligned}
+L(\vec{w},b,\vec{a}) = \dfrac{1}{2}\parallel\vec{w}\parallel^2-
+\sum_{n=1}^{N}a_n\{ t_n(\vec{w}^T\phi(\vec{x}_n)+b)-1 \}\end{aligned}\]</span> where <span class="math inline">\(\vec{a} = (a_1,...,a_N)^T\)</span>.Setting the derivatives of <span class="math inline">\(L\)</span> with respect to <span class="math inline">\(\vec{w}\)</span> and <span class="math inline">\(b\)</span> equal to zero,we obtain conditions <span class="math display">\[\begin{aligned}
+\vec{w}&amp;=\sum_{n=1}^{N}a_n t_n\phi(\vec{x}_n) \\
+0 &amp;=\sum_{n=1}^{N}a_n t_n\end{aligned}\]</span> Eliminating <span class="math inline">\(\vec{w}\)</span> and <span class="math inline">\(b\)</span> gives the <strong>dual representation</strong> of the maximum margin problem <span class="math display">\[\begin{aligned}
+\hat{L}(\vec{a})=\sum_{n=1}^{N}a_n -\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}a_n a_m t_n t_m k(\vec{x}_n,\vec{x}_m)\end{aligned}\]</span> with respect to <span class="math inline">\(\vec{a}\)</span> subject to the constraints <span class="math display">\[\begin{aligned}
+a_n &amp;\geq 0,n =1,...,N \\
+\sum_{n=1}^{N}a_n t_n &amp;= 0.\end{aligned}\]</span> The kernel function is defined by <span class="math inline">\(k(\vec{x},\vec{x}&#39;) = \phi(\vec{x})^T\phi(\vec{x}&#39;)\)</span>.</p>
+<p>The solution to a quadratic programming problem in <span class="math inline">\(M\)</span> variables has computational complexity of <span class="math inline">\(O(M^3)\)</span>.</p>
+<p><span class="math inline">\(y(\vec{x})\)</span> can be expressed by <span class="math display">\[\begin{aligned}
+y(\vec{x}) = \sum_{n=1}^{N}a_n t_n k(\vec{x},\vec{x}_n) + b.\end{aligned}\]</span> The <span class="math inline">\(Karush-Kuhn-Tucker(KKT)\)</span> conditions require following the properties hold <span class="math display">\[\begin{aligned}
+a_n \geq 0 \\
+t_n y(\vec{x}_n) -1 &amp;\geq 0 \\
+a_n\{t_n y(\vec{x}_n) -1 &amp;= 0\}\end{aligned}\]</span> Data points for which <span class="math inline">\(a_n=0\)</span> will disappear and remaining ones are called <strong>suport vectors</strong>.They lie on the maximum margin hyperplanes in feature space.</p>
+<p>Having solved the quadratic programming problem,the threshold parameter <span class="math inline">\(b\)</span> <span class="math display">\[\begin{aligned}
+t_n(\sum_{m\in \mathcal{S}}{a_m t_m k(\vec{\vec{x}_n,\vec{x}_m})+b}) =1\end{aligned}\]</span> where <span class="math inline">\(\mathcal{S}\)</span> denotes the set of indices of the support vectors.Multiply through by <span class="math inline">\(t_n\)</span>,making use of <span class="math inline">\(t_n2=1\)</span>,and then average these equations over all support vectors <span class="math display">\[\begin{aligned}
+b=\dfrac{1}{N_{\mathcal{S}}}\sum_{n\in\mathcal{S}}(t_n-\sum_{m\in\mathcal{S}}a_m t_m \mathcal{k}(\vec{x}_n,\vec{x}_m))\end{aligned}\]</span> where <span class="math inline">\(N_{\mathcal{S}}\)</span> is the total number of support vectors. Express the maximum-margin classifier in terms of the minimization of an error function with a quadratic regularizer <span class="math display">\[\begin{aligned}
+\sum_{n=1}^{N}E_{\infty}(y(\vec{x}_n)t_n-1) + \lambda\parallel\vec{w}\parallel^2\end{aligned}\]</span> where <span class="math inline">\(E_{\infty}(z)\)</span> is zero if <span class="math inline">\(z\geq 0\)</span> and <span class="math inline">\(\infty\)</span> otherwise to ensure the margin constraint.</p>
+<h3 id="overlapping-class-distributions">Overlapping class distributions</h3>
+<p>In practice,the class-conditional distributions may overlap,in which case exact separation of the training data can lead to poor generalization.Introduce <strong>slack variables</strong>, <span class="math inline">\(\xi_n\geq 0\)</span> where <span class="math inline">\(n=1,...N\)</span>,one for each training data points.We allow points on the ’wrong side’ but with a penalty that increases of the distance from the boundary. <span class="math display">\[\begin{aligned}
+\xi_n = \mid t_n-y(\vec{x}_n)\mid\end{aligned}\]</span></p>
+<p><img src="prml/Figure7.3.jpg" alt="image" /></p>
+<p>Then the classification constraint are replaced by <span class="math display">\[\begin{aligned}
+t_n y(\vec{x}_n) \geq 1-\xi_n,n=1,...,N\end{aligned}\]</span> This is described as relaxing the hard margin constraint to give a <strong>soft margin</strong> and allows misclassification of training set data points.</p>
+<p>Maximize the margin with softly penalized points on the wrong side of the margin boundary. <span class="math display">\[\begin{aligned}
+C\sum_{n=1}^{N}\xi_n +\dfrac{1}{2}\parallel\vec{w}\parallel^2\end{aligned}\]</span> where the parameter <span class="math inline">\(C\)</span> controls the trade-off between the slack variable penalty and the margin,minimizing errors and controlling model complexity.In the limit <span class="math inline">\(C\longrightarrow \infty\)</span>,the model gets more complex,less data points are misclassified.</p>
+<p>Minimization with constraint <span class="math display">\[\begin{aligned}
+L(\vec{w},b\vec{a}) =\dfrac{1}{2}\parallel\vec{w}\parallel^2+C\sum_{n=1}^{N}\xi_n-\sum_{n=1}^{N}a_n\{t_n y(\vec{x}_n)-1+\xi_n \} -\sum_{n=1}^{N}\mu_n\xi_n\end{aligned}\]</span> where <span class="math inline">\(\{a_n\geq 0\}\)</span> and <span class="math inline">\(\{\mu_n \geq 0 \}\)</span> are Lagrange multipliers.The KKT set of conditions are given by <span class="math display">\[\begin{aligned}
+a_n &amp;\geq 0 \\
+t_n y(\vec{x}_n)-1+\xi_n &amp;\geq 0 \\
+a_n(t_n y(\vec{x}_n)-1+\xi_n) &amp;= 0 \\
+\mu_n &amp;\geq 0 \\
+\xi_n &amp;\geq 0 \\
+\mu_n\xi_n &amp;=0\end{aligned}\]</span> where <span class="math inline">\(n=1,...,N\)</span>.</p>
+<p>Optimize out <span class="math inline">\(\vec{w},b\)</span> and <span class="math inline">\(\{\xi_n\}\)</span> <span class="math display">\[\begin{aligned}
+\dfrac{\partial L}{\partial\vec{w}} =0 &amp;\Rightarrow \vec{w}=\sum_{n=1}^{N}a_n t_n \\ 
+\dfrac{\partial L}{\partial b}=0 &amp;\Rightarrow \sum_{n=1}^{N}a_n t_n =0 \\
+\dfrac{\partial L}{\partial \xi_n} =0 &amp;\Rightarrow a_n = C-\mu_n\end{aligned}\]</span> Eliminated,the dual Lagrangian is in the form <span class="math display">\[\begin{aligned}
+\label{eqn:SVM Lagrangian}
+\hat{L}(\vec{a}) = \sum_{n=1}^{N}a_n -\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}a_n a_m t_n t_m \mathcal{k}(\vec{x}_n,\vec{x}_m)\end{aligned}\]</span> which is identical to the separable case,with different constraints: <span class="math display">\[\begin{aligned}
+0\leq a_n \leq C\\
+\sum_{n=1}^{N}a_n t_n = 0\end{aligned}\]</span> for <span class="math inline">\(n=1,...,N\)</span>,where the former are known as <strong>box constraints</strong>.</p>
+<p>A subset of data points having <span class="math inline">\(a_n =0\)</span> do not contribute to the predictive model.Support vectors have <span class="math inline">\(a_n &gt; 0\)</span> and satisfy <span class="math display">\[\begin{aligned}
+t_n y(\vec{x}_n) &amp;= 1-\xi_n\end{aligned}\]</span> if <span class="math inline">\(a_n &lt;C\)</span>,then implies that <span class="math inline">\(\mu_n &gt; 0\)</span>,which requires <span class="math inline">\(\xi_n =0\)</span> and hence such points lie on the margin.Points with <span class="math inline">\(a_n=C\)</span> can lie inside the margin and can either be correctly classified if <span class="math inline">\(\xi_n \leq 1\)</span> or misclassified if <span class="math inline">\(\xi_n &gt;1\)</span>.</p>
+<p>To determine <span class="math inline">\(b\)</span>,we note that support vectors for which <span class="math inline">\(0\leq a_n \leq C\)</span> have <span class="math inline">\(\xi_n =0\)</span> so that <span class="math inline">\(t_n y(\vec{x}_n)=1\)</span> and hence satisfy <span class="math display">\[\begin{aligned}
+t_n(\sum_{m\in\mathcal{S}}a_m t_m \mathcal{k}(\vec{x}_n,\vec{x}_m)+b) =1\end{aligned}\]</span> A numerically stable solution is obtained by averaging: <span class="math display">\[\begin{aligned}
+    b=\dfrac{1}{N_{\mathcal{M}}}\sum_{n\in\mathcal{M}} (t_n - \sum_{m\in\mathcal{S}}a_m t_m \mathcal{k}(\vec{x}_n,\vec{x}_m))\end{aligned}\]</span> where <span class="math inline">\(\mathcal{M}\)</span> denotes the set of indices of data points having <span class="math inline">\(0\leq a_n \leq C\)</span>.</p>
+<h4 id="nu-svm"><span class="math inline">\(\nu\)</span>-SVM</h4>
+<p>Maximize <span class="math display">\[\begin{aligned}
+\hat{L}(\vec{a})=-\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}a_n a_m t_n t_m\mathcal{k}(\vec{x}_n,\vec{x}_m)\end{aligned}\]</span> subject to the constraints <span class="math display">\[\begin{aligned}
+0\leq a_n \leq 1/N\\
+\sum_{n=1}^{N}a_n t_n = 0 \\
+\sum_{n=1}^{N}a_n \geq \nu\end{aligned}\]</span> The parameter <span class="math inline">\(\nu\)</span>,which replaces <span class="math inline">\(C\)</span>,can be interpreted as both an upper bound on the fraction of <strong>margin errors</strong> and a lower bound on the fraction of support vectors.</p>
+<h4 id="optimization">Optimization</h4>
+<dl>
+<dt><strong>chunking</strong></dt>
+<dd><p>Lagrangian is unchanged if we remove the rows and columns of the kernel matrix corresponding to Lagrange multipliers.Implemented using <strong>protected conjugate gradients</strong>.</p>
+</dd>
+<dt><strong>Decomposition methods</strong></dt>
+<dd><p>solves a series of smaller quadratic programming problems but are designed so that each of these is of a fixed size.</p>
+</dd>
+<dt><strong>sequantial minimal optimization</strong> or SMO</dt>
+<dd><p>Takes the concept of chunking to the extreme limit and considers just two Lagrange multipliers at a time.Heuristics are given for choosing the pair of Lagrange multipliers to be considered at each step.</p>
+</dd>
+</dl>
+<p>Support vector machines don’t manage to avoid the curse of dimensionality because there are constraints amongst the feature values that restrict the effective dimensionality of feature space.</p>
+<h4 id="relation-to-logistic-regression">Relation to Logistic Regression</h4>
+<p>The objective function can be written <span class="math display">\[\begin{aligned}
+\sum_{n=1}^{N}E_{SV}(y_n t_n) +\lambda\parallel\vec{w}\parallel^2\end{aligned}\]</span> where <span class="math inline">\(\lambda=(2C)^{-1}\)</span>,and <span class="math inline">\(E_{SV}(\cdot)\)</span> is the <strong>hinge</strong> error function defined by <span class="math display">\[\begin{aligned}
+E_{SV}(y_n t_n)= [1-y_n t_n]_{+}\end{aligned}\]</span> where <span class="math inline">\([\cdot]_+\)</span> denotes the positive part.</p>
+<p>For logistic regression,target variable <span class="math inline">\(t\in \{-1,1\}\)</span>,so <span class="math display">\[\begin{aligned}
+p(t|y)=\sigma(yt)\end{aligned}\]</span> Construct an error function by taking the negative logarithm of likelihood function with a quadratic regularizer <span class="math display">\[\begin{aligned}
+\sum_{n=1}^{N}E_{LR}(y_n t_n)+\lambda\parallel\vec{w}\parallel^2\end{aligned}\]</span> where <span class="math display">\[\begin{aligned}
+E_{LR}(yt)=\ln(1+\exp(-yt))\end{aligned}\]</span></p>
+<p><img src="prml/Figure7.5.jpg" alt="image" /></p>
+<h4 id="multiclass-svms">Multiclass SVMs</h4>
+<dl>
+<dt><strong>one-versus-the-rest</strong></dt>
+<dd><p>approach:<span class="math inline">\(K\)</span> separate SVMs for each class.</p>
+</dd>
+<dt><strong>one-versus-one</strong></dt>
+<dd><p>.<span class="math inline">\(K(K-1)/2\)</span> different 2-class SVMs on possible pairs of classes,which can lead to ambiguities.</p>
+</dd>
+<dt><strong>single-class</strong></dt>
+<dd><p>support vector machines,which solve an unsupervised learning problem related to probability density estimation.</p>
+</dd>
+</dl>
+<h4 id="svms-for-regression">SVMs for regression</h4>
+<p>In simple linear regression we minimize a regularized error function given by <span class="math display">\[\begin{aligned}
+\dfrac{1}{2}\sum\limits_{n=1}^{N}\{y_n-t_n\}^2+\dfrac{\lambda}{2}\parallel\vec{w}\parallel^2.\end{aligned}\]</span> To obtain <strong>sparse solutions</strong>,the quadratic error function is replaced by an <strong><span class="math inline">\(\epsilon\)</span>-insensitive error function</strong>.For example <span class="math display">\[\begin{aligned}
+E_{\epsilon}(y(\vec{x})-t) = \begin{cases}
+0,&amp;\text{if}\mid y(\vec{x})-t\mid &lt; \epsilon;\\
+y(\vec{x})-t\mid - \epsilon,&amp;\text{otherwise}
+\end{cases}\end{aligned}\]</span> We therefore minimize <span class="math display">\[\begin{aligned}
+C\sum\limits_{n=1}^{N}E_{\epsilon}(y(\vec{x}_n)-t_n)+\dfrac{1}{2}\mid\vec{w}\mid^2\end{aligned}\]</span> where <span class="math inline">\(y(\vec{x})\)</span> is the prediction function.The (inverse) regularization parameter denoted <span class="math inline">\(C\)</span>,appears in front of the error term.</p>
+<p>Introducing two <strong>slack variables</strong> for each data point <span class="math inline">\(\vec{x}_n\)</span>.The condition for target points to lie inside the <span class="math inline">\(\epsilon\)</span>-tube is that <span class="math inline">\(y_n -\epsilon \leq t_n \leq y_n+\epsilon\)</span>,and for those outside: <span class="math display">\[\begin{aligned}
+&amp;\begin{cases}
+\xi_n &amp;\geq 0\\
+\hat{\xi_n} &amp;\geq 0,n=1,...,N\\
+\end{cases}\\
+&amp; y(\vec{x}_n)+\epsilon &lt; t_n \leq y(\vec{x}_n)+\epsilon +\xi_n \\
+&amp; y(\vec{x}_n)-\epsilon &gt; t_n \geq y(\vec{x}_n)-\epsilon -\hat{\xi_n}\end{aligned}\]</span></p>
+<p><img src="prml/Figure7.7.jpg" alt="image" /></p>
+<p>The error function for support vector regression can then be written as <span class="math display">\[\begin{aligned}
+C\sum\limits_{n=1}^{N}(\xi_n+\hat{\xi_n})+\dfrac{1}{2}\parallel\vec{w}\parallel^2\end{aligned}\]</span> which must be minimized subject to the constraints.Introducing Lagrange multipliers <span class="math display">\[\begin{aligned}
+\label{eqn:svm regression Lagrangian}
+L =&amp; C\sum\limits_{n=1}^{N}(\xi_n+\hat{\xi_n})+\dfrac{1}{2}\parallel\vec{w}\parallel^2
+- \sum\limits_{n=1}^{N}(\mu_n\xi_n+\hat{\mu_n}\hat{\xi_n}) \\
+&amp;-\sum\limits_{n=1}^{N}a_n(\epsilon+\xi_n+y_n-t_n) -\sum\limits_{n=1}^{N}\hat{a_n}(\epsilon+\hat{\xi_n}+y_n-t_n)\end{aligned}\]</span> Substitute for <span class="math inline">\(y(\vec{x})\)</span> using [eqn:maximum margin classifier regpresentation] and set the derivatives of the Lagrangian with respect to <span class="math inline">\(\vec{x},b,\xi_n,\hat{\xi_n}\)</span> to zero,giving <span class="math display">\[\begin{aligned}
+\dfrac{\partial L}{\partial\vec{w}} =0 &amp;\Rightarrow \vec{w}=\sum_{n=1}^{N}(a_n-\hat{a_n})\phi(\vec{x}_n) \\
+\dfrac{\partial L}{\partial b} =0 &amp;\Rightarrow \sum_{n=1}^{N}(a_n-\hat{a_n})=0 \\
+\dfrac{\partial L}{\partial\xi_n} =0 &amp;\Rightarrow a_n+\mu_n=0 \\
+\dfrac{\partial L}{\partial\hat{\xi_n}} =0 &amp;\Rightarrow \hat{a_n}+\hat{\mu_n}=0 \\\end{aligned}\]</span> Using these to eliminate the corresponding variables,we see the dual problem of maximizing <span class="math display">\[\begin{aligned}
+\hat{L}(\vec{a},\hat{\vec{a}}) =&amp;-\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}(a_n-\hat{a_n})(a_m-\hat{a_m})\mathcal{k}(\vec{x}_n,\vec{x}_m) \\
+ &amp;-\epsilon\sum_{n=1}^{N}(a_n+\hat{a_n})+\sum_{n=1}^{N}(a_n-\hat{a_n})t_n\end{aligned}\]</span> with respect to <span class="math inline">\(\{a_n\},\{\hat{a_n}\}  \)</span>.We have the <strong>box constraints</strong> <span class="math display">\[\begin{aligned}
+0\leq a_n \leq C\\
+0\leq \hat{a_n}\leq C\end{aligned}\]</span> After substitution,the predictions can be made using <span class="math display">\[\begin{aligned}
+y(\vec{x})=\sum_{n=1}^{N}(a_n-\hat{a_n})\mathcal{k}(\vec{x},\vec{x}_n)+b\end{aligned}\]</span></p>
+<p>The corresponding <span class="math inline">\(karush-Kuhn-Tucker\)</span>(KKT) conditons for [eqn:svm regression Lagrangian],which state that <strong>at the solution the product of the dual variables and the constraints must vanish</strong> are given by <span class="math display">\[\begin{aligned}
+a_n(\epsilon+\xi_n+y_n-t_n) &amp;= 0\\
+\hat{a_n}(\epsilon+\hat{\xi_n}-y_n+t_n) &amp;= 0\\
+(C-a_n)\xi_n &amp; = 0\\
+(C-\hat{a_n})\hat{\xi_n} &amp;=0\end{aligned}\]</span></p>
+<p>The support vectors are those data points that contribute to predictions,in other words those for which either <span class="math inline">\(a_n \neq 0\)</span> or <span class="math inline">\(\hat{a_n} \neq 0\)</span>.These are points lying on the boundary of the <span class="math inline">\(\epsilon\)</span>-tube or outside the tube.</p>
+<p>The parameter <span class="math inline">\(b\)</span> satisfies <span class="math display">\[\begin{aligned}
+\epsilon+y_n-t_n= 0\end{aligned}\]</span> for points <span class="math inline">\(0&lt;a_n&lt;C\)</span>.Solving for it <span class="math display">\[\begin{aligned}
+b &amp;= t_n-\epsilon-\vec{w}^T\phi(\vec{x}_n) \\
+  &amp;= t_n-\epsilon-\sum_{m=1}^{N}(a_m-\hat{a_m})\mathcal{k}(\vec{x}_n,\vec{x}_m)\end{aligned}\]</span></p>
+<p>An alternative formulation of SVM regression is <span class="math inline">\(\nu\)</span> SVM. <span class="math display">\[\begin{aligned}
+\hat{L}(\vec{a},\hat{\vec{a}}) =&amp;-\dfrac{1}{2}\sum_{n=1}^{N}\sum_{m=1}^{N}(a_n-\hat{a_n})(a_m-\hat{a_m})\mathcal{k}(\vec{x}_n,\vec{x}_m) \\
+&amp;-0\times\epsilon\sum_{n=1}^{N}(a_n+\hat{a_n})+\sum_{n=1}^{N}(a_n-\hat{a_n})t_n\end{aligned}\]</span> subject to constraints <span class="math display">\[\begin{aligned}
+0\leq a_n &amp;\leq C/N\\
+0\leq \hat{a_n} &amp;\leq C/N \\
+\sum_{n=1}^{N}(a_n-\hat{a_n}) &amp;=0 \\
+\sum_{n=1}^{N}(a_n+\hat{a_n}) &amp;\leq \nu C \\\end{aligned}\]</span> There are at most <span class="math inline">\(\nu N\)</span> data points falling outside the insensitive tube,which at least <span class="math inline">\(\nu N\)</span> data points are support vectors and so lie either on the tube or outside it.</p>
+<h2 id="relevance-vector-machines">Relevance Vector Machines</h2>
+<p>TODO</p>
+</body>
+</html>

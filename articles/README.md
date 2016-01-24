@@ -1,3 +1,17 @@
+# generate html with mathjax support
+run 
+```shell
+./bin/mkhtml5 ../prml/chapter.tex
+```
+for example
+```shell
+for i in ../prml/*
+do
+    echo "Convert $i"
+    bin/mkhtml5 "$i"
+done
+```
+
 # Chinese document in latex
 
 ## useful links
