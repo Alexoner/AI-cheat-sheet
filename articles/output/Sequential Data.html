@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="chap:Sequential Data">Sequential Data</h1>
+<h2 id="hidden-markov-models">Hidden Markov Models</h2>
+<h3 id="representation">representation</h3>
+<p><strong>Directed Probabilistic Graphical Models</strong> with <strong>Latent Variables</strong> to represent <strong>Hidden Markov Models</strong>.Hidden Markov Models are <strong>State Space Models</strong>.</p>
+<p>Introduce latent variable <span class="math inline">\(\vec{z}_n\)</span> with 1-of-K coding scheme. <strong>Transition probabilities</strong> or <strong>transition matrix</strong> <span class="math inline">\(\vec{A}_{jk} = p(z_{nk}=1|z_{n-1,j}=1)\)</span> and probabilities satisfy <span class="math inline">\(0\leq \vec{A}_{jk}\leq 1\)</span> with <span class="math inline">\(\sum_k{A_{jk}} = 1\)</span>.So that matrix <span class="math inline">\(\vec{A}\)</span> has <span class="math inline">\(K(K-1)\)</span> independent parameters.Write the conditional probability explicitly <span class="math display">\[\begin{aligned}
+p(\vec{z}_n|\vec{z}_{n-1},\vec{A}) = \prod_{k=1}^{K}\prod_{j=1}^{K}\vec{A}_{jk}^{z_{n-1,j}z_{nk}}\end{aligned}\]</span></p>
+<p>The initial latent node does not have a parent node,so the marginal prior distribution is represented by a vector of probabilities <span class="math inline">\(\pi\)</span> with <span class="math inline">\(\pi_k\equiv p(z_{1k}=1)\)</span>,so that <span class="math display">\[\begin{aligned}
+p(\vec{z}_1|\vec{\pi}) = \prod_{k=1}^{K}\pi_k^{z_{1k}}\end{aligned}\]</span> where <span class="math inline">\(\sum_{k}^{\pi_k}=1\)</span>. The <strong>emission probabilities</strong> can be represented in the form <span class="math display">\[\begin{aligned}
+p(\vec{x}_n|\vec{z}_n,\vec{\phi})=\prod_{k=1}^{K}p(\vec{x}_n|\vec{\phi}_k)^{z_{nk}}\end{aligned}\]</span> For <strong>homogeneous</strong> models,the joint distribution over both latent and observed variables is given by <span class="math display">\[\begin{aligned}
+\label{eqn:hmm joint distribution}
+p(\vec{X},\vec{Z}|\vec{\theta})=p(\vec{z}_1|\vec{\pi})\left[\prod_{n=2}^{N}p(\vec{z}_n|\vec{z}_{n-1},\vec{A}) \right]
+\prod_{m=1}^{N}p(\vec{x}_m|\vec{z}_m,\vec{\phi})\end{aligned}\]</span> where <span class="math inline">\(\vec{\theta} = \left\{\vec{\pi},\vec{A},\vec{\phi} \right\}\)</span> denotes the set of parameters governing the model.</p>
+<h3 id="evaluation">evaluation</h3>
+<p>The likelihood function is obtained from the joint distribution by marginalizing over the latent variables <span class="math display">\[\begin{aligned}
+p(\vec{X}|\vec{\theta})=\sum_{\vec{Z}}{p(\vec{X},\vec{Z}|\vec{\theta})}\end{aligned}\]</span></p>
+<h3 id="optimization">optimization</h3>
+<h4 id="em-algorithm">EM algorithm</h4>
+<p>Direct maximization of the likelihood function lead to complex expressions with no close-form solutions(not i.i.d),so we turn the <strong>expectation maximization</strong> (simplified <strong>variational bayesian</strong>).In the <strong>E step</strong>,take these parameters to find the posterior distribution of the latent variables <span class="math inline">\(p(\vec{\vec{Z}|\vec{X},\vec{\theta}^{\text{old}}})\)</span>.Then use this posterior distribution to evaluate the expectation of the logarithm of complete-data likelihood function,as a function of parameters <span class="math inline">\(\vec{\theta}\)</span> <span class="math display">\[\begin{aligned}
+\mathcal{Q}(\vec{\theta},\vec{\theta}^{\text{old}}) =\sum_{\vec{Z}}{p(\vec{Z}|\vec{X},\vec{\theta}^{\text{old}})}\ln p(\vec{X},\vec{Z}|\vec{\theta})\end{aligned}\]</span> Introduce some notation <span class="math display">\[\begin{aligned}
+\gamma(\vec{z}_n) &amp;= p(\vec{z}_n|\vec{X},\theta^{\text{old}}) 
+=\mathbb{E}[z_{nk}]=\sum_{\vec{z}_n}{\gamma(\vec{z}_n)} \\
+\xi(\vec{z}_{n-1},\vec{z}_n)&amp;=p(\vec{z}_{n-1},\vec{z}_n|\vec{X},\vec{\theta}^{\text{old}})
+=\mathbb{E}[{z_{n-1,j}z_{nk}}]=
+\sum_{\vec{z}_{n-1},\vec{z}_n}\xi(\vec{z}_{n-1},\vec{z}_n)z_{n-1,j}z_{nk}\end{aligned}\]</span> Substitute the joint distribution <span class="math inline">\(p(\vec{X},\vec{Z}|\vec{\theta})\)</span>[eqn:hmm joint distribution],we obtain <span class="math display">\[\begin{aligned}
+\mathcal{Q}(\vec{\theta},\vec{\theta}^{\text{old}}) 
+&amp;= \sum{k=K}\gamma(z_1 k)\ln\pi_k+\sum_{n=2}^{N}\sum_{j=1}^{K}\sum_{k=1}^{K}\xi(\vec{z}_{n-1},\vec{z}_n)\ln\vec{A}_{jk}\\
+&amp;+ \sum_{n=1}^{N}\sum_{k=1}^{K}\gamma(z_{nk})\ln p(\vec{x}_n|\vec{\phi}_k)\end{aligned}\]</span> where we have marginalized over the parameters’ joint distribution.</p>
+<p>In <strong>M step</strong> we maximize <span class="math inline">\(\mathcal{Q}\)</span> with respect to the parameters,in which we treat <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\xi\)</span> as constant.</p>
+<p>In the case of discrete multinomial observed variables,the conditional distribution of the observations takes the form <span class="math display">\[\begin{aligned}
+    p(\vec{x}|\vec{z})=\prod_{i=1}^{D}\prod_{k=1}^{K}\mu_{ik}^{x_i z_k}\end{aligned}\]</span> subject to <span class="math inline">\(\sum_{i=1}^{D}\mu_{ik}=1\)</span>. Introduce <strong>Lagrangian multiplier</strong> <span class="math inline">\(\lambda\)</span>,the objective is to maximize <span class="math display">\[\begin{aligned}
+    \mathcal{L}(\vec{\mu},\lambda) = \sum_{n=1}^{N}\sum_{k=1}^{K}\gamma(z_{nk})\sum_{i=1}^{D}x_{ni}\ln\mu_{ik}+\lambda(\sum_{i=1}^{D}\mu_{ik}-1)
+    \end{aligned}\]</span> Set the derivatives to zero <span class="math display">\[\begin{aligned}
+    \because\begin{cases}
+    \dfrac{\partial\mathcal{L}}{\partial \mu_{ik}} &amp;= \sum_{n=1}^{N}\gamma(z_{nk})x_{ni}\dfrac{1}{\mu_{ik}} + \lambda = 0\\
+    \dfrac{\partial\mathcal{L}}{\partial \lambda} &amp;= \sum_{i=1}^{D}\mu_{ik} -1 = 0
+    \end{cases}\\
+    \therefore
+    \begin{cases}
+    \mu_{ik}&amp;=-\dfrac{\sum_{n=1}^{N}\gamma(z_{nk})x_{ni}}{\lambda} \\
+    \lambda &amp;= \sum_{i=1}^{D}\gamma(z_{nk})
+    \end{cases}\\
+    \Longrightarrow \\
+    \mu_{ik}&amp;=\dfrac{\sum_{n=1}^{N}\gamma(z_{nk})x_{ni}}{\sum_{n=1}^{N}\gamma(z_{nk})}
+    \end{aligned}\]</span></p>
+<h4 id="forward-backward-algorithm">forward-backward algorithm</h4>
+<p>The quantities <span class="math inline">\(\gamma\)</span> and <span class="math inline">\(\xi\)</span> are posterior distribution of latent variables,and can be obtained using a two-stage message passing algorithm,known as Baum-Welch,a.k.a alpha-beta algorithm.</p>
+<h4 id="scaling-factors">scaling factors</h4>
+<p>In the recursion relationship,these probabilities are significantly less than unity,as we work our way forward along the chain,the values of <span class="math inline">\(\alpha\)</span> can go to zero exponentially quickly.</p>
+<h3 id="predict">predict</h3>
+<h3 id="title">title</h3>
+<h2 id="linear-dynamic-systems">Linear Dynamic Systems</h2>
+<p>TODO</p>
+</body>
+</html>
