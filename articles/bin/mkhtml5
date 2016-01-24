@@ -1,3 +1,5 @@
 #!/bin/sh
 
-pandoc $1 -s --mathjax -o $(basename $1 .tex).html
+BASEDIR=$(dirname "$1")
+# pandoc "$1" -s --mathjax -o "$(dirname "$1")/$(basename "$1" .tex).html"
+pandoc "$1" -s --mathjax -o "$BASEDIR/output/$(basename "$1" .tex).html"
