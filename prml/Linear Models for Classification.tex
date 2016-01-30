@@ -514,7 +514,6 @@ In our discussion of generative models for multiclass classification,the posteri
 \begin{align}
 p(\mathcal{C}_k|\phi) = y_k(\phi) &= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
 &=\dfrac{\exp(a_k)}{sum} \\
-%&=\dfrac{1}{1+\sum_{j\neq k}\exp(a_j-a_k)}
 \end{align}
 
 where $sum$ denotes $\sum_j\exp(a_j)$ the 'activations' $a_k$ are given by
@@ -546,9 +545,23 @@ E(\vec{w_1},...,\vec{w_K})=-\ln p(\vec{T}|\vec{w}_1,...,\vec{w}_K)
 which is known as the $cross-entropy$ error function for the multiclass classification problem.
 
 Take the gradient of the error function,making use of the derivatives of the softmax function,we obtain
-\begin{equation}
-\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) =
+\begin{align}
+\because
+\frac{\partial E_n}{\partial a_j}
+&=-\sum_kt_k\frac{\partial \log p_k}{\partial a_j}\\
+&=-\sum_kt_k\frac{1}{p_k}\frac{\partial p_k}{\partial a_j}\\
+&=-t_j(1-p_j)-\sum_{k\neq j}t_k\frac{1}{p_k}({\color{red}{-p_kp_j}})\\
+&=-t_j(1-p_j)+\sum_{k\neq j}t_k({\color{red}{p_j}})\\
+&=-t_j+\color{blue}{t_jp_j+\sum_{k\neq j}t_k({p_j})}\\
+&=\color{blue}{p_j\left(\sum_kt_k\right)}-t_j \\
+&=p_j-t_j \\
+&=y_j-t_j \\
+\\
+\therefore
+\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) &=
 \sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n
+\end{align}
+\begin{equation}
 \end{equation}
 
 To find a batch algorithm,we evaluate the Hessian matrix
