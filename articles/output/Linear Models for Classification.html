@@ -184,8 +184,7 @@ a_n(\vec{w}) &amp;\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}\bigg|_{w^{(old)
 <h3 id="multiclass-logistic-regression">Multiclass logistic regression</h3>
 <p>In our discussion of generative models for multiclass classification,the posterior probabilities are given by a softmax transformation of linear functions of the feature variables,so that <span class="math display">\[\begin{aligned}
 p(\mathcal{C}_k|\phi) = y_k(\phi) &amp;= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
-&amp;=\dfrac{\exp(a_k)}{sum} \\
-%&amp;=\dfrac{1}{1+\sum_{j\neq k}\exp(a_j-a_k)}\end{aligned}\]</span></p>
+&amp;=\dfrac{\exp(a_k)}{sum} \\\end{aligned}\]</span></p>
 <p>where <span class="math inline">\(sum\)</span> denotes <span class="math inline">\(\sum_j\exp(a_j)\)</span> the ’activations’ <span class="math inline">\(a_k\)</span> are given by <span class="math display">\[a_k = \vec{w}_k^T\phi\]</span></p>
 <p>Here we consider the use of maximum likelihood to determine the parameters <span class="math inline">\(\{\vec{w}_k\}\)</span> of this model directly.The derivatives of <span class="math inline">\(y_k\)</span> with respect to all of the activations <span class="math inline">\(a_j\)</span> are given by <span class="math display">\[\begin{aligned}
 \dfrac{\partial y_k}{\partial a_j} 
@@ -197,8 +196,21 @@ p(\mathcal{C}_k|\phi) = y_k(\phi) &amp;= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
 \prod_{n=1}^{N}\prod_{k=1}^{K}p(\mathcal{C}_k|\phi_n)^{t_{nk}}
 =\prod_{n=1}^{N}\prod_{k=1}^{K}y_{nk}^{t_{nk}}\]</span> where <span class="math inline">\(y_{nk}=y_k(\phi_n)\)</span>,and <span class="math inline">\(\vec{T}\)</span> is an <span class="math inline">\(N\times N\)</span> matrix of target variables with elements <span class="math inline">\(t_{nk}\)</span>.Taking the negative logarithm then gives <span class="math display">\[E(\vec{w_1},...,\vec{w_K})=-\ln p(\vec{T}|\vec{w}_1,...,\vec{w}_K)
 =-\sum_{n=1}^{N}\sum_{k=1}^{K}t_{nk}\ln y_{nk}\]</span> which is known as the <span class="math inline">\(cross-entropy\)</span> error function for the multiclass classification problem.</p>
-<p>Take the gradient of the error function,making use of the derivatives of the softmax function,we obtain <span class="math display">\[\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) =
-\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n\]</span></p>
+<p>Take the gradient of the error function,making use of the derivatives of the softmax function,we obtain <span class="math display">\[\begin{aligned}
+\because
+\frac{\partial E_n}{\partial a_j}
+&amp;=-\sum_kt_k\frac{\partial \log p_k}{\partial a_j}\\
+&amp;=-\sum_kt_k\frac{1}{p_k}\frac{\partial p_k}{\partial a_j}\\
+&amp;=-t_j(1-p_j)-\sum_{k\neq j}t_k\frac{1}{p_k}({\color{red}{-p_kp_j}})\\
+&amp;=-t_j(1-p_j)+\sum_{k\neq j}t_k({\color{red}{p_j}})\\
+&amp;=-t_j+\color{blue}{t_jp_j+\sum_{k\neq j}t_k({p_j})}\\
+&amp;=\color{blue}{p_j\left(\sum_kt_k\right)}-t_j \\
+&amp;=p_j-t_j \\
+&amp;=y_j-t_j \\
+\\
+\therefore
+\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) &amp;=
+\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n\end{aligned}\]</span> <span class="math display">\[\]</span></p>
 <p>To find a batch algorithm,we evaluate the Hessian matrix <span class="math display">\[\nabla_{w_k}\nabla_{w_j}E(\vec{w_1},...,\vec{w_K})
 =-\sum_{n=1}^{N}y_{nk}(I_{kj}-y_{nj})\phi_n\phi_n^T\]</span> The Hessian matrix is also positive definite and so the error function has a unique minimum.</p>
 <h3 id="probit-regression">Probit regression</h3>
