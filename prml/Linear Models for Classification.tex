@@ -466,7 +466,7 @@ Now apply the Newton-Raphson method ot the linear regression model with sum-of-s
 \nabla E(\vec{w}) &= \sum_{n=1}^{N}(\vec{w}^T\phi_n-t_n)\phi_n = \vec{\Phi}^T\vec{\Phi}\vec{w} - \vec{\Phi}^T\vec{t} \\
 \vec{H} = \nabla\nabla E(\vec{w}) &= \sum_{n=1}^{N}\phi_n\phi_n^T=\vec{\phi}^T\vec{\Phi}
 \end{align}
-where $\vec{\Phi}$ is the $N\times N$ design matrix,whose $n^{th}$ row is given by $\phi_n^T$.The Newton-Raphson update then takes the form
+where $\vec{\Phi}$ is the $N\times M$ design matrix,whose $n^{th}$ row is given by $\phi_n^T$.The Newton-Raphson update then takes the form
 \begin{align}
 \vec{w}^{(new)} &= \vec{w}^{(old)} -(\vec{\Phi}^T\vec{\Phi})^{-1}\{\vec{\Phi}^T\vec{\Phi}\vec{w}^{(old)} -\vec{\Phi}^T\vec{t} \} \\
 &=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}
@@ -510,10 +510,16 @@ a_n(\vec{w}) &\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}\bigg|_{w^{(old)}}(t
 \end{align}
 
 \subsection{Multiclass logistic regression}
-In our discussion of generative models for multiclass classification,the posterior probabilities are given by a softmax transformation of linear functions of the feature variables,so that
+In our discussion of generative models for multiclass classification,the posterior probabilities are given by a \textbf{softmax} transformation of linear functions of the feature variables,so that
 \begin{align}
 p(\mathcal{C}_k|\phi) = y_k(\phi) &= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
 &=\dfrac{\exp(a_k)}{sum} \\
+\end{align}
+\textbf{Softmax function} is 
+\begin{align}
+\delta(\vec{z}_j) &= \dfrac{\exp^{\vec{z}_j}}{\sum_{k=1}^{K}\exp^{\vec{z}_k}},\text{for } j=1,...,K.  \\
+&=\dfrac{\exp^{\vec{z}_j-\max{\vec{z}}}}{\sum_{k=1}^{K}\exp^{\vec{z}_k - \max{\vec{z}}}} \\
+\log \delta(\vec{z}_j) &= \vec{z}_j-\max{\vec{z}}-\log\sum_{k=1}^{K}\exp^{\vec{z}_k - \max{\vec{z}}}
 \end{align}
 
 where $sum$ denotes $\sum_j\exp(a_j)$ the 'activations' $a_k$ are given by
@@ -559,8 +565,11 @@ Take the gradient of the error function,making use of the derivatives of the sof
 \\
 \therefore
 \nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) &=
-\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n
+\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n \\
+\therefore
+\nabla_{\vec{W}}E(\vec{w}_1,...\vec{w}_k) &= (\vec{Y}-\vec{T})^T\vec{\Phi}
 \end{align}
+where $\vec{Y}$ is the $N\times K$ prediction matrix, $\vec{T}$ is the $N\times K$ target label matrix.
 \begin{equation}
 \end{equation}
 

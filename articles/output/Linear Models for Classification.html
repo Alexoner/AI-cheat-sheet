@@ -164,7 +164,7 @@ p(\vec{x}|\vec{\lambda_k},s) = \dfrac{1}{s}h(\vec{x}/s)g(\vec{\lambda}_k)
 <p>For logistic regression,there is no longer a closed-form solution,due to the nonlinearity of the logistic sigmoid function.The error function is concave,and can be minimized by an efficient iterative technique based on the <strong>Newton-Raphson</strong> iterative optimization scheme,which uses a local quadratic approximation to the log likelihood function. <span class="math display">\[\vec{w}^{(new)} = \vec{w}^{(old)}-\vec{H}^{-1}\nabla E(\vec{w})\]</span> where <span class="math inline">\(\vec{H}\)</span> is the Hessian matrix whose elements comprise the second derivatives of <span class="math inline">\(E(\vec{w})\)</span> with respect to the components of <span class="math inline">\(\vec{w}\)</span>.</p>
 <p>Now apply the Newton-Raphson method ot the linear regression model with sum-of-squares error function.The gradient and Hessian of this error function are given by <span class="math display">\[\begin{aligned}
 \nabla E(\vec{w}) &amp;= \sum_{n=1}^{N}(\vec{w}^T\phi_n-t_n)\phi_n = \vec{\Phi}^T\vec{\Phi}\vec{w} - \vec{\Phi}^T\vec{t} \\
-\vec{H} = \nabla\nabla E(\vec{w}) &amp;= \sum_{n=1}^{N}\phi_n\phi_n^T=\vec{\phi}^T\vec{\Phi}\end{aligned}\]</span> where <span class="math inline">\(\vec{\Phi}\)</span> is the <span class="math inline">\(N\times N\)</span> design matrix,whose <span class="math inline">\(n^{th}\)</span> row is given by <span class="math inline">\(\phi_n^T\)</span>.The Newton-Raphson update then takes the form <span class="math display">\[\begin{aligned}
+\vec{H} = \nabla\nabla E(\vec{w}) &amp;= \sum_{n=1}^{N}\phi_n\phi_n^T=\vec{\phi}^T\vec{\Phi}\end{aligned}\]</span> where <span class="math inline">\(\vec{\Phi}\)</span> is the <span class="math inline">\(N\times M\)</span> design matrix,whose <span class="math inline">\(n^{th}\)</span> row is given by <span class="math inline">\(\phi_n^T\)</span>.The Newton-Raphson update then takes the form <span class="math display">\[\begin{aligned}
 \vec{w}^{(new)} &amp;= \vec{w}^{(old)} -(\vec{\Phi}^T\vec{\Phi})^{-1}\{\vec{\Phi}^T\vec{\Phi}\vec{w}^{(old)} -\vec{\Phi}^T\vec{t} \} \\
 &amp;=(\vec{\Phi}^T\vec{\Phi})^{-1}\vec{\Phi}^T\vec{t}\end{aligned}\]</span> which we recognize as the standard least-squares solution.</p>
 <p>Now apply the Newton-Raphson update to the cross-entropy error function for logistic regression model.Gradient and Hessian of this error function are given by <span class="math display">\[\begin{aligned}
@@ -182,9 +182,12 @@ var[t]&amp;=\mathbb{E}[t^2] -\mathbb{E}[t]^2 = \sigma(\vec{x})-\sigma(\vec{x})^2
 a_n(\vec{w}) &amp;\simeq a_n(\vec{w}^{(old)})+\dfrac{da_n}{dy_n}\bigg|_{w^{(old)}}(t_n-y_n) \\
 &amp;=\vec{\phi}_n^T\vec{w}^{(old)}-\dfrac{(y_n-t_n)}{y_n(1-y_n)} =z_n\end{aligned}\]</span></p>
 <h3 id="multiclass-logistic-regression">Multiclass logistic regression</h3>
-<p>In our discussion of generative models for multiclass classification,the posterior probabilities are given by a softmax transformation of linear functions of the feature variables,so that <span class="math display">\[\begin{aligned}
+<p>In our discussion of generative models for multiclass classification,the posterior probabilities are given by a <strong>softmax</strong> transformation of linear functions of the feature variables,so that <span class="math display">\[\begin{aligned}
 p(\mathcal{C}_k|\phi) = y_k(\phi) &amp;= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
-&amp;=\dfrac{\exp(a_k)}{sum} \\\end{aligned}\]</span></p>
+&amp;=\dfrac{\exp(a_k)}{sum} \\\end{aligned}\]</span> <strong>Softmax function</strong> is <span class="math display">\[\begin{aligned}
+\delta(\vec{z}_j) &amp;= \dfrac{\exp^{\vec{z}_j}}{\sum_{k=1}^{K}\exp^{\vec{z}_k}},\text{for } j=1,...,K.  \\
+&amp;=\dfrac{\exp^{\vec{z}_j-\max{\vec{z}}}}{\sum_{k=1}^{K}\exp^{\vec{z}_k - \max{\vec{z}}}} \\
+\log \delta(\vec{z}_j) &amp;= \vec{z}_j-\max{\vec{z}}-\log\sum_{k=1}^{K}\exp^{\vec{z}_k - \max{\vec{z}}}\end{aligned}\]</span></p>
 <p>where <span class="math inline">\(sum\)</span> denotes <span class="math inline">\(\sum_j\exp(a_j)\)</span> the ’activations’ <span class="math inline">\(a_k\)</span> are given by <span class="math display">\[a_k = \vec{w}_k^T\phi\]</span></p>
 <p>Here we consider the use of maximum likelihood to determine the parameters <span class="math inline">\(\{\vec{w}_k\}\)</span> of this model directly.The derivatives of <span class="math inline">\(y_k\)</span> with respect to all of the activations <span class="math inline">\(a_j\)</span> are given by <span class="math display">\[\begin{aligned}
 \dfrac{\partial y_k}{\partial a_j} 
@@ -210,7 +213,9 @@ p(\mathcal{C}_k|\phi) = y_k(\phi) &amp;= \dfrac{\exp(a_k)}{\sum_j\exp(a_j)}\\
 \\
 \therefore
 \nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) &amp;=
-\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n\end{aligned}\]</span> <span class="math display">\[\]</span></p>
+\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n \\
+\therefore
+\nabla_{\vec{W}}E(\vec{w}_1,...\vec{w}_k) &amp;= (\vec{Y}-\vec{T})^T\vec{\Phi}\end{aligned}\]</span> where <span class="math inline">\(\vec{Y}\)</span> is the <span class="math inline">\(N\times K\)</span> prediction matrix, <span class="math inline">\(\vec{T}\)</span> is the <span class="math inline">\(N\times K\)</span> target label matrix. <span class="math display">\[\]</span></p>
 <p>To find a batch algorithm,we evaluate the Hessian matrix <span class="math display">\[\nabla_{w_k}\nabla_{w_j}E(\vec{w_1},...,\vec{w_K})
 =-\sum_{n=1}^{N}y_{nk}(I_{kj}-y_{nj})\phi_n\phi_n^T\]</span> The Hessian matrix is also positive definite and so the error function has a unique minimum.</p>
 <h3 id="probit-regression">Probit regression</h3>
