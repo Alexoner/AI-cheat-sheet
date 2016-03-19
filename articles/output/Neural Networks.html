@@ -15,35 +15,36 @@
 <p>An alternative approach is to fix the number of basis functions in advance but allow them to be <strong>adaptive</strong>,in other words to use parametric forms for the basis function</p>
 <h2 id="feed-forward-network-functions">Feed-forward Network Functions</h2>
 <p>The linear models are based on linear combinations of fixed nonlinear basis functions <span class="math inline">\(\phi_j(\vec{x})\)</span> and take the form <span class="math display">\[\begin{aligned}
-y(\vec{x},\vec{w}) = f(\sum_{j=1}^{M}w_j\phi_j(\vec{x})) = f(\vec{w}^T\vec{\phi}(\vec{x}))\end{aligned}\]</span> where <span class="math inline">\(f(\cdot)\)</span> is a nonlinear activation function in the case of classification and is the identity in the case of regression.</p>
+    y(\vec{x},\vec{w}) = f(\sum_{j=1}^{M}w_j\phi_j(\vec{x})) = f(\vec{w}^T\vec{\phi}(\vec{x}))\end{aligned}\]</span> where <span class="math inline">\(f(\cdot)\)</span> is a nonlinear activation function in the case of classification and is the identity in the case of regression.</p>
 <p>Neural network model can be described a series of functional transformations.First construct <span class="math inline">\(M\)</span> linear combinations of the input variables <span class="math inline">\(x_1,...,x_D\)</span> in the form <span class="math display">\[\begin{aligned}
-a_J = \sum_{i=1}^{D}w_{ji}^{(l)}+w_{j0}^{(l)}\end{aligned}\]</span> where <span class="math inline">\(j=1,...,M\)</span>,and the superscript <span class="math inline">\((l)\)</span> indicates the <span class="math inline">\(l-the\)</span> layer of the network.We refer the parameters <span class="math inline">\(w_{ji}^{(l)}\)</span> as <strong>weights</strong> and <span class="math inline">\(w_{j0}^{(l)}\)</span> as <strong>biases</strong>.The quantity <span class="math inline">\(a_j\)</span> are known as <strong>activations</strong>.Each of them is then transformed using <strong>activation functon</strong> <span class="math inline">\(h(\cdot)\)</span> to give <span class="math display">\[\begin{aligned}
-z_j=h(a_j)\end{aligned}\]</span> These quantities correspond to the outputs of the basis functions in linear model that,in the context of neural networks,are called <strong>hidden units</strong>.The nonlinear functions <span class="math inline">\(h(\cdot)\)</span> are generally chosen to be sigmoidal or the ’<span class="math inline">\(tanh\)</span>’ function.</p>
+    a_j^{(l+1)} &amp;= \sum_{i=1}^{D}w_{ji}^{(l)}x_i+w_{j0}^{(l)} \\
+        &amp;= \vec{w}^{(l)}\vec{x}^{(l)}\end{aligned}\]</span> where <span class="math inline">\(j=1,...,M\)</span>,and the superscript <span class="math inline">\((l)\)</span> indicates the <span class="math inline">\(l-the\)</span> layer of the network.We refer the parameters <span class="math inline">\(w_{ji}^{(l)}\)</span> as <strong>weights</strong> and <span class="math inline">\(w_{j0}^{(l)}\)</span> as <strong>biases</strong>.The quantity <span class="math inline">\(a_j\)</span> are known as <strong>activations</strong>.Each of them is then transformed using <strong>activation function</strong> <span class="math inline">\(h(\cdot)\)</span> to give <span class="math display">\[\begin{aligned}
+    z_j=h(a_j)\end{aligned}\]</span> These quantities correspond to the outputs of the basis functions in linear model that,in the context of neural networks,are called <strong>hidden units</strong>.The nonlinear functions <span class="math inline">\(h(\cdot)\)</span> are generally chosen to be sigmoidal or the ’<span class="math inline">\(tanh\)</span>’ function.</p>
 <p>The transformation of the following layer of the network,combine these values to give <strong>output unit activations</strong> <span class="math display">\[\begin{aligned}
-a_k=\sum_{j=1}^{M}w_{kj}^{(2)}z_j+w_{k0}^{(2)}\end{aligned}\]</span> where <span class="math inline">\(k=1,...,K\)</span>,and <span class="math inline">\(K\)</span> is the total number of outputs.</p>
+    a_k=\sum_{j=1}^{M}w_{kj}^{(2)}z_j+w_{k0}^{(2)}\end{aligned}\]</span> where <span class="math inline">\(k=1,...,K\)</span>,and <span class="math inline">\(K\)</span> is the total number of outputs.</p>
 <p>For regression,<span class="math inline">\(y_k=a_k\)</span> and binary classification,we can use <span class="math inline">\(y_k=\sigma(a_k)=\dfrac{1}{1+\exp(-a)}\)</span>.Finally,for multiclass problems,a <strong>softmax</strong> activation function is used.<strong>Unit activation function</strong> is discussed later.</p>
 <p>The process of evaluating the output of the network diagram is interpreted as a <strong>forward propagation</strong> of information through the network.Deterministic rather than stochastic variables of internal nodes do not represent probabilistic graphical models.Each (hidden or output) unit in such network computes a function given by <span class="math display">\[\begin{aligned}
-z_k=h(\sum_j w_{kj}z_j)\end{aligned}\]</span> where the sum runs over all units that send connections to unit <span class="math inline">\(k\)</span> (including the bias parameter).</p>
+    z_k=h(\sum_j w_{kj}z_j)\end{aligned}\]</span> where the sum runs over all units that send connections to unit <span class="math inline">\(k\)</span> (including the bias parameter).</p>
 <h3 id="weight-space-symmetries">Weight-space symmetries</h3>
 <p>Consider a two-layer network as shown before.For <span class="math inline">\(M\)</span> hidden units,there will be <span class="math inline">\(M\)</span> ’sign-flip’ symmetries,i.e.,<span class="math inline">\(2^M\)</span> equivalent weight vectors.Similarly,interchanging the values of all the weights(and the bias) can give rise to the same mapping function from inputs to outputs represented by the network.There will be <span class="math inline">\(M!\)</span> equivalent weight vectors.The network have an overall weight-space symmetry factor of <span class="math inline">\(M!2^M\)</span>.</p>
 <h2 id="network-training">Network Training</h2>
 <p>Given a training set comprising a set of input vectors <span class="math inline">\({\vec{x}_n}\)</span>,where <span class="math inline">\(n=1,...,N\)</span>,together with a corresponding set of target vectors <span class="math inline">\({\vec{t}_n}\)</span>,we minimize the error function.We can provide a probabilistic interpretation to the network outputs.</p>
 <p>For regression,and for the moment we consider a single target variable <span class="math inline">\(t\)</span> that can take any real value.We assume that <span class="math inline">\(t\)</span> has a Gaussian distribution with an <span class="math inline">\(\vec{x}\)</span>-dependent mean,which is given by the output of the neural network,so that <span class="math display">\[\begin{aligned}
-p(t|\vec{w},\vec{w})=\mathcal{N}(t|y(\vec{x},\vec{w}),\beta^{-1})\end{aligned}\]</span> where <span class="math inline">\(\beta\)</span> is the precision (inverse variance) of the Gaussian noise.Maximize the likelihood function as in linear models.View the network as having an output activation function that id the identity,so that <span class="math inline">\(y_k=a_k\)</span>.The corresponding sum-of-squares error function has the property <span class="math display">\[\begin{aligned}
+    p(t|\vec{w},\vec{w})=\mathcal{N}(t|y(\vec{x},\vec{w}),\beta^{-1})\end{aligned}\]</span> where <span class="math inline">\(\beta\)</span> is the precision (inverse variance) of the Gaussian noise.Maximize the likelihood function as in linear models.View the network as having an output activation function that id the identity,so that <span class="math inline">\(y_k=a_k\)</span>.The corresponding sum-of-squares error function has the property <span class="math display">\[\begin{aligned}
 \label{eqn:output activation function derivative}
-\dfrac{\partial E}{\partial a_k}=\dfrac{\partial E}{\partial y_k}=y_k - t_k\end{aligned}\]</span></p>
+    \dfrac{\partial E}{\partial a_k}=\dfrac{\partial E}{\partial y_k}=y_k - t_k\end{aligned}\]</span></p>
 <p>For binary classification in which <span class="math inline">\(t\in{0,1}\)</span>,consider a network having a single output whose activation function is a logistic sigmoid <span class="math display">\[\begin{aligned}
-y=\sigma(a)=\dfrac{1}{1+\exp(-a)}\end{aligned}\]</span> We can interpret <span class="math inline">\(y(\vec{x},\vec{w})\)</span> as the conditional probability <span class="math inline">\(p(\mathcal{C}_1|\vec{x})\)</span>.the conditional distribution of targets given inputs is then a Bernoulli distribution of the form <span class="math display">\[\begin{aligned}
-p(t|\vec{x},\vec{w})=y(\vec{x},\vec{w})^t{1-y(\vec{x},\vec{w})}^{1-t}\end{aligned}\]</span></p>
+    y=\sigma(a)=\dfrac{1}{1+\exp(-a)}\end{aligned}\]</span> We can interpret <span class="math inline">\(y(\vec{x},\vec{w})\)</span> as the conditional probability <span class="math inline">\(p(\mathcal{C}_1|\vec{x})\)</span>.the conditional distribution of targets given inputs is then a Bernoulli distribution of the form <span class="math display">\[\begin{aligned}
+    p(t|\vec{x},\vec{w})=y(\vec{x},\vec{w})^t\{{1-y(\vec{x},\vec{w})}^{1-t}\}\end{aligned}\]</span></p>
 <p>For <span class="math inline">\(K\)</span> separate binary classifications,the conditional distribution of the targets is <span class="math display">\[\begin{aligned}
-p(\vec{t}|\vec{x},\vec{w})=\prod_{k=1}^{K}y_k(\vec{x},\vec{w})^t_k{1-y(\vec{x},\vec{w})}^{1-t_k}\end{aligned}\]</span> Taking the negative logarithm of the corresponding likelihood function,we get <strong>cross-entropy</strong> error function <span class="math display">\[\begin{aligned}
-E(\vec{w})=-\sum_{n=1}^{N}\sum_{k=1}^{K}{t_{nk}\ln y_{nk}+(1-t_{nk})\ln(1-y_{nk})}\end{aligned}\]</span> The derivative of the error function with respect to the <strong>activation</strong> for a particular output unit is <span class="math display">\[\begin{aligned}
-\dfrac{\partial E}{\partial a_k}
-&amp;=\dfrac{\partial {-\sum_{n=1}^{N}\sum_{k=1}^{K}{t_{nk}\ln y_{nk}+(1-t_{nk})\ln(1-y_{nk})} }}{\partial a_k} \\
-&amp;=-{t_{k} \dfrac{y_{k}(1-y_{k})}{y_{k}} +(1-t_{k}\dfrac{-y_{k}(1-y_{k})}{1-y_{k}}) } \\
-&amp;={y_{k}-t_{k}}\end{aligned}\]</span></p>
+    p(\vec{t}|\vec{x},\vec{w})=\prod_{k=1}^{K}y_k(\vec{x},\vec{w})^t_k[1-y(\vec{x},\vec{w})]^{1-t_k}\end{aligned}\]</span> Taking the negative logarithm of the corresponding likelihood function,we get <strong>cross-entropy</strong> error function <span class="math display">\[\begin{aligned}
+    E(\vec{w})=-\sum_{n=1}^{N}\sum_{k=1}^{K}{t_{nk}\ln y_{nk}+(1-t_{nk})\ln(1-y_{nk})}\end{aligned}\]</span> The derivative of the error function with respect to the <strong>activation</strong> for a particular output unit is <span class="math display">\[\begin{aligned}
+    \dfrac{\partial E_n}{\partial a_k}
+    &amp;=\dfrac{\partial {-\sum_{k=1}^{K}{t_{nk}\ln y_{nk}+(1-t_{nk})\ln(1-y_{nk})} }}{\partial a_k} \\
+    &amp;=-{t_{k} \dfrac{y_{k}(1-y_{k})}{y_{k}} +(1-t_{k}\dfrac{-y_{k}(1-y_{k})}{1-y_{k}}) } \\
+    &amp;={y_{k}-t_{k}}\end{aligned}\]</span></p>
 <p>Following the logistic regression,the <strong>output unit activation</strong> is given by the <strong>softmax</strong> function <span class="math display">\[\begin{aligned}
-y_k(\vec{x},\vec{w})=\dfrac{\exp(a_k(\vec{x},\vec{w}))}{\sum_j\exp(a_j(\vec{x},\vec{w})) }\end{aligned}\]</span></p>
+    y_k(\vec{x},\vec{w})=\dfrac{\exp(a_k(\vec{x},\vec{w}))}{\sum_j\exp(a_j(\vec{x},\vec{w})) }\end{aligned}\]</span></p>
 <h3 id="parameter-optimization">Parameter optimization</h3>
 <p>Turn next to the task of finding a weight vector <span class="math inline">\(\vec{w}\)</span> which minimizes the chosen function <span class="math inline">\(E(\vec{w})\)</span>.</p>
 <div class="figure">
@@ -51,7 +52,7 @@ y_k(\vec{x},\vec{w})=\dfrac{\exp(a_k(\vec{x},\vec{w}))}{\sum_j\exp(a_j(\vec{x},\
 <p class="caption">geometrical view of the error function <span class="math inline">\(E(\vec{w})\)</span> as a surface sitting over weight space.A is a local minimum and B is the global minimum.The local gradient of the error surface is given by the vector <span class="math inline">\(\nabla E\)</span>.</p>
 </div>
 <p>Resort to <strong>iterative</strong> numerical procedures.Most techniques involve choosing some initial value <span class="math inline">\(\vec{w}^{(0)}\)</span> for weight vector and then moving through weight space in a succession of steps of the form <span class="math display">\[\begin{aligned}
-\vec{w}^{(\eta+1)}=\vec{w}^{(\eta)}+\Delta \vec{w}^{(\eta)}\end{aligned}\]</span></p>
+    \vec{w}^{(\eta+1)}=\vec{w}^{(\eta)}+\Delta \vec{w}^{(\eta)}\end{aligned}\]</span></p>
 <p>Many algorithms make use of gradient information,evaluating <span class="math inline">\(\nabla E(\vec{w})\)</span> at the new weight vector <span class="math inline">\(\vec{w}^{(\eta+1)}\)</span>.</p>
 <h3 id="local-quadratic-approximation">Local quadratic approximation</h3>
 <p>Consider the <strong>Taylor expansion</strong> of <span class="math inline">\(E(\vec{w})\)</span> around some point in weight space.</p>
@@ -59,37 +60,67 @@ y_k(\vec{x},\vec{w})=\dfrac{\exp(a_k(\vec{x},\vec{w}))}{\sum_j\exp(a_j(\vec{x},\
 <p>It is possible to evaluate the gradient of an error function efficiently by means of the backpropagation procedure.Because each evaluation of <span class="math inline">\(\nabla E\)</span> brings <span class="math inline">\(W\)</span> items of information,we might hope to find the minimum of the function in <span class="math inline">\(O(W)\)</span> gradient evaluations.Each such evaluation takes only <span class="math inline">\(O(W)\)</span> steps and so the minimum can be now found in <span class="math inline">\(O(W^2)\)</span> steps.</p>
 <h3 id="gradient-descent-optimization">Gradient descent optimization</h3>
 <p><strong>Batch gradient descent</strong> <span class="math display">\[\begin{aligned}
-\vec{w}^{(\tau+1)}=\vec{w}^{(\tau)}-\eta\nabla E(\vec{w})^{(\tau)}\end{aligned}\]</span> where the parameter <span class="math inline">\(\eta&gt;0\)</span> is known as the <strong>learning rate</strong>.</p>
+    \vec{w}^{(\tau+1)}=\vec{w}^{(\tau)}-\eta\nabla E(\vec{w})^{(\tau)}\end{aligned}\]</span> where the parameter <span class="math inline">\(\eta&gt;0\)</span> is known as the <strong>learning rate</strong>.</p>
 <p>More efficient methods than this poor algorithm are <strong>conjugate gradients</strong> and <strong>quasi-Newton</strong> methods,which are more robust and much faster.<strong>On-line</strong> version of gradient has also proved useful in practice.On-line gradient descent,known as <strong>sequential gradient descent</strong> or <strong>stochastic gradient descent</strong>,makes an update to the weight vector based on one data point at a time,so that <span class="math display">\[\begin{aligned}
-\vec{w}^{(\tau+1)}=\vec{w}^{(\tau)}-\eta \nabla E(\vec{w}^{(\tau)})\end{aligned}\]</span></p>
+    \vec{w}^{(\tau+1)}=\vec{w}^{(\tau)}-\eta \nabla E(\vec{w}^{(\tau)})\end{aligned}\]</span></p>
 <h2 id="error-backpropagation">Error Backpropagation</h2>
 <p>The goal in this section is to find an efficient technique for evaluating the gradient of an error function <span class="math inline">\(E(\vec{w})\)</span> for a feed-forward neural network.This can be achieved using a local message passing scheme in which information is sent alternately forwards and backwards through the network,known as <strong>error backpropagation</strong> or <strong>backprop</strong>.</p>
 <h3 id="evaluation-of-error-function-derivatives">Evaluation of error-function derivatives</h3>
 <p>Many error functions of practical interest,for instance those defined by maximum likelihood for a set of i.i.d data,comprise a sum of terms,on for each data point,so that <span class="math display">\[\begin{aligned}
-E(\vec{w})=\sum_{n=1}^{N}E_n(\vec{w})\end{aligned}\]</span></p>
+    E(\vec{w})=\sum_{n=1}^{N}E_n(\vec{w})\end{aligned}\]</span></p>
 <p>In a general feed-forward network,each unit computes a weighted sum of its inputs of the form <span class="math display">\[\begin{aligned}
-a_j=\sum_i w_{ji} z_i\end{aligned}\]</span> where <span class="math inline">\(z_i\)</span> is the activation of a unit that sends a connection to unit <span class="math inline">\(j\)</span> and <span class="math inline">\(w_{ji}\)</span> is the weight associated with that connection.The sum is transformed by an activation function <span class="math inline">\(h(\cdot)\)</span> to give the activation <span class="math inline">\(z_j\)</span> of unit <span class="math inline">\(j\)</span> in the form <span class="math display">\[\begin{aligned}
-z_j=h(a_j)\end{aligned}\]</span></p>
+    a_j=\sum_i w_{ji} z_i\end{aligned}\]</span> where <span class="math inline">\(z_i\)</span> is the activation of a unit that sends a connection to unit <span class="math inline">\(j\)</span> and <span class="math inline">\(w_{ji}\)</span> is the weight associated with that connection.The sum is transformed by an activation function <span class="math inline">\(h(\cdot)\)</span> to give the activation <span class="math inline">\(z_j\)</span> of unit <span class="math inline">\(j\)</span> in the form <span class="math display">\[\begin{aligned}
+    z_j=h(a_j)\end{aligned}\]</span></p>
 <p>Evaluate the derivate of <span class="math inline">\(E_n\)</span> with respect to a weight <span class="math inline">\(w_{ji}\)</span>,applying the <strong>chain rule</strong> for partial derivatives <span class="math display">\[\begin{aligned}
-\dfrac{\partial E_n}{\partial w_{ji}}=\dfrac{\partial E_n}{\partial w_{ji}}\dfrac{a_j}{\partial w_{ji}}\end{aligned}\]</span> Now introduce a notation <span class="math display">\[\begin{aligned}
-\delta_j \equiv \dfrac{\partial E_n}{\partial a_j}\end{aligned}\]</span> referred as <strong>errors</strong>. Using the sum form <span class="math display">\[\begin{aligned}
-\dfrac{\partial a_j}{\partial w_{ji}} = z_i\end{aligned}\]</span> Substituting them back <span class="math display">\[\begin{aligned}
-\dfrac{\partial E_n}{\partial w_{ji}}=\delta_j z_i.\end{aligned}\]</span> For the output units,we have <span class="math display">\[\begin{aligned}
-\delta_k=y_k-t_k\end{aligned}\]</span></p>
+    \dfrac{\partial E_n}{\partial w_{ji}}=\dfrac{\partial E_n}{\partial w_{ji}}\dfrac{a_j}{\partial w_{ji}}\end{aligned}\]</span> Now introduce a notation <span class="math display">\[\begin{aligned}
+    \delta_j \equiv \dfrac{\partial E_n}{\partial a_j}\end{aligned}\]</span> referred as <strong>errors</strong>. Using the sum form <span class="math display">\[\begin{aligned}
+    \dfrac{\partial a_j}{\partial w_{ji}} = z_i\end{aligned}\]</span> Substituting them back <span class="math display">\[\begin{aligned}
+    \dfrac{\partial E_n}{\partial w_{ji}}=\delta_j z_i.\end{aligned}\]</span> For the output units,we have <span class="math display">\[\begin{aligned}
+    \delta_k=y_k-t_k\end{aligned}\]</span></p>
 <p>For hidden units,make use of the chain rule for partial derivatives <span class="math display">\[\begin{aligned}
-\delta_j\equiv \dfrac{\partial E_n}{\partial a_j}=
-\sum_k \dfrac{\partial E_n}{\partial a_k}\dfrac{\partial a_k}{\partial a_j} \\\end{aligned}\]</span> where the sum runs over all units <span class="math inline">\(k\)</span> to which unit <span class="math inline">\(j\)</span> sends connections. <span class="math display">\[\begin{aligned}
-\because \delta_k &amp;= \dfrac{\partial E_n}{\partial a_k}\\
+    \delta_j\equiv \dfrac{\partial E_n}{\partial a_j}=
+    \sum_k \dfrac{\partial E_n}{\partial a_k}\dfrac{\partial a_k}{\partial a_j} \\\end{aligned}\]</span> where the sum runs over all units <span class="math inline">\(k\)</span> to which unit <span class="math inline">\(j\)</span> sends connections. <span class="math display">\[\begin{aligned}
+    \because \delta_k &amp;= \dfrac{\partial E_n}{\partial a_k}\\
+    \therefore
+    \delta_j\equiv \dfrac{\partial E_n}{\partial a_j} &amp;=
+    \sum_k \dfrac{\partial E_n}{\partial a_k}\dfrac{\partial a_k}{\partial a_j} \\
+    &amp;=\sum_k \delta_k\dfrac{\partial a_k}{\partial a_j} \\
+    &amp;=\sum_k \delta_k h&#39;(a_j)w_{kj} \\
+    &amp;= h&#39;(a_j)\sum_k w_{kj}\delta_k\end{aligned}\]</span></p>
+<h4 id="back-propagation-algorithm-wrap-up">back-propagation algorithm wrap-up</h4>
+<p>We’ll use <span class="math inline">\(\vec{w}_{ij}^{l}\)</span> to denote the <strong>weight</strong> for the connection from the <span class="math inline">\(k\)</span>th neuron in the <span class="math inline">\((l-1)\)</span>th layer to the <span class="math inline">\(j\)</span>th neuron in the <span class="math inline">\((l)\)</span>th layer.And <span class="math inline">\(b_j^l\)</span> for the bias of the <span class="math inline">\(j\)</span>th neuron in the <span class="math inline">\(l\)</span>th layer, <span class="math inline">\(a_j^l\)</span> for the activation(weighted input) of the <span class="math inline">\(j\)</span>th neuron in the <span class="math inline">\(l\)</span>th layer,<span class="math inline">\(\sigma\)</span> denotes the element-wise activation function,<span class="math inline">\(z_j^l\)</span> denotes the output of <span class="math inline">\(j\)</span>th neuron in the <span class="math inline">\(l\)</span>th layer. Then we have <span class="math display">\[\begin{aligned}
+    \vec{a}^l &amp;\equiv \vec{W}^l \vec{z}^{l-1}+\vec{b}^l \\
+    \vec{z}^{l} &amp;\equiv \sigma(\vec{z}^{l})\end{aligned}\]</span></p>
+<p><span class="math inline">\(s\odot t\)</span> denotes <strong>element-wise product</strong> of two matrices (vectors): <span class="math display">\[\begin{aligned}
+(s\odot t)_j = s_jt_j\end{aligned}\]</span></p>
+<p>Define the error <span class="math inline">\(\sigma_j^l\)</span> of neuron <span class="math inline">\(J\)</span> in the layer <span class="math inline">\(l\)</span> by <span class="math display">\[\begin{aligned}
+\vec{\delta}^l_j \equiv \frac{\partial C}{\partial \vec{a}^l_j}\end{aligned}\]</span></p>
+<p>Using <strong>chain rule of derivatives</strong>,the error in the output layer is: <span class="math display">\[\begin{aligned}
+\delta^L_j &amp;=&amp; \frac{\partial C}{\partial a^L_j}, \\
+&amp;=&amp; \sum_k \frac{\partial C}{\partial z^L_k} \frac{\partial z^L_k}{\partial a^L_j}, \\
+&amp;=&amp; \delta^L_j = \frac{\partial C}{\partial z^L_j} \frac{\partial z^L_j}{\partial a^L_j}, \\
+&amp;=&amp; \frac{\partial C}{\partial \vec{z}^L_j} \sigma&#39;(\vec{a}^L_j).\end{aligned}\]</span> And the matrix-based form is: <span class="math display">\[\begin{aligned}
+\delta^L &amp; = &amp; \nabla_z C \odot \sigma&#39;(a^L). \\
+\delta^L &amp; = &amp;\Sigma&#39;(a^L) \nabla_z C,\end{aligned}\]</span> where <span class="math inline">\(\Sigma&#39;(z^L)\)</span> is a square matrix whose diagonal entries are the values <span class="math inline">\(\sigma&#39;(z^L)\)</span>, and whose off-diagonal entries are zero.</p>
+<p>Propagation (recursive relationship): <span class="math display">\[\begin{aligned}
+\delta_j^l &amp; = &amp; \frac{\partial C}{\partial a^l_j}\\
+&amp; = &amp; \sum_k \frac{\partial C}{\partial a^{l+1}_k} \frac{\partial a^{l+1}_k}{\partial a^l_j}\\ 
+&amp; = &amp; \sum_k \frac{\partial a^{l+1}_k}{\partial a^l_j} \delta^{l+1}_k, \\
+\because a^{l+1}_k &amp;=&amp; \sum_j w^{l+1}_{kj} z^l_j +b^{l+1}_k = \sum_j w^{l+1}_{kj} \sigma(a^l_j) +b^{l+1}_k. \\
+\therefore \frac{\partial a^{l+1}_k}{\partial a^l_j} &amp;=&amp; w^{l+1}_{kj} \sigma&#39;(a^l_j) \\
 \therefore
-\delta_j\equiv \dfrac{\partial E_n}{\partial a_j} &amp;=
-\sum_k \dfrac{\partial E_n}{\partial a_k}\dfrac{\partial a_k}{\partial a_j} \\
-&amp;=\sum_k \delta_k\dfrac{\partial a_k}{\partial a_j} \\
-&amp;=\sum_k \delta_k h&#39;(a_j)w_{kj} \\
-&amp;= h&#39;(a_j)\sum_k w_{kj}\delta_k\end{aligned}\]</span></p>
+\delta^l &amp;=&amp; ((\vec{W}^{l+1})^T \delta^{l+1}) \odot \sigma&#39;(\vec{a}^l), \\
+\delta^l &amp;=&amp; \Sigma&#39;(a^l) (w^{l+1})^T \delta^{l+1}.\\\end{aligned}\]</span></p>
+<p>Rate of change of cost with respect to bias in the network: <span class="math display">\[\begin{aligned}
+  \frac{\partial C}{\partial b^l_j} =
+\delta^l_j.\end{aligned}\]</span></p>
+<p>Rate of change of the cost with respect to any weight matrix in the network: <span class="math display">\[\begin{aligned}
+\frac{\partial C}{\partial w^l_{jk}} &amp;= a^{l-1}_k \delta^l_j \\
+\frac{\partial C}{\partial w} &amp;= a_{\rm in} \delta_{\rm out},\end{aligned}\]</span></p>
 <h3 id="efficiency-of-back-propagation">Efficiency of back propagation</h3>
 <h3 id="the-jacobian-matrix">The Jacobian matrix</h3>
-<p>Backpropagation can also be applied to the calculation of other derivatives.Consider the evaluation of the <strong>Jacobian matrix</strong>,whose elements are given by the derivatives of the network outputs with respects to the inputs <span class="math display">\[\begin{aligned}
-J_{ki}=\dfrac{\partial y_k}{\partial x_i}\end{aligned}\]</span></p>
+<p>Back-propagation can also be applied to the calculation of other derivatives.Consider the evaluation of the <strong>Jacobian matrix</strong>,whose elements are given by the derivatives of the network outputs with respects to the inputs <span class="math display">\[\begin{aligned}
+    J_{ki}=\dfrac{\partial y_k}{\partial x_i}\end{aligned}\]</span></p>
 <h2 id="the-hessian-matrix">The Hessian Matrix</h2>
 <h2 id="regularization-in-neural-networks">Regularization in Neural Networks</h2>
 <h2 id="mixture-density-networks">Mixture Density Networks</h2>
