@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="chap:Bayesian statistics">Bayesian statistics</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Using the posterior distribution to summarize everything we know about a set of unknown variables is at the core of Bayesian statistics. In this chapter, we discuss this approach to statistics in more detail.</p>
+<h2 id="summarizing-posterior-distributions">Summarizing posterior distributions</h2>
+<p>The posterior <span class="math inline">\(p(\vec{\theta}|\mathcal{D})\)</span> summarizes everything we know about the unknown quantities <span class="math inline">\(\vec{\theta}\)</span>. In this section, we discuss some simple quantities that can be derived from a probability distribution, such as a posterior. These summary statistics are often easier to understand and visualize than the full joint.</p>
+<h3 id="map-estimation">MAP estimation</h3>
+<p>We can easily compute a <strong>point estimate</strong> of an unknown quantity by computing the posterior mean, median or mode. In Section [sec:Bayesian-decision-theory], we discuss how to use decision theory to choose between these methods. Typically the posterior mean or median is the most appropriate choice for a realvalued quantity, and the vector of posterior marginals is the best choice for a discrete quantity. However, the posterior mode, aka the MAP estimate, is the most popular choice because it reduces to an optimization problem, for which efficient algorithms often exist. Futhermore, MAP estimation can be interpreted in non-Bayesian terms, by thinking of the log prior as a regularizer (see Section TODO for more details).</p>
+<p>Although this approach is computationally appealing, it is important to point out that there are various drawbacks to MAP estimation, which we briefly discuss below. This will provide motivation for the more thoroughly Bayesian approach which we will study later in this chapter(and elsewhere in this book).</p>
+<h4 id="no-measure-of-uncertainty">No measure of uncertainty</h4>
+<p>The most obvious drawback of MAP estimation, and indeed of any other <em>point estimate</em> such as the posterior mean or median, is that it does not provide any measure of uncertainty. In many applications, it is important to know how much one can trust a given estimate. We can derive such confidence measures from the posterior, as we discuss in Section [sec:Credible-intervals].</p>
+<h4 id="plugging-in-the-map-estimate-can-result-in-overfitting">Plugging in the MAP estimate can result in overfitting</h4>
+<p>If we don’t model the uncertainty in our parameters, then our predictive distribution will be overconfident. Overconfidence in predictions is particularly problematic in situations where we may be risk averse; see Section [sec:Bayesian-decision-theory] for details.</p>
+<h4 id="the-mode-is-an-untypical-point">The mode is an untypical point</h4>
+<p>Choosing the mode as a summary of a posterior distribution is often a very poor choice, since the mode is usually quite untypical of the distribution, unlike the mean or median. The basic problem is that the mode is a point of measure zero, whereas the mean and median take the volume of the space into account. See Figure [fig:untypical-point].</p>
+<p><br />
+</p>
+<p>How should we summarize a posterior if the mode is not a good choice? The answer is to use decision theory, which we discuss in Section [sec:Bayesian-decision-theory]. The basic idea is to specify a loss function, where <span class="math inline">\(L(\theta,\hat{\theta})\)</span> is the loss you incur if the truth is <span class="math inline">\(\theta\)</span> and your estimate is <span class="math inline">\(\hat{\theta}\)</span>. If we use 0-1 loss <span class="math inline">\(L(\theta,\hat{\theta})=\mathbb{I}(\theta \neq \hat{\theta})\)</span>(see section [sec:Loss-function-and-risk-function]), then the optimal estimate is the posterior mode. 0-1 loss means you only get “points” if you make no errors, otherwise you get nothing: there is no “partial credit” under this loss function! For continuous-valued quantities, we often prefer to use squared error loss, <span class="math inline">\(L(\theta,\hat{\theta})=(\theta-\hat{\theta})^2\)</span> ; the corresponding optimal estimator is then the posterior mean, as we show in Section [sec:Bayesian-decision-theory]. Or we can use a more robust loss function, <span class="math inline">\(L(\theta,\hat{\theta})=|\theta-\hat{\theta}|\)</span>, which gives rise to the posterior median.</p>
+<h4 id="map-estimation-is-not-invariant-to-reparameterization">MAP estimation is not invariant to reparameterization *</h4>
+<p>A more subtle problem with MAP estimation is that the result we get depends on how we parameterize the probability distribution. Changing from one representation to another equivalent representation changes the result, which is not very desirable, since the units of measurement are arbitrary (e.g., when measuring distance, we can use centimetres or inches).</p>
+<p>To understand the problem, suppose we compute the posterior forx. If we define y=f(x), the distribution for yis given by Equation [eqn:General-transformations]. The <span class="math inline">\(\frac{\mathrm{d}x}{\mathrm{d}y}\)</span> term is called the Jacobian, and it measures the change in size of a unit volume passed through <span class="math inline">\(f\)</span>. Let <span class="math inline">\(\hat{x}=\arg\max_x p_x(x)\)</span> be the MAP estimate for <span class="math inline">\(x\)</span>. In general it is not the case that <span class="math inline">\(\hat{x}=\arg\max_x p_x(x)\)</span> is given by <span class="math inline">\(f(\hat{x})\)</span>. For example, let <span class="math inline">\(X \sim \mathcal{N}(6,1)\)</span> and <span class="math inline">\(y=f(x)\)</span>, where <span class="math inline">\(f(x)=1/(1+\exp(-x+5))\)</span>.</p>
+<div class="figure">
+<img src="mode-reparameterization.png" alt="Example of the transformation of a density under a nonlinear transform. Note how the mode of the transformed distribution is not the transform of the original mode. Based on Exercise 1.4 of (Bishop 2006b)." />
+<p class="caption">Example of the transformation of a density under a nonlinear transform. Note how the mode of the transformed distribution is not the transform of the original mode. Based on Exercise 1.4 of (Bishop 2006b).<span data-label="fig:mode-reparameterization"></span></p>
+</div>
+<p>We can derive the distribution of <span class="math inline">\(y\)</span> using Monte Carlo simulation (see Section [sec:Monte-Carlo-approximation]). The result is shown in Figure [sec:mode-reparameterization]. We see that the original Gaussian has become “squashed” by the sigmoid nonlinearity. In particular, we see that the mode of the transformed distribution is not equal to the transform of the original mode.</p>
+<p>The MLE does not suffer from this since the likelihood is a function, not a probability density. Bayesian inference does not suffer from this problem either, since the change of measure is taken into account when integrating over the parameter space.</p>
+<h3 id="sec:Credible-intervals">Credible intervals</h3>
+<p>In addition to point estimates, we often want a measure of confidence. A standard measure of confidence in some (scalar) quantity <span class="math inline">\(\theta\)</span> is the “width” of its posterior distribution. This can be measured using a <span class="math inline">\(100(1−\alpha)\%\)</span> credible interval, which is a (contiguous) region <span class="math inline">\(C=(\ell,u)\)</span>(standing for lower and upper) which contains <span class="math inline">\(1−\alpha\)</span> of the posterior probability mass, i.e., <span class="math display">\[C_{\alpha}(\mathcal{D}) \quad \text{where } P(\ell \leq \theta \leq u)=1-\alpha\]</span></p>
+<p>There may be many such intervals, so we choose one such that there is <span class="math inline">\((1−\alpha)/2\)</span> mass in each tail; this is called a <strong>central interval</strong>.</p>
+<p>If the posterior has a known functional form, we can compute the posterior central interval using <span class="math inline">\(\ell=F^{-1}(\alpha/2)\)</span> and <span class="math inline">\(u=F^{-1}(1-\alpha/2)\)</span>, where <span class="math inline">\(F\)</span> is the cdf of the posterior.</p>
+<p>If we don’t know the functional form, but we can draw samples from the posterior, then we can use a Monte Carlo approximation to the posterior quantiles: we simply sort the <span class="math inline">\(\mathcal{S}\)</span> samples, and find the one that occurs at location <span class="math inline">\(\alpha/\mathcal{S}\)</span> along the sorted list. As <span class="math inline">\(\mathcal{S} \rightarrow \infty\)</span>, this converges to the true quantile.</p>
+<p>People often confuse Bayesian credible intervals with frequentist confidence intervals. However, they are not the same thing, as we discuss in Section TODO. In general, credible intervals are usually what people want to compute, but confidence intervals are usually what they actually compute, because most people are taught frequentist statistics but not Bayesian statistics. Fortunately, the mechanics of computing a credible interval is just as easy as computing a confidence interval.</p>
+<h3 id="inference-for-a-difference-in-proportions">Inference for a difference in proportions</h3>
+<p>Sometimes we have multiple parameters, and we are interested in computing the posterior distribution of some function of these parameters. For example, suppose you are about to buy something from Amazon.com, and there are two sellers offering it for the same price. Seller 1 has 90 positive reviews and 10 negative reviews. Seller 2 has 2 positive reviews and 0 negative reviews. Who should you buy from?<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>.</p>
+<p>On the face of it, you should pick seller 2, but we cannot be very confident that seller 2 is better since it has had so few reviews. In this section, we sketch a Bayesian analysis of this problem. Similar methodology can be used to compare rates or proportions across groups for a variety of other settings.</p>
+<p>Let <span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span> be the unknown reliabilities of the two sellers. Since we don’t know much about them, we’ll endow them both with uniform priors, <span class="math inline">\(\theta_i \sim \text{Beta}(1,1)\)</span>. The posteriors are <span class="math inline">\(p(\theta_1|\mathcal{D}_1)=\text{Beta}(91,11)\)</span> and <span class="math inline">\(p(\theta_2|\mathcal{D}_2)=\text{Beta}(3,1)\)</span>.</p>
+<p>We want to compute <span class="math inline">\(p(\theta_1 &gt;\theta_2|\mathcal{D})\)</span>. For convenience, let us define <span class="math inline">\(\delta=\theta_1-\theta_2\)</span> as the difference in the rates. (Alternatively we might want to work in terms of the log-odds ratio.) We can compute the desired quantity using numerical integration <span class="math display">\[\begin{split}
+p(\delta&gt;0|\mathcal{D}) &amp; = \int_0^1\int_0^1 \mathbb{I}(\theta_1&gt;\theta_2)\text{Beta}(\theta_1|91,11) \\
+                        &amp; \quad \text{Beta}(\theta_2|3,1)\mathrm{d}\theta_1\mathrm{d}\theta_2
+\end{split}\]</span></p>
+<p>We find <span class="math inline">\(p(\delta&gt;0|\mathcal{D})=0.710\)</span>, which means you are better off buying from seller 1!</p>
+<h2 id="sec:Bayesian-model-selection">Bayesian model selection</h2>
+<p>In general, when faced with a set of models (i.e., families of parametric distributions) of different complexity, how should we choose the best one? This is called the <strong>model selection</strong> problem.</p>
+<p>One approach is to use cross-validation to estimate the generalization error of all the candidate models, and then to pick the model that seems the best. However, this requires fitting each model <span class="math inline">\(K\)</span> times, where <span class="math inline">\(K\)</span> is the number of CV folds. A more efficient approach is to compute the posterior over models, <span class="math display">\[p(m|\mathcal{D})=\dfrac{p(\mathcal{D}|m)p(m)}{\sum_{m&#39;}p(\mathcal{D}|m&#39;)p(m&#39;)}\]</span></p>
+<p>From this, we can easily compute the MAP model, <span class="math inline">\(\hat{m}=\arg\max_m{p(m|\mathcal{D})}\)</span>. This is called <strong>Bayesian model selection</strong>.</p>
+<p>If we use a uniform prior over models, this amounts to picking the model which maximizes <span class="math display">\[\label{eqn:marginal-likelihood}
+p(\mathcal{D}|m)=\int{p(\mathcal{D}|\vec{\theta})p(\vec{\theta}|m)}\mathrm{d}\vec{\theta}\]</span></p>
+<p>This quantity is called the <strong>marginal likelihood</strong>, the <strong>integrated likelihood</strong>, or the <strong>evidence</strong> for model <span class="math inline">\(m\)</span>. The details on how to perform this integral will be discussed in Section [sec:Computing-the-marginal-likelihood]. But first we give an intuitive interpretation of what this quantity means.</p>
+<h3 id="bayesian-occams-razor">Bayesian Occam’s razor</h3>
+<p>One might think that using <span class="math inline">\(p(\mathcal{D}|m)\)</span> to select models would always favour the model with the most parameters. This is true if we use <span class="math inline">\(p(\mathcal{D}|\hat{\vec{\theta}}_m)\)</span> to select models, where <span class="math inline">\(\hat{\vec{\theta}}_m)\)</span> is the MLE or MAP estimate of the parameters for model <span class="math inline">\(m\)</span>, because models with more parameters will fit the data better, and hence achieve higher likelihood. However, if we integrate out the parameters, rather than maximizing them, we are automatically protected from overfitting: models with more parameters do not necessarily have higher <em>marginal likelihood</em>. This is called the <strong>Bayesian Occam’s razor</strong> effect (MacKay 1995b; Murray and Ghahramani 2005), named after the principle known as <strong>Occam’s razor</strong>, which says one should pick the simplest model that adequately explains the data.</p>
+<p>One way to understand the Bayesian Occam’s razor is to notice that the marginal likelihood can be rewritten as follows, based on the chain rule of probability (Equation [eqn:product-rule]): <span class="math display">\[\begin{split}
+p(D) &amp; =p((\vec{x}_1,y_1))p((\vec{x}_2,y_2)|(\vec{x}_1,y_1)) \\
+     &amp; \quad p((\vec{x}_3,y_3)|(\vec{x}_1,y_1):(\vec{x}_2,y_2))\cdots \\
+     &amp; \quad p((\vec{x}_N,y_N)|(\vec{x}_1,y_1):(\vec{x}_{N-1},y_{N-1}))
+\end{split}\]</span></p>
+<p>This is similar to a leave-one-out cross-validation estimate (Section [sec:Cross-validation]) of the likelihood, since we predict each future point given all the previous ones. (Of course, the order of the data does not matter in the above expression.) If a model is too complex, it will overfit the “early” examples and will then predict the remaining ones poorly.</p>
+<p>Another way to understand the Bayesian Occam’s razor effect is to note that probabilities must sum to one. Hence <span class="math inline">\(\sum_{p(\mathcal{D}&#39;)} p(m|\mathcal{D}&#39;)=1\)</span>, where the sum is over all possible data sets. Complex models, which can predict many things, must spread their probability mass thinly, and hence will not obtain as large a probability for any given data set as simpler models. This is sometimes called the <strong>conservation of probability mass</strong> principle, and is illustrated in Figure [fig:Bayesian-Occams-razor].</p>
+<div class="figure">
+<img src="Bayesian-Occams-razor.png" alt="A schematic illustration of the Bayesian Occam’s razor. The broad (green) curve corresponds to a complex model, the narrow (blue) curve to a simple model, and the middle (red) curve is just right. Based on Figure 3.13 of (Bishop 2006a). " />
+<p class="caption">A schematic illustration of the Bayesian Occam’s razor. The broad (green) curve corresponds to a complex model, the narrow (blue) curve to a simple model, and the middle (red) curve is just right. Based on Figure 3.13 of (Bishop 2006a). <span data-label="fig:Bayesian-Occams-razor"></span></p>
+</div>
+<p>When using the Bayesian approach, we are not restricted to evaluating the evidence at a finite grid of values. Instead, we can use numerical optimization to find <span class="math inline">\(\lambda^*=\arg\max_{\lambda}p(\mathcal{D}|\lambda)\)</span>. This technique is called <strong>empirical Bayes</strong> or <strong>type II maximum likelihood</strong> (see Section [sec:Empirical-Bayes] for details). An example is shown in Figure TODO(b): we see that the curve has a similar shape to the CV estimate, but it can be computed more efficiently.</p>
+<h3 id="sec:Computing-the-marginal-likelihood">Computing the marginal likelihood (evidence)</h3>
+<p>When discussing parameter inference for a fixed model, we often wrote <span class="math display">\[p(\vec{\theta}|\mathcal{D},m) \propto p(\vec{\theta}|m)p(\mathcal{D}|\vec{\theta},m)\]</span> thus ignoring the normalization constant <span class="math inline">\(p(\mathcal{D}|m)\)</span>. This is valid since <span class="math inline">\(p(\mathcal{D}|m)\)</span>is constant wrt <span class="math inline">\(\vec{\theta}\)</span>. However, when comparing models, we need to know how to compute the marginal likelihood, <span class="math inline">\(p(\mathcal{D}|m)\)</span>. In general, this can be quite hard, since we have to integrate over all possible parameter values, but when we have a conjugate prior, it is easy to compute, as we now show.</p>
+<p>Let <span class="math inline">\(p(\vec{\theta})=q(\vec{\theta})/Z_0\)</span> be our prior, where <span class="math inline">\(q(\vec{\theta})\)</span> is an unnormalized distribution, and <span class="math inline">\(Z_0\)</span> is the normalization constant of the prior. Let <span class="math inline">\(p(\mathcal{D}|\vec{\theta})=q(\mathcal{D}|\vec{\theta})/Z_{\ell}\)</span> be the likelihood, where <span class="math inline">\(Z_{\ell}\)</span> contains any constant factors in the likelihood. Finally let <span class="math inline">\(p(\vec{\theta}|\mathcal{D})=q(\vec{\theta}|\mathcal{D})/Z_N\)</span> be our posterior , where <span class="math inline">\(q(\vec{\theta}|\mathcal{D})=q(\mathcal{D}|\vec{\theta})q(\vec{\theta})\)</span> is the unnormalized posterior, and <span class="math inline">\(Z_N\)</span> is the normalization constant of the posterior. We have <span class="math display">\[\begin{aligned}
+p(\vec{\theta}|\mathcal{D})&amp; =\dfrac{p(\mathcal{D}|\vec{\theta})p(\vec{\theta})}{p(\mathcal{D})} \\
+\dfrac{q(\vec{\theta}|\mathcal{D})}{Z_N}&amp; =\dfrac{q(\mathcal{D}|\vec{\theta})q(\vec{\theta})}{Z_{\ell}Z_0p(\mathcal{D})} \\
+p(\mathcal{D})&amp; = \dfrac{Z_N}{Z_0Z_{\ell}}\end{aligned}\]</span></p>
+<p>So assuming the relevant normalization constants are tractable, we have an easy way to compute the marginal likelihood. We give some examples below.</p>
+<h4 id="beta-binomial-model">Beta-binomial model</h4>
+<p>Let us apply the above result to the Beta-binomial model. Since we know <span class="math inline">\(p(\vec{\theta}|\mathcal{D})=\mathrm{Beta}(\vec{\theta}|a&#39;,b&#39;)\)</span>, where <span class="math inline">\(a&#39;=a+N_1\)</span>, <span class="math inline">\(b&#39;=b+N_0\)</span>, we know the normalization constant of the posterior is <span class="math inline">\(B(a&#39;,b&#39;)\)</span>. Hence <span class="math display">\[\begin{aligned}
+p(\theta|\mathcal{D})&amp; =\dfrac{p(\mathcal{D}|\theta)p(\theta)}{p(\mathcal{D})} \\
+    &amp; =\dfrac{1}{p(\mathcal{D})}\left[\dfrac{1}{B(a,b)}\theta^{a-1}(1-\theta)^{b-1}\right] \nonumber \\
+    &amp; \quad \left[\dbinom{N}{N_1}\theta^{N_1}(1-\theta)^{N_0}\right] \\
+    &amp; =\dbinom{N}{N_1}\dfrac{1}{p(\mathcal{D})}\dfrac{1}{B(a,b)}\left[\theta^{a+N_1-1}(1-\theta)^{b+N_0-1}\right]\end{aligned}\]</span></p>
+<p>So <span class="math display">\[\begin{aligned}
+\dfrac{1}{B(a+N_1,b+N_0)} &amp; = \dbinom{N}{N_1}\dfrac{1}{p(\mathcal{D})}\dfrac{1}{B(a,b)} \\
+p(\mathcal{D}) &amp; = \dbinom{N}{N_1}\dfrac{B(a+N_1,b+N_0)}{B(a,b)}\end{aligned}\]</span></p>
+<p>The marginal likelihood for the Beta-Bernoulli model is the same as above, except it is missingthe <span class="math inline">\(\binom{N}{N_1}\)</span> term.</p>
+<h4 id="dirichlet-multinoulli-model">Dirichlet-multinoulli model</h4>
+<p>By the same reasoning as the Beta-Bernoulli case, one can show that the marginal likelihood for the Dirichlet-multinoulli model is given by <span class="math display">\[\begin{aligned}
+p(\mathcal{D}) &amp; =\dfrac{B(\vec{N}+\vec{\alpha})}{B(\vec{\alpha})} \\
+   &amp; = \dfrac{\Gamma(\sum_k \alpha_k)}{\Gamma(N+\sum_k \alpha_k)}\prod\limits_k \dfrac{\Gamma(N_k+\alpha_k)}{\Gamma(\alpha_k)}\end{aligned}\]</span></p>
+<h4 id="gaussian-gaussian-wishart-model">Gaussian-Gaussian-Wishart model</h4>
+<p>Consider the case of an MVN with a conjugate NIW prior. Let <span class="math inline">\(Z_0\)</span> be the normalizer for the prior, <span class="math inline">\(Z_N\)</span> be normalizer for the posterior, and let <span class="math inline">\(Z_{\ell}(2\pi)^{ND/2}=\)</span> be the normalizer for the likelihood. Then it is easy to see that <span class="math display">\[\begin{aligned}
+p(\mathcal{D})&amp; =\dfrac{Z_N}{Z_0Z_{\ell}} \\
+   &amp; = \dfrac{1}{(2\pi)^{ND/2}}\dfrac{\left(\frac{2\pi}{\kappa_N}\right)^{D/2}|\vec{S}_N|^{-\nu_N/2}2^{(\nu_0+N)D/2}\Gamma_D(\nu_N/2)}{\left(\frac{2\pi}{\kappa_0}\right)^{D/2}|\vec{S}_0|^{-\nu_0/2}2^{\nu_0D/2}\Gamma_D(\nu_0/2)} \\
+   &amp; = \dfrac{1}{\pi^{ND/2}}\left(\dfrac{\kappa_0}{\kappa_N}\right)^{D/2}\dfrac{|\vec{S}_0|^{\nu_0/2}}{|\vec{S}_N|^{\nu_N/2}}\dfrac{\Gamma_D(\nu_N/2)}{\Gamma_D(\nu_0/2)}\end{aligned}\]</span></p>
+<h4 id="bic-approximation-to-log-marginal-likelihood">BIC approximation to log marginal likelihood</h4>
+<p>In general, computing the integral in Equation [eqn:marginal-likelihood] can be quite difficult. One simple but popular approximation is known as the <strong>Bayesian information criterion</strong> or <strong>BIC</strong>, which has the following form (Schwarz 1978): <span class="math display">\[\mathrm{BIC} \triangleq \log p(\mathcal{D}|\hat{\vec{\theta}})-\dfrac{\mathrm{dof}(\hat{\vec{\theta}})}{2}\log{N}\]</span> where <span class="math inline">\(\mathrm{dof}(\hat{\vec{\theta}})\)</span> is the number of <strong>degrees of freedom</strong> in the model, and <span class="math inline">\(\hat{\vec{\theta}}\)</span> is the MLE for the model. We see that this has the form of a <strong>penalized log likelihood</strong>, where the penalty term depends on the model’s complexity. See Section TODO for the derivation of the BIC score.</p>
+<p>As an example, consider linear regression. As we show in Section TODO, the MLE is given by <span class="math inline">\(\hat{\vec{w}}=(\vec{X}^T\vec{X})^{-1}\vec{X}^T\vec{y}\)</span> and <span class="math inline">\(\sigma^2=\frac{1}{N}\sum_{i=1}^N (y_i-\hat{\vec{w}}^T\vec{x}_i)\)</span>. The corresponding log likelihood is given by <span class="math display">\[\log p(\mathcal{D}|\hat{\vec{\theta}}) = -\dfrac{N}{2}\log(2\pi\hat{\sigma}^2)-\dfrac{N}{2}\]</span></p>
+<p>Hence the BIC score is as follows (dropping constant terms) <span class="math display">\[\mathrm{BIC}=-\dfrac{N}{2}\log(\hat{\sigma}^2)-\dfrac{D}{2}\log{N}\]</span> where <span class="math inline">\(D\)</span> is the number of variables in the model. In the statistics literature, it is common to use an alternative definition of BIC, which we call the BIC <em>cost</em>(since we want to minimize it): <span class="math display">\[\mathrm{BIC\text{-}cost} \triangleq -2\log p(\mathcal{D}|\hat{\vec{\theta}})-\mathrm{dof}(\hat{\vec{\theta}})\log{N} \approx -2\log{p(\mathcal{D})}\]</span></p>
+<p>In the context of linear regression, this becomes <span class="math display">\[\mathrm{BIC\text{-}cost} = N\log(\hat{\sigma}^2)+D\log{N}\]</span></p>
+<p>The BIC method is very closely related to the <strong>minimum description length</strong> or <strong>MDL</strong> principle, which characterizes the score for a model in terms of how well it fits the data, minus how complex the model is to define. See (Hansen and Yu 2001) for details.</p>
+<p>There is a very similar expression to BIC/ MDL called the <strong>Akaike information criterion</strong> or <strong>AIC</strong>, defined as <span class="math display">\[\mathrm{AIC}(m,\mathcal{D}) = \log{p(\mathcal{D}|\hat{\vec{\theta}}_{MLE})}-\mathrm{dof}(m)\]</span></p>
+<p>This is derived from a frequentist framework, and cannot be interpreted as an approximation to the marginal likelihood. Nevertheless, the form of this expression is very similar to BIC. We see that the penalty for AIC is less than for BIC. This causes AIC to pick more complex models. However, this can result in better predictive accuracy. See e.g., (Clarke et al. 2009, sec 10.2) for further discussion on such information criteria.</p>
+<h4 id="effect-of-the-prior">Effect of the prior</h4>
+<p>Sometimes it is not clear how to set the prior. When we are performing posterior inference, the details of the prior may not matter too much, since the likelihood often overwhelms the prior anyway. But when computing the marginal likelihood, the prior plays a much more important role, since we are averaging the likelihood over all possible parameter settings, as weighted by the prior.</p>
+<p>If the prior is unknown, the correct Bayesian procedure is to put a prior on the prior. If the prior is unknown, the correct Bayesian procedure is to put a prior on the prior.</p>
+<h3 id="bayes-factors">Bayes factors</h3>
+<p>Suppose our prior on models is uniform, <span class="math inline">\(p(m) \propto 1\)</span>. Then model selection is equivalent to picking the model with the highest marginal likelihood. Now suppose we just have two models we are considering, call them the <strong>null hypothesis</strong>, <span class="math inline">\(M_0\)</span>, and the <strong>alternative hypothesis</strong>, <span class="math inline">\(M_1\)</span>. Define the <strong>Bayes factor</strong> as the ratio of marginal likelihoods: <span class="math display">\[\mathrm{BF}_{1,0} \triangleq \dfrac{p(\mathcal{D}|M_1)}{p(\mathcal{D}|M_0)}=\dfrac{p(M_1|\mathcal{D})}{p(M_2|\mathcal{D})}/\dfrac{p(M_1)}{p(M_0)}\]</span></p>
+<h2 id="priors">Priors</h2>
+<p>The most controversial aspect of Bayesian statistics is its reliance on priors. Bayesians argue this is unavoidable, since nobody is a <strong>tabula rasa</strong> or <strong>blank slate</strong>: all inference must be done conditional on certain assumptions about the world. Nevertheless, one might be interested in minimizing the impact of one’s prior assumptions. We briefly discuss some ways to do this below.</p>
+<h3 id="uninformative-priors">Uninformative priors</h3>
+<p>If we don’t have strong beliefs about what <span class="math inline">\(\theta\)</span> should be, it is common to use an <strong>uninformative</strong> or <strong>non-informative</strong> prior, and to “let the data speak for itself”.</p>
+<h3 id="robust-priors">Robust priors</h3>
+<p>In many cases, we are not very confident in our prior, so we want to make sure it does not have an undue influence on the result. This can be done by using <strong>robust priors</strong>(Insua and Ruggeri 2000), which typically have heavy tails, which avoids forcing things to be too close to the prior mean.</p>
+<h3 id="mixtures-of-conjugate-priors">Mixtures of conjugate priors</h3>
+<p>Robust priors are useful, but can be computationally expensive to use. Conjugate priors simplify the computation, but are often not robust, and not flexible enough to encode our prior knowledge. However, it turns out that a <strong>mixture of conjugate priors</strong> is also conjugate, and can approximate any kind of prior (Dallal and Hall 1983; Diaconis and Ylvisaker 1985). Thus such priors provide a good compromise between computational convenience and flexibility.</p>
+<h2 id="hierarchical-bayes">Hierarchical Bayes</h2>
+<p>A key requirement for computing the posterior <span class="math inline">\(p(\vec{\theta}|\mathcal{D})\)</span> is the specification of a prior <span class="math inline">\(p(\vec{\theta}|\vec{\eta})\)</span>, where <span class="math inline">\(\vec{\eta}\)</span> are the hyper-parameters. What if we don’t know how to set <span class="math inline">\(\vec{\eta}\)</span>? In some cases, we can use uninformative priors, we we discussed above. A more Bayesian approach is to put a prior on our priors! In terms of graphical models (Chapter TODO), we can represent the situation as follows: <span class="math display">\[\vec{\eta} \rightarrow \vec{\theta} \rightarrow \mathcal{D}\]</span></p>
+<p>This is an example of a <strong>hierarchical Bayesian model</strong>, also called a <strong>multi-level</strong> model, since there are multiple levels of unknown quantities.</p>
+<h2 id="sec:Empirical-Bayes">Empirical Bayes</h2>
+<p><span>ll</span> <strong>Method</strong> &amp; <strong>Definition</strong><br />
+Maximum likelihood &amp; <span class="math inline">\(\hat{\vec{\theta}}=\arg\max_{\vec{\theta}} p(\mathcal{D}|\vec{\theta})\)</span><br />
+MAP estimation &amp; <span class="math inline">\(\hat{\vec{\theta}}=\arg\max_{\vec{\theta}} p(\mathcal{D}|\vec{\theta})p(\vec{\theta}|\vec{\eta})\)</span><br />
+&amp; <span class="math inline">\(\hat{\vec{\eta}}=\arg\max_{\vec{\eta}} \int p(\mathcal{D}|\vec{\theta})p(\vec{\theta}|\vec{\eta})\mathrm{d}\vec{\theta}\)</span><br />
+&amp; <span class="math inline">\(\quad =\arg\max_{\vec{\eta}}p(\mathcal{D}|\vec{\eta})\)</span><br />
+&amp; <span class="math inline">\(\hat{\vec{\eta}}=\arg\max_{\vec{\eta}} \int p(\mathcal{D}|\vec{\theta})p(\vec{\theta}|\vec{\eta})p(\vec{\eta})\mathrm{d}\vec{\theta}\)</span><br />
+&amp; <span class="math inline">\(\quad =\arg\max_{\vec{\eta}}p(\mathcal{D}|\vec{\eta})p(\vec{\eta})\)</span><br />
+Full Bayes &amp; <span class="math inline">\(p(\vec{\theta},\vec{\eta}|\mathcal{D}) \propto p(\mathcal{D}|\vec{\theta})p(\vec{\theta}|\vec{\eta})\)</span><br />
+</p>
+<h2 id="sec:Bayesian-decision-theory">Bayesian decision theory</h2>
+<p>We have seen how probability theory can be used to represent and updates our beliefs about the state of the world. However, ultimately our goal is to convert our beliefs into actions. In this section, we discuss the optimal way to do this.</p>
+<p>Our goal is to devise a <strong>decision procedure</strong> or <strong>policy</strong>, <span class="math inline">\(f(\vec{x}) : \mathcal{X} \rightarrow \mathcal{Y}\)</span>, which minimizes the <strong>expected loss</strong> <span class="math inline">\(R_{\mathrm{exp}}(f)\)</span>(see Equation [eqn:expected-loss]).</p>
+<p>In the Bayesian approach to decision theory, the optimal output, having observed <span class="math inline">\(\vec{x}\)</span>, is defined as the output <span class="math inline">\(a\)</span> that minimizes the <strong>posterior expected loss</strong>: <span class="math display">\[\rho(f)=\mathbb{E}_{p(y|\vec{x})}[L(y,f(\vec{x}))]=\begin{cases}
+\sum\limits_y L[y,f(\vec{x})]p(y|\vec{x}) \\
+\int\limits_y L[y,f(\vec{x})]p(y|\vec{x})\mathrm{d}y
+\end{cases}\]</span></p>
+<p>Hence the <strong>Bayes estimator</strong>, also called the <strong>Bayes decision rule</strong>, is given by <span class="math display">\[\delta(\vec{x})=\arg\min\limits_{f \in \mathcal{H}} \rho(f)\]</span></p>
+<h3 id="bayes-estimators-for-common-loss-functions">Bayes estimators for common loss functions</h3>
+<h4 id="map-estimate-minimizes-0-1-loss">MAP estimate minimizes 0-1 loss</h4>
+<p>When <span class="math inline">\(L(y,f(x))\)</span> is <strong>0-1 loss</strong>(Section [sec:Loss-function-and-risk-function]), we can proof that MAP estimate minimizes 0-1 loss, <span class="math display">\[\begin{aligned}
+\arg\min\limits_{f \in \mathcal{H}} \rho(f)&amp; =\arg\min\limits_{f \in \mathcal{H}} \sum\limits_{i=1}^K{L[C_k,f(\vec{x})]p(C_k|\vec{x})} \\
+         &amp; =\arg\min\limits_{f \in \mathcal{H}} \sum\limits_{i=1}^K{\mathbb{I}(f(\vec{x}) \neq C_k)p(C_k|\vec{x})} \\
+         &amp; =\arg\min\limits_{f \in \mathcal{H}} \sum\limits_{i=1}^K{p(f(\vec{x}) \neq C_k|\vec{x})} \\
+         &amp; =\arg\min\limits_{f \in \mathcal{H}} \left[1-{p(f(\vec{x}) = C_k|\vec{x})}\right] \\
+         &amp; =\arg\max\limits_{f \in \mathcal{H}} p(f(\vec{x}) = C_k|\vec{x})\end{aligned}\]</span></p>
+<h4 id="posterior-mean-minimizes-ell_2quadratic-loss">Posterior mean minimizes <span class="math inline">\(\ell_2\)</span>(quadratic) loss</h4>
+<p>For continuous parameters, a more appropriate loss function is <strong>squared error</strong>, <strong><span class="math inline">\(\ell_2\)</span> loss</strong>, or <strong>quadratic loss</strong>, defined as <span class="math inline">\(L(y,f(\vec{x}))=\left[y-f(\vec{x})\right]^2\)</span>.</p>
+<p>The posterior expected loss is given by <span class="math display">\[\begin{split}
+\rho(f) &amp; =\int\limits_y L[y,f(\vec{x})]p(y|\vec{x})\mathrm{d}y \\
+        &amp; =\int\limits_y \left[y-f(\vec{x})\right]^2p(y|\vec{x})\mathrm{d}y \\
+        &amp; =\int\limits_y \left[y^2-2yf(\vec{x})+f(\vec{x})^2\right]p(y|\vec{x})\mathrm{d}y
+\end{split}\]</span></p>
+<p>Hence the optimal estimate is the posterior mean: <span class="math display">\[\begin{aligned}
+&amp; \dfrac{\partial \rho}{\partial f} =\int\limits_y [-2y+2f(\vec{x})]p(y|\vec{x})\mathrm{d}y=0 \Rightarrow \nonumber \\
+&amp; \int\limits_y f(\vec{x})p(y|\vec{x})\mathrm{d}y = \int\limits_y yp(y|\vec{x})\mathrm{d}y \nonumber \\
+&amp; f(\vec{x}) \int\limits_y p(y|\vec{x})\mathrm{d}y = \mathbb{E}_{p(y|\vec{x})}[y] \nonumber \\
+&amp; f(\vec{x}) = \mathbb{E}_{p(y|\vec{x})}[y]\end{aligned}\]</span></p>
+<p>This is often called the <strong>minimum mean squared error</strong> estimate or <strong>MMSE</strong> estimate.</p>
+<h4 id="posterior-median-minimizes-ell_1absolute-loss">Posterior median minimizes <span class="math inline">\(\ell_1\)</span>(absolute) loss</h4>
+<p>The <span class="math inline">\(\ell_2\)</span> loss penalizes deviations from the truth quadratically, and thus is sensitive to outliers. A more robust alternative is the absolute or <span class="math inline">\(\ell_1\)</span> loss. The optimal estimate is the posterior median, i.e., a value <span class="math inline">\(a\)</span> such that <span class="math inline">\(P(y&lt;a|\vec{x})=P(y \geq a|\vec{x})=0.5\)</span>.</p>
+<p><span class="math display">\[\begin{aligned}
+\rho(f)&amp; =\int\limits_y L[y,f(\vec{x})]p(y|\vec{x})\mathrm{d}y=\int\limits_y |y-f(\vec{x})|p(y|\vec{x})\mathrm{d}y \\
+       &amp; =\int\limits_y [f(\vec{x})-y]p(y&lt;f(\vec{x})|\vec{x})+ \\
+       &amp; \quad [y-f(\vec{x})]p(y \geq f(\vec{x})|\vec{x})\mathrm{d}y \\
+&amp; \dfrac{\partial \rho}{\partial f}=\int\limits_y \left[p(y&lt;f(\vec{x})|\vec{x})-p(y \geq f(\vec{x})|\vec{x})\right]\mathrm{d}y=0 \Rightarrow \\
+&amp; p(y&lt;f(\vec{x})|\vec{x})=p(y \geq f(\vec{x})|\vec{x})=0.5 \\
+&amp; \therefore f(\vec{x})=\text{median}\end{aligned}\]</span></p>
+<h4 id="reject-option">Reject option</h4>
+<p>In classification problems where <span class="math inline">\(p(y|\vec{x})\)</span> is very uncertain, we may prefer to choose a reject action, in which we refuse to classify the example as any of the specified classes, and instead say “don’t know”. Such ambiguous cases can be handled by e.g., a human expert. This is useful in <strong>risk averse</strong> domains such as medicine and finance.</p>
+<p>We can formalize the reject option as follows. Let choosing <span class="math inline">\(f(\vec{x})=c_{K+1}\)</span> correspond to picking the reject action, and choosing <span class="math inline">\(f(\vec{x}) \in \{C_1,...,C_k\}\)</span> correspond to picking one of the classes. Suppose we define the loss function as <span class="math display">\[L(f(\vec{x}), y)=\begin{cases} 
+0 &amp; \text{if } f(\vec{x})=y \text{ and } f(\vec{x}),y \in \{C_1,...,C_k\} \\
+\lambda_s &amp; \text{if } f(\vec{x}) \neq y \text{ and } f(\vec{x}),y \in \{C_1,...,C_k\} \\
+\lambda_r &amp; \text{if } f(\vec{x})=C_{K+1}
+\end{cases}\]</span> where <span class="math inline">\(\lambda_s\)</span> is the cost of a substitution error, and <span class="math inline">\(\lambda_r\)</span> is the cost of the reject action.</p>
+<h4 id="supervised-learning">Supervised learning</h4>
+<p>We can define the loss incurred by <span class="math inline">\(f(\vec{x})\)</span> (i.e., using this predictor) when the unknown state of nature is <span class="math inline">\(\vec{\theta}\)</span>(the parameters of the data generating mechanism) as follows: <span class="math display">\[L(\vec{\theta},f) \triangleq \mathbb{E}_{p(\vec{x},y|\vec{\theta})}[\ell(y-f(\vec{x}))]\]</span></p>
+<p>This is known as the <strong>generalization error</strong>. Our goal is to minimize the posterior expected loss, given by <span class="math display">\[\rho(f|\mathcal{D}) = \int{p(\vec{\theta}|\mathcal{D})L(\vec{\theta},f)}\mathrm{d}\vec{\theta}\]</span></p>
+<p>This should be contrasted with the frequentist risk which is defined in Equation TODO.</p>
+<h3 id="the-false-positive-vs-false-negative-tradeoff">The false positive vs false negative tradeoff</h3>
+<p>In this section, we focus on binary decision problems, such as hypothesis testing, two-class classification, object/ event detection, etc. There are two types of error we can make: a <strong>false positive</strong>(aka <strong>false alarm</strong>), or a <strong>false negative</strong>(aka <strong>missed detection</strong>). The 0-1 loss treats these two kinds of errors equivalently. However, we can consider the following more general loss matrix:</p>
+<p>TODO</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This example is from <a href="http://www.johndcook.com/blog/2011/09/27/bayesian-amazon/" class="uri">http://www.johndcook.com/blog/2011/09/27/bayesian-amazon/</a><a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+</body>
+</html>
