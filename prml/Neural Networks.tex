@@ -13,12 +13,12 @@ The linear models are based on linear combinations of fixed nonlinear basis func
 \end{align}
 where $f(\cdot)$ is a nonlinear activation function in the case of classification and is the identity in the case of regression.
 
-Neural network model can be described a series of functional transformations.First construct $M$ linear combinations of the input variables $x_1,...,x_D$ in the form
+Neural network model can be described a series of functional transformations.First construct $M$ linear combinations of the input variables $x_1,\ldots,x_D$ in the form
 \begin{align}
     a_j^{(l+1)} &= \sum_{i=1}^{D}w_{ji}^{(l)}x_i+w_{j0}^{(l)} \\
 	    &= \vec{w}^{(l)}\vec{x}^{(l)}
 \end{align}
-where $j=1,...,M$,and the superscript $(l)$ indicates the $l-the$ layer of the network.We refer the parameters $w_{ji}^{(l)}$ as \textbf{weights} and $w_{j0}^{(l)}$ as \textbf{biases}.The quantity $a_j$ are known as \textbf{activations}.Each of them is then transformed using \textbf{activation function} $h(\cdot)$ to give
+where $j=1,\ldots,M$,and the superscript $(l)$ indicates the $l-the$ layer of the network.We refer the parameters $w_{ji}^{(l)}$ as \textbf{weights} and $w_{j0}^{(l)}$ as \textbf{biases}.The quantity $a_j$ are known as \textbf{activations}.Each of them is then transformed using \textbf{activation function} $h(\cdot)$ to give
 \begin{align}
     z_j=h(a_j)
 \end{align}
@@ -28,7 +28,7 @@ The transformation of the following layer of the network,combine these values to
 \begin{align}
     a_k=\sum_{j=1}^{M}w_{kj}^{(2)}z_j+w_{k0}^{(2)}
 \end{align}
-where $k=1,...,K$,and $K$ is the total number of outputs.
+where $k=1,\ldots,K$,and $K$ is the total number of outputs.
 
 \begin{figure}
     \includegraphics[ ]{figures/prml/Figure5.1.jpg}
@@ -48,7 +48,7 @@ Consider a two-layer network as shown before.For $M$ hidden units,there will be 
 
 
 \section{Network Training}
-Given a training set comprising a set of input vectors ${\vec{x}_n}$,where $n=1,...,N$,together with a corresponding set of target vectors ${\vec{t}_n}$,we minimize the error function.We can provide a probabilistic interpretation to the network outputs.
+Given a training set comprising a set of input vectors ${\vec{x}_n}$,where $n=1,\ldots,N$,together with a corresponding set of target vectors ${\vec{t}_n}$,we minimize the error function.We can provide a probabilistic interpretation to the network outputs.
 
 For regression,and for the moment we consider a single target variable $t$ that can take any real value.We assume that $t$ has a Gaussian distribution with an $\vec{x}$-dependent mean,which is given by the output of the neural network,so that
 \begin{align}
@@ -140,7 +140,7 @@ where $z_i$ is the activation of a unit that sends a connection to unit $j$ and 
 
 Evaluate the derivate of $E_n$ with respect to a weight $w_{ji}$,applying the \textbf{chain rule} for partial derivatives
 \begin{align}
-    \dfrac{\partial E_n}{\partial w_{ji}}=\dfrac{\partial E_n}{\partial w_{ji}}\dfrac{a_j}{\partial w_{ji}}
+    \dfrac{\partial E_n}{\partial w_{ji}}=\dfrac{\partial E_n}{\partial \vec{a}_j}\dfrac{a_j}{\partial w_{ji}}
 \end{align}
 Now introduce a notation
 \begin{align}
@@ -182,7 +182,7 @@ We'll use $\vec{w}_{ij}^{l}$ to denote the \textbf{weight} for the connection fr
 Then we have
 \begin{align}
 	\vec{a}^l &\equiv \vec{W}^l \vec{z}^{l-1}+\vec{b}^l \\
-	\vec{z}^{l} &\equiv \sigma(\vec{z}^{l})
+	\vec{z}^{l} &\equiv \sigma(\vec{a}^{l})
 \end{align}
 
 $s\odot t$ denotes \textbf{element-wise product} of two matrices (vectors):
@@ -197,9 +197,9 @@ Define the error $\sigma_j^l$ of neuron $J$ in the layer $l$ by
 
 Using \textbf{chain rule of derivatives},the error in the output layer is:
 \begin{eqnarray} 
-\delta^L_j &=& \frac{\partial C}{\partial a^L_j}, \\
-&=& \sum_k \frac{\partial C}{\partial z^L_k} \frac{\partial z^L_k}{\partial a^L_j}, \\
-&=& \delta^L_j = \frac{\partial C}{\partial z^L_j} \frac{\partial z^L_j}{\partial a^L_j}, \\
+\delta^L_j &=& \frac{\partial C}{\partial a^L_j} \\
+&=& \sum_k \frac{\partial C}{\partial z^L_k} \frac{\partial z^L_k}{\partial a^L_j} \\
+&=& \frac{\partial C}{\partial z^L_j} \frac{\partial z^L_j}{\partial a^L_j},\text{if output only depends on same neuron's input } \\
 &=& \frac{\partial C}{\partial \vec{z}^L_j} \sigma'(\vec{a}^L_j).
 \end{eqnarray}
 And the matrix-based form is:
@@ -209,27 +209,33 @@ And the matrix-based form is:
 \end{eqnarray}
 where $\Sigma'(z^L)$ is a square matrix whose diagonal entries are the values $\sigma'(z^L)$, and whose off-diagonal entries are zero.
 
-Propagation (recursive relationship):
+Propagation (recursive relationship) in hidden layer:
 \begin{eqnarray} 
-\delta_j^l & = & \frac{\partial C}{\partial a^l_j}\\
-& = & \sum_k \frac{\partial C}{\partial a^{l+1}_k} \frac{\partial a^{l+1}_k}{\partial a^l_j}\\ 
-& = & \sum_k \frac{\partial a^{l+1}_k}{\partial a^l_j} \delta^{l+1}_k, \\
+\delta_j^l &=& \frac{\partial C}{\partial a^l_j}\\
+&=& \sum_k \frac{\partial C}{\partial a^{l+1}_k} \frac{\partial a^{l+1}_k}{\partial a^l_j}\\ 
+&=& \sum_k \frac{\partial a^{l+1}_k}{\partial a^l_j} \delta^{l+1}_k, \\
 \because a^{l+1}_k &=& \sum_j w^{l+1}_{kj} z^l_j +b^{l+1}_k = \sum_j w^{l+1}_{kj} \sigma(a^l_j) +b^{l+1}_k. \\
 \therefore \frac{\partial a^{l+1}_k}{\partial a^l_j} &=& w^{l+1}_{kj} \sigma'(a^l_j) \\
 \therefore
+\delta^l_j &=& \sum_k w^{l+1}_{kj}  \delta^{l+1}_k \sigma'(a^l_j) \\
 \delta^l &=& ((\vec{W}^{l+1})^T \delta^{l+1}) \odot \sigma'(\vec{a}^l), \\
 \delta^l &=& \Sigma'(a^l) (w^{l+1})^T \delta^{l+1}.\\
 \end{eqnarray}
 
 Rate of change of cost with respect to bias in the network:
-\begin{eqnarray}  \frac{\partial C}{\partial b^l_j} =
-\delta^l_j.
+\begin{eqnarray}  
+\frac{\partial C}{\partial b^l_j} 
+&=\frac{\partial C}{\partial \vec{a}^l_j}\frac{\partial \vec{a}^l_j}{\partial b^l_j} \\
+&= \frac{\partial C}{\partial \vec{a}^l_j} \cdot 1 
+&=\vec{\delta}^l_j 
 \end{eqnarray}
 
 Rate of change of the cost with respect to any weight matrix in the network:
 \begin{align}
-\frac{\partial C}{\partial w^l_{jk}} &= a^{l-1}_k \delta^l_j \\
-\frac{\partial C}{\partial w} &= a_{\rm in} \delta_{\rm out},
+    \frac{\partial C}{\partial w^l_{jk}} 
+&= \frac{\partial C}{\partial \vec{a}^l_j}\frac{\partial \vec{a}^l_j}{\partial w^l_{jk}}\\
+&= z^{l-1}_k \delta^l_j \\
+\frac{\partial C}{\partial w} &= \vec{\delta_{\rm out}} \vec{z_{\rm in}}^T,
 \end{align}
 
 \subsection{Efficiency of back propagation}
