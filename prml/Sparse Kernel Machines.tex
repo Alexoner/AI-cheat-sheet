@@ -158,6 +158,26 @@ A numerically stable solution is obtained by averaging:
 \end{align}
 where $\mathcal{M}$ denotes the set of indices of data points having $0\leq a_n \leq C$.
 
+\subsection{Multiclass Support Vector Machine loss}
+the score for the $j$-th class is the $j$-th element: $\vec{s}_j=f(\vec{x}_i,\vec{W})_j$. The Multiclass SVM loss for the $i$-th example is then formalized as follows:
+\begin{align}
+    L_i = \sum_{j\neq y_i} \max(0, \vec{s}_j - \vec{s}_{y_i} + \Delta)
+\end{align}
+With linear score function $f(\vec{x}_i; \vec{W}) =  \vec{W} \vec{x}_i$, rewrite the loss function in this equivalent form:
+\begin{align}
+    L_i = \sum_{j\neq y_i} \max(0, \vec{w}_j^T x_i - \vec{w}_{y_i}^T x_i + \Delta)
+\end{align}
+The threshold at zero $max(0,-)$ is called \textbf{hinge loss}.And there is a squared hinge loss (L2-SVM).
+The gradient of loss function for a single point $i$:
+\begin{align}
+    \nabla_{w_{y_i}} L_i = - \left( \sum_{j\neq y_i} \mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta > 0) \right) x_i
+\end{align}
+where $\mathbb{1}$ is the indicator function that is one if the condition inside is true or zero otherwise.
+For the rows where $j \neq y_i$ the gradient is:
+\begin{align}
+    \nabla_{w_j} L_i = \mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta > 0) x_i
+\end{align}
+
 \subsubsection{$\nu$-SVM}
 Maximize
 \begin{align}

@@ -238,6 +238,8 @@ Rate of change of the cost with respect to any weight matrix in the network:
 \frac{\partial C}{\partial w} &= \vec{\delta_{\rm out}} \vec{z_{\rm in}}^T,
 \end{align}
 
+When dealing with \textbf{batch} training instances, we sum derivatives with respect to parameters over these instances.
+
 \subsection{Efficiency of back propagation}
 
 \subsection{The Jacobian matrix}
