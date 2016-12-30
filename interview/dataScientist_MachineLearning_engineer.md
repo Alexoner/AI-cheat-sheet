@@ -227,3 +227,63 @@ PageRank 的原理和公式推导
 　　举个例子，比如要你做一个房地产的搜索引擎，该怎么做？
 
 　　最后，感觉很多东西还是得从做项目中来学习。所以还在读书的同学还是得想办法多做一些实际的项目，最好是有真实世界数据的，这样就可以经历一些 Clean Data 等耗时耗力，老师不教但是在实际工作中又非常有用的过程，帮助自己成长。同时，还是要尽量地把一个项目的时间做的长一些，比如 6 个月，8 个月，才有可能出比较理想的成果。
+
+
+==============================================================================================
+==============================================================================================
+
+2. While it is often assumed that the probabilities of having a boy or a girl are the same, the actual probability of having a boy is slightly higher at 0.51. Suppose a couple plans to have 3 children. What is the probability that exactly 2 of them will be boys?
+
+A. 0.38, ✓
+B. 0.48
+C. 0.78
+D. 0.68
+E. 0.58
+F. I'm not sure.
+
+* 3. Given a Gaussian distribution with mean of 2 and standard deviation = 4, what is the cumulative probability at 2?
+
+A. 0.03
+
+B. 0.5, ✓
+
+C. 0.023
+
+D. 0.25
+
+E. I'm not sure.
+
+* 4. About 30% of human twins are identical, and the rest are fraternal. Identical twins are necessarily the same sex, half are males and the other half are females. One-quarter of fraternal twins are both male, one-quarter both female, and one-half are mixes: one male, one female. You have just become a parent of twins and are told they are both girls. Given this information, what is the probability that they are identical?
+
+A. 33
+
+B. 46, ✓
+
+C. 72
+
+D. 50
+
+E. I'm not sure.
+
+* 5. A New York City cab was involved in a hit-and-run accident last night. Five witnesses reported the incident, four of whom said that the cab was green and one of whom said that the cab was yellow. Assume each witness correctly identifies the color of a cab with probability 2/3. It is known that 85% of registered cabs in New York City are yellow and 15% are green. Based on this information, what is the probability that the cab was green?
+
+A. 58.5%, ✓
+
+B. 88.9%
+
+C. 85%
+
+D. 66.6%
+
+E. I'm not sure.
+
+* 6. Let f be the function defined by f(x) = 2x3  - 6x2 + 5x - 5
+Is this function increasing or decreasing at x=1?
+
+A. Increasing
+
+B. Decreasing, ✓
+
+C. Neither Increasing nor Decreasing
+
+D. I'm not sure.
