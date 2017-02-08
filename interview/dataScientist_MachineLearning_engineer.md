@@ -1,4 +1,7 @@
-# [Data Scientist / Machine Learning Engineer interview questions from Amazon, Microsoft, Yelp, Pinterest, Square, Google, Glassdoor, Groupon](https://www.mitbbs.com/article_t/DataSciences/12819.html)
+# [Data Scientist / Machine Learning Engineer interview questions 
+
+Origin: [mitbbs](https://www.mitbbs.com/article_t/DataSciences/12819.html), focusing on Amazon, Microsoft, Yelp, Pinterest, Square, Google, Glassdoor, Groupon
+```text
 1. Given a coin you don’t know it’s fair or unfair. Throw it 6 times and
 get 1 tail and 5 head. Determine whether it’s fair or not. What’s your
 confidence value?
@@ -397,8 +400,8 @@ matrix in all directions:  from left to right, right to left, up to down,
 down to up, or diagonally.
 For example
 w o r x b
-h  e l  o v
-i   n d e m
+h e l o v
+i n d e m
 
 then the word “world” is in the matrix.
 
@@ -449,16 +452,17 @@ Given the log, identify all IPs that may cause attack.
 
 
 1. 问 Skill Set 以及对于常见工具的掌握。
-
-　　Skill Set 就是指你掌握了哪些知识，一般问起来都是比较粗略地问，主要目的就是考察和团队的习惯以及工具的掌握是否 Match。我被问到过各种各要的碎碎的问题，比如计算机网络中 HTTP、TCP、UDP 协议，数据库的设计原则、实现方法，操作系统的一些基本知识，Unix 的常见指令，Hadoop 和 Hadoop Streaming 如何使用、如何 Debug，平时使用什么 IDE 什么 OS……总之各个琐碎的角落都被问到过。
+　　Skill Set 就是指你掌握了哪些知识，一般问起来都是比较粗略地问，主要目的就是考察和团队的习惯
+以及工具的掌握是否 Match。各种基础问题，比如计算机网络中 HTTP、TCP、UDP 协议，数据库的设计原
+则、实现方法，操作系统的一些基本知识，Unix 的常见指令，Hadoop 和 Hadoop Streaming 如何使用、
+如何 Debug ，平时使用什么 IDE 什么 OS。
 
 2. 问简历，就简历上的技术细节发问，主要是项目有关的技术细节，以及相关的技术延伸。
-
-　　比如我的项目中就提到了 NLP 相关的东西，就被问了一些和 NLP 相关工具的使用，比如 Stanford NLP 等。再又问了一些延伸的问题，比如，如何自动生成一个有意义的句子，如何把一段文字 Split 成一个个句子，怎么选 feature 怎么做 model 等等。这类问题主要还是需要对于自己的项目技术细节足够了解，且对于延伸的问题有所掌握。
+　　比如项目中就提到了 NLP 相关的东西，就问一些和 NLP 相关工具的使用，比如 Stanford NLP 等。
+再又问了一些延伸的问题，比如，如何自动生成一个有意义的句子，如何把一段文字 Split 成一个个句子，
+怎么选 feature 怎么做 model 等等。这类问题主要还是需要对于自己的项目技术细节足够了解，且对于延伸的问题有所掌握。
 
 3. Machine Learning、Statistic 的相关问题
-
-　　Machine Learning 相关的问题就太多了，我稍微列举一些我遇到过的问题：
 
 一些分布参数的最大似然估计之类的东西是什么，如何推导
 LR SVM 的本质区别是什么
@@ -467,15 +471,14 @@ LR SVM 的本质区别是什么
 Random Forest 为什么很好用
 如何做 Model Selection
 给一组数据，问 Decision Tree，LR，NB，SVM 等算法学出来都是什么样子的，是否学不出来，怎么处理，有哪些 Kernel，在图上画线怎么画
-　　还有被问到了一些比较难的问题，比如：
+一些比较难的问题，比如：
 
 对于 Graphical Model 的理解，写出 LDA 的公式，给出 Topic Model 生成过程等的
 PageRank 的原理和公式推导
-　　总之，前面那些问题本质上都不是那么难，但是不少问题都需要对于 ML 各种知识的融会贯通，所以大家在学习的时候还是需要深入学习，不要浮于表面。
 
 4. 给一个现实问题，如何解决。
 
-　　这一类问题就比较宽泛了，主要是在回答的时候记住考察的目的很多时候并不是技术本身，而是你对于这一类问题没有思考的框架。比如如何收集数据，收集那些数据，如何定 feature，如何定 measurement，如何定 milestone 等等。要分层次一步一步地讨论。
+　　这一类问题就比较宽泛了，主要是思考的框架。比如如何收集数据，收集那些数据，如何定 feature，如何定 measurement，如何定 milestone 等等。要分层次一步一步地讨论。
 
 　　举个例子，比如要你做一个房地产的搜索引擎，该怎么做？
 
@@ -646,3 +649,4 @@ $$\theta = (a + k) / (a + b + n)$$.
 B.t.w, we can use Z-score and so on to do hypothesis testing.
 If we choose other prior distributions, we might need to adopt MCMC to calculate the integral.
 
+```
