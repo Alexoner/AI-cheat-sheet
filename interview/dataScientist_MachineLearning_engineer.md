@@ -1,6 +1,7 @@
 # [Data Scientist / Machine Learning Engineer interview questions 
 
-Origin: [mitbbs](https://www.mitbbs.com/article_t/DataSciences/12819.html), focusing on Amazon, Microsoft, Yelp, Pinterest, Square, Google, Glassdoor, Groupon
+Origin: [mitbbs](https://www.mitbbs.com/article_t/DataSciences/12819.html),  [stackexchange.com](math.stackexchange.com), Amazon, Microsoft, Yelp, Pinterest, Square, Google, Glassdoor, Groupon
+
 ```text
 1. Given a coin you don’t know it’s fair or unfair. Throw it 6 times and
 get 1 tail and 5 head. Determine whether it’s fair or not. What’s your
@@ -11,7 +12,7 @@ Answer:
 Reference [wikipedia](https://en.wikipedia.org/wiki/Checking_whether_a_coin_is_fair)
 
 1) Hypothesis testing
-$$
+
 H0: the coin is fair
 Ha: the coin is unfair
 
@@ -21,6 +22,7 @@ Rejection region: |X - 3| > 2, i.e., X = 0,1,5,or 6
 
 significance level alpha:
 
+$$
 alpha = P(reject H0 | H0 is true)
 = P(X=0,1,5,6 | H0 is true)
 = (choose(6,0)+choose(6,1)+choose(6,5)+choose(6,6))*(1/2)^6
@@ -28,7 +30,7 @@ alpha = P(reject H0 | H0 is true)
 $$
 
 because alpha > 0.05, we do not have enough evidence to reject H0, and we
-accpte H0, so the coin is fair
+accept H0, so the coin is fair
 
 confidence value?
 
@@ -52,7 +54,8 @@ f(r|H=h,T=t)
 ={\frac {1}{\mathrm {B} (h+1,t+1)}}\;r^{h}\,(1-r)^{t}
 ={\frac {(h+t+1)!}{h!\,\,t!}}\;r^{h}\,(1-r)^{t}
 $$
-which is actually Beta distribution(the conjugate prior for the binomial distribution).
+which is actually Beta distribution(the conjugate prior for the binomial distribution). For a
+confidence interval (0.45, 0.55), the probability is:
 $$\Pr(0.45<r<0.55)=\int _{0.45}^{0.55}f(p|H=7,T=3)\,dp\approx 13\% $$
 
 
@@ -398,7 +401,7 @@ matrix. You can search the
 
 matrix in all directions:  from left to right, right to left, up to down,
 down to up, or diagonally.
-For example
+For example:
 w o r x b
 h e l o v
 i n d e m
@@ -648,5 +651,79 @@ $$\theta = (a + k) / (a + b + n)$$.
 
 B.t.w, we can use Z-score and so on to do hypothesis testing.
 If we choose other prior distributions, we might need to adopt MCMC to calculate the integral.
+
+3. How many tosses for 95% certainty that coin is not fair? Given a bag of 10 coins, 9 are ordinary coins and one is a double headed coin. You select one coin at random and toss it three times. It comes up heads each time what is the probability its the double header?
+
+This can be solved using bayes rule the answer is $$8/17$$. However the follow up question asks how many tosses would you need to be 95% sure that the coin is double headed
+
+4. Mean time between failure of one machine is two years, for a cluster of 10,000 machines, how many machines are likely to fail?
+Reference:[failure rate](https://en.wikipedia.org/wiki/Failure_rate)
+
+5. What is the chance to get a parking ticket in half an hour if the chance to get a ticket is 80% in 1 hour?
+Answer:
+This problem depends on the assumption. Naturally, we assume the probability distribution of
+"a ticket becomes available" is [memoryless](https://en.wikipedia.org/wiki/Memorylessness), 
+(or Markov process).
+
+Exponential distributions of non-negative real numbers are memoryless.
+
+1) Assume i.i.d probability
+Treat it as EXPONENTIAL DECAY.
+Let p(t) be the probability that you do not get a ticket in the first t hours. Then 
+p(1)=0.2,$$p(2)=0.2^2$$ (a 20% chance of making it through the first hour times a 20% chance 
+of making it through the second), and in general $$p(t)=0.2^t$$. The probability of not getting
+a ticket in the first half hour is then $$p(1/2)=0.2^{1/2}=√0.2≈0.4472$$, and the probability 
+that you do get a ticket in the first half hour is about 1−0.4472=0.5528
+
+2) Model in Poisson process(also i.i.d assumption)
+If $\lambda$ is the expected times that you get spotted every hour, then $θ=1/λ$  is the 
+expected time between events. The number of events given in t can be modeled by a random 
+variable $N \sim Poisson(\lambda·t)$ where t is the amount of time (in hours) elapsed.
+
+So, the probability of getting nn tickets in $t$ hours, with an expected probability of $\lambda$ that you get a ticket in one hour is
+$$Pr\{N=n\ |\ \lambda, t\}=\frac{e^{-\lambda·t}·(\lambda·t)^{n}}{n!}$$
+
+$$
+\because
+1-Pr\{N=0\ |\ \lambda, t=1\}=1-\frac{e^{-\lambda}·\lambda)^{0}}{0!}=1-e^{-\lambda} = 0.8
+\therefore
+\lambda \approx 1.6094379124341003
+\therefore
+\Pr(Get at least 1 ticket within half an hour) = 1-Pr\{N=0\ |\ \lambda, t=0.5\}=1-\frac{e^{-0.5\lambda}·(-0.5\lambda)^{0}}{0!}=1-e^{-0.5\lambda} = 1 - 0.447213595499958 \approx 0.5528
+$$
+
+6. If we randomly select 25 integers between 1 and 100, how many consecutive pairs should we 
+expect?
+
+Answer:
+
+Lemma: Given n numbers, randomly choose k from them, then each number is chosen with 
+probability of k / n.
+Proof:
+We can construct the process by applying following procedure. 
+choosing one number at each time, and repeat for k times. 
+Then the probability of not being chosen is:
+$ \Pr(not chosen for k times) 
+= \frac{n - 1}{n}\frac{n-2}{n-1}\ldots \frac{n-k}{n-k+1} 
+= \frac{n-k}{n} $
+So, $\Pr(chosen) = 1 - \Pr(not chosen for k times) = 1 - (n-k)/n = k/n$
+
+We have 99 possible pairs: $\{(1,2),(2,3),\ldots,(99,100)\}$. Let's define $X_i$ as
+i-th pair is chosen:
+$$
+X_i = \left \{
+\begin{array}{ll}
+1 & i\text{-th pair is chosen}\\
+0 & \text{otherwise}\\
+\end{array}
+\right .
+$$
+That pair is chosen when the integer i is chosen, with probability 25/100, and the integer 
+i+1 is also chosen, with probability 24/99. Then,
+$E[X_i] = P(X_i = 1) = \frac{25}{100}\frac{24}{99}$,
+Using linearity of expectation, we have $E[X] &= E[X_1] + E[X_2] + \cdots +E[X_{99}]\\
+&= 99E[X_1]\\
+&= 99\frac{25}{100}\frac{24}{99} = 6
+$
 
 ```
