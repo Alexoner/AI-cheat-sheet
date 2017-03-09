@@ -10,31 +10,50 @@ confidence value?
 Answer:
 
 Reference [wikipedia](https://en.wikipedia.org/wiki/Checking_whether_a_coin_is_fair)
+[Binomial_proportion_confidence_interval](https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval)
 
-1) Hypothesis testing
+1) Hypothesis testing - Computing p-value
 
 H0: the coin is fair
 Ha: the coin is unfair
 
-X is the number of heads
+Because Ha is two-sided, so we need to consider the symmetric cases.
 
-Rejection region: |X - 3| > 2, i.e., X = 0,1,5,or 6
+Random variable X is the number of heads.
+Rejection region:
+|X - 3| >= 5 - 3 = 2, i.e., X = 0,1,5,or 6
 
-significance level alpha:
+Choose significance level alpha: 5%, and compute the p-value
 
 $$
-alpha = P(reject H0 | H0 is true)
+p-value
+= P(reject H0 | H0 is true)
 = P(X=0,1,5,6 | H0 is true)
 = (choose(6,0)+choose(6,1)+choose(6,5)+choose(6,6))*(1/2)^6
 = (1+6+6+1)*(0.5^6) = 0.21875
 $$
 
-because alpha > 0.05, we do not have enough evidence to reject H0, and we
-accept H0, so the coin is fair
+because P(reject H0 |H0 is true) > 5%, the observation is not a small probability event.
+we do not have enough evidence to reject H0, and we accept H0, so the coin is fair.
 
-confidence value?
+CONFIDENCE LEVEL is the complement of the LEVEL OF SIGNIFICANCE.
+1 - 5% = 95%.
 
-2) Posterior probability density function of Bayesian probability theory
+2) Hypothesis testing - Central Limit Theorem(using Normal distribution approximation)
+Data set is too small, not applicable. Otherwise, for sample size n >= 30, we can
+  Compute the estimated sample proportion, then compute sample standard deviation based on
+the estimation of proportion. Then choose a confidence level Z given by Z-value of standard
+normal distribution. Thus we can give a confidence value of the true probability and 
+estimate the confidence interval.
+
+Use the same hypothesis above.
+Sample variance $s_{p}={\sqrt {\frac {p\,(1-p)}{n}}} = 0.5\sqrt {1/n} 
+= 0.5\sqrt(1/6) = 0.2041241452319315$.
+At 99.730% level of confidence, Z = 3, which is 3 std dev away from the population mean.
+And the Maximum error $ E = Z * S_p = 3 * 0.2041241452319315 = 0.6123724356957945$
+So the confidence interval is [0.5 - 0.61, 0.5 + 0.61], which is meaningless.
+
+3) Posterior probability density function of Bayesian probability theory
 The posterior pdf of r(the actual probability of obtaining head in a single toss of coin),
 conditional on h and t, is expressed as:
 $$
@@ -254,7 +273,17 @@ Answer: backtracking, dynamic programming, lexicographical ordering.
 like it?
 A/B testing. How to do A/B testing? How many ways? pros and cons?
 
+Reference: https://en.wikipedia.org/wiki/A/B_testing#Common_test_statistics
+
+Answer(attemp):
+1. First determing test statistics. Different test statistics use different test methods.
+2. Split and test
+3. Significance test: Hypothesis test.
+
 14. 44.3% vs 47.2% is it significant?
+
+Answer:
+Hypothesis testing?
 
 15. Design a function to calculate people’s interest to a place against the
 distance to the place.
@@ -341,6 +370,8 @@ approximation that you get in SGD for the parameter values are enough
 21. We have a database of <product_id, name, description, price>. When user
 inputs a product name, how to return results fast?
 
+Answer: Trie tree?
+
 22. If user gives a budget value, how to find the most expensive product
 under budget? Assume the data fits in memory. What data structure, or
 algorithm you use to find the product quickly? Write the program for it.
@@ -373,7 +404,7 @@ another 2 pins.
 Question: how to design the system and select the pins so that we can
 achieve our goal?
 
-Answer: binary search, similar metric in the decision tree learning.
+Answer: similar to binary search, similar metric in the decision tree learning.
 At each step, we choose the criterion which can maximize the information
 gain(reduce the entropy).
 
