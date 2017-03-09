@@ -526,10 +526,11 @@ where $sum$ denotes $\sum_j\exp(a_j)$ the 'activations' $a_k$ are given by
 \begin{equation}
 a_k = \vec{w}_k^T\phi
 \end{equation}
+$\vec{w}_k$ is a $M\times 1$ column vector parameter, and $\phi$ is the $M \times 1$ data column vector.
 	
 Here we consider the use of maximum likelihood to determine the parameters $\{\vec{w}_k\}$ of this model directly.The derivatives of $y_k$ with respect to all of the activations $a_j$ are given by 
 \begin{align}
-\dfrac{\partial y_k}{\partial a_j} 
+\dfrac{\partial y_k}{\partial a_j} = \dfrac{\partial p_k}{\partial a_j} 
 &=\dfrac{e^{a_k}\vec{I}_{kj}sum-e^{a_k}e^{a_j}}{sum^2} \\
 %&=\dfrac{\partial\dfrac{1}{1+\sum_{i\neq k}\exp(a_i-a_k)}}{\partial a_j}\\
 %&=-\dfrac{e^{a_i-a_k}}{(1+\sum_{i\neq k}e^{a_i-a_k})^2}\\	
@@ -539,7 +540,7 @@ where $\vec{I}_{kj}$ are the elements of the identity matrix.
 
 Next we write down the likelihood function,using the $1-of-K$ coding scheme.
 \begin{equation}
-p(\vec{T}|\vec{w}_1,...,\vec{w}_K)=
+y = p(\vec{T}|\vec{w}_1,...,\vec{w}_K)=
 \prod_{n=1}^{N}\prod_{k=1}^{K}p(\mathcal{C}_k|\phi_n)^{t_{nk}}
 =\prod_{n=1}^{N}\prod_{k=1}^{K}y_{nk}^{t_{nk}}
 \end{equation}
@@ -564,12 +565,12 @@ Take the gradient of the error function,making use of the derivatives of the sof
 &=y_j-t_j \\
 \\
 \therefore
-\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) &=
-\sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n \\
+\nabla_{w_j}E(\vec{w_1},...,\vec{w_K}) &= \sum_{n=1}^{N}(y_{nj}-t_{nj})\phi_n \\
+\sum_{n=1}^{N}\phi_n(y_{nj}-t_{nj})
 \therefore
-\nabla_{\vec{W}}E(\vec{w}_1,...\vec{w}_k) &= (\vec{Y}-\vec{T})^T\vec{\Phi}
+\nabla_{\vec{W}}E(\vec{w}_1,...\vec{w}_k) &= \vec{\Phi}^T(\vec{Y}-\vec{T})
 \end{align}
-where $\vec{Y}$ is the $N\times K$ prediction matrix, $\vec{T}$ is the $N\times K$ target label matrix.
+where $\phi_n = \phi(\vec{x}_n)$ is basis function of $\vec{x}_n$ of dimension $M \times 1$, $\vec{Y}$ is the $N\times K$ prediction matrix, $\vec{T}$ is the $N\times K$ target label matrix, $\vec{\Phi}$ is the $N\times M$ design matrix, $\vec{W}$ is $M \times K$ weight matrix of parameters.
 \begin{equation}
 \end{equation}
 
