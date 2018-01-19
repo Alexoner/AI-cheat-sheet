@@ -71,6 +71,9 @@ Most of them are based on `Pattern Recognition and Machine Learning`,`Elements o
 
 Sample Latex formula $$\int_{0}^{\infty}f(\vec{x},\vec{w})dx$$
 
+## Book review
+For Bayesian treatment, refer to PRML. For more data mining practical issues refer to ESL.
+
 ##Download PDF
 [cheat-sheet.pdf](https://github.com/Alexoner/ai-cheat-sheet/raw/master/cheat-sheet.pdf) 
 

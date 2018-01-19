@@ -1,8 +1,16 @@
 # [Data Scientist / Machine Learning Engineer interview questions 
 
+## References and Sources
+[100 Data Science Interview Questions and Answers (General) for 2017](https://www.dezyre.com/article/100-data-science-interview-questions-and-answers-general-for-2017/184)
+[Galvanize: Common Data Science Interview Questions](http://www.galvanize.com/blog/common-data-science-interview-questions)
+[120 Data Science Interview Questions](http://www.datasciencequestions.com/)
+[Udacity: Data Science Interview Questions](http://blog.udacity.com/2015/04/data-science-interview-questions.html)
+[Glassdoor: LinkedIn Data Scientist Interview Questions](https://www.glassdoor.com/Interview/LinkedIn-Data-Scientist-Interview-Questions-EI_IE34865.0,8_KO9,23.htm)
+[LEARN DATA SCIENCE Answers William Chen](https://datascienceinterview.quora.com/Answers-1)
+
 Origin: [mitbbs](https://www.mitbbs.com/article_t/DataSciences/12819.html),  [stackexchange.com](math.stackexchange.com), Amazon, Microsoft, Yelp, Pinterest, Square, Google, Glassdoor, Groupon
 
-```text
+<!--```text-->
 1. Given a coin you don’t know it’s fair or unfair. Throw it 6 times and
 get 1 tail and 5 head. Determine whether it’s fair or not. What’s your
 confidence value?
@@ -757,4 +765,4 @@ Using linearity of expectation, we have $E[X] &= E[X_1] + E[X_2] + \cdots +E[X_{
 &= 99\frac{25}{100}\frac{24}{99} = 6
 $
 
-```
+<!--```-->
