@@ -1,8 +1,8 @@
 #Artificial Intelligence cheat sheet
 ===================================
 
-This cheat sheet contains many formula equations,inference and diagrams on
-AI.Most of them are based on `Pattern Recognition and Machine Learning`,`Elements of Statisitical Learning` and `Machine Learning: A Probabilistic Perspective`.
+This cheat sheet contains many mathematical formula, equations,inference and diagrams on Artificial Intelligence.
+Most of them are based on `Pattern Recognition and Machine Learning`,`Elements of Statisitical Learning` and `Machine Learning: A Probabilistic Perspective`.
 
 
 ##TODO
