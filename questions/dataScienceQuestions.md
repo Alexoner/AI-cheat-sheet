@@ -20,7 +20,7 @@ Answer:
 Reference [wikipedia](https://en.wikipedia.org/wiki/Checking_whether_a_coin_is_fair)
 [Binomial_proportion_confidence_interval](https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval)
 
-1) Hypothesis testing - Computing p-value
+(1) Hypothesis testing - Computing p-value
 
 H0: the coin is fair
 Ha: the coin is unfair
@@ -34,9 +34,9 @@ Rejection region:
 Choose significance level alpha: 5%, and compute the p-value
 
 $$
-p-value
-= P(reject H0 | H0 is true)
-= P(X=0,1,5,6 | H0 is true)
+\text{p-value}
+= P(\text{reject H0 | H0 is true}) 
+= P(\text{X=0,1,5,6 | H0 is true})
 = (choose(6,0)+choose(6,1)+choose(6,5)+choose(6,6))*(1/2)^6
 = (1+6+6+1)*(0.5^6) = 0.21875
 $$
@@ -47,7 +47,7 @@ we do not have enough evidence to reject H0, and we accept H0, so the coin is fa
 CONFIDENCE LEVEL is the complement of the LEVEL OF SIGNIFICANCE.
 1 - 5% = 95%.
 
-2) Hypothesis testing - Central Limit Theorem(using Normal distribution approximation)
+(2) Hypothesis testing - Central Limit Theorem(using Normal distribution approximation)
 Data set is too small, not applicable. Otherwise, for sample size n >= 30, we can
   Compute the estimated sample proportion, then compute sample standard deviation based on
 the estimation of proportion. Then choose a confidence level Z given by Z-value of standard
@@ -61,15 +61,15 @@ At 99.730% level of confidence, Z = 3, which is 3 std dev away from the populati
 And the Maximum error $ E = Z * S_p = 3 * 0.2041241452319315 = 0.6123724356957945$
 So the confidence interval is [0.5 - 0.61, 0.5 + 0.61], which is meaningless.
 
-3) Posterior probability density function of Bayesian probability theory
+(3) Posterior probability density function of Bayesian probability theory
 The posterior pdf of r(the actual probability of obtaining head in a single toss of coin),
 conditional on h and t, is expressed as:
 $$
 f(r|H=h,T=t)={\frac {\Pr(H=h|r,N=h+t)\,g(r)}{\int _{0}^{1}\Pr(H=h|p,N=h+t)\,g(p)\,dp}}
 $$
-where g(r) represents the prior pdf of r, which lies in the range [0, 1].
+where $g(r)$ represents the prior pdf of r, which lies in the range $[0, 1]$.
 
-Assuming uniform g(r) = 1, then
+Assuming uniform $g(r) = 1$, then
 $$
 \Pr(H=h|r,N=h+t)={N \choose h}\,r^{h}\,(1-r)^{t}
 $$
@@ -81,9 +81,10 @@ f(r|H=h,T=t)
 ={\frac {1}{\mathrm {B} (h+1,t+1)}}\;r^{h}\,(1-r)^{t}
 ={\frac {(h+t+1)!}{h!\,\,t!}}\;r^{h}\,(1-r)^{t}
 $$
-which is actually Beta distribution(the conjugate prior for the binomial distribution). For a
-confidence interval (0.45, 0.55), the probability is:
-$$\Pr(0.45<r<0.55)=\int _{0.45}^{0.55}f(p|H=7,T=3)\,dp\approx 13\% $$
+which is actually Beta distribution(the conjugate prior for the binomial distribution). 
+For a confidence interval $r \in [0.45, 0.55]$, the probability is:
+$$\Pr(0.45<r<0.55)=\int _{0.45}^{0.55}f(p|H=7,T=3)dp\approx 13% $$
+which is slightly larger than uniform prior $10%$.
 
 
 2. Given Amazon data, how to predict which users are going to be top
@@ -99,17 +100,20 @@ They are both linear models, and the prediction formulation is:
 
 $$
 f(x) = beta_0 + \sum_{i=1}^p beta_i x_i
-
+$$
 We can evaluate the regression results using mean squared error (MSE):
-
+$$
 1/n \sum_i ( y_i - beta_0 + \sum_{i=1}^p beta_i x_i)^2
-
+$$
 To learn the coefficients, we have
 
 -Ridge
+$$
 min \sum_i ( y_i - beta_0 + \sum_{i=1}^p beta_i x_i)^2 + lambda \sum_{i=1}^p beta_i^2
+$$
 
 -Lasso
+$$
 min \sum_i ( y_i - beta_0 + \sum_{i=1}^p beta_i x_i)^2 + lambda \sum_{i=1}^p | beta_i|
 $$
 
@@ -118,11 +122,14 @@ coefficients given the data?
 
 Answer:
 
-$$
-Formula: 假设我们处理二类分类问题，y in {1,0}
 
+Formula: 假设我们处理二类分类问题，y in {1,0}
+$$
 Pr(y=1|x) = exp(beta' x)/(1+exp(beta' x))
+$$
+$$
 Pr(y=0|x) = 1/(1+exp(beta' x))
+$$
 其中beta是coefficient
 
 y=1 if Pr(y=1|x) >= Pr(y=0|x), and y = 0, otherwise.
@@ -139,12 +146,18 @@ g(beta) = sum_i log [ Pr(y=yi|x=xi)]
 		= sum_i [yi beta'xi - log(1+exp(beta'xi))]
 
 我们用Newton-Raphson update来优化这个目标函数，在每个iteration中
+$$
+beta^{new} =  beta^{old} - [(g(beta)'')^{-1 }
+$$
 
-beta^{new} =  beta^{old} - [(g(beta)'')^-1 g(beta)']|_(beta=beta^{old})
+$$
+g(beta)']|_(beta=beta^{old})
+$$
 where
+$$
 g(beta)' = \sum_i xi(yi - p(yi=1|x=xi)),
 g(beta)'' = - \sum_i xi xi' p(yi=1|x=xi) (1-p(yi=1|x=xi))
-
+$$
 defining z=[y1, ..., yn]',
 p = [p(yi=1|x=x1), ..., p(yi=1|x=xn)]'
 W = diag(p(yi=1|x=x1)(1-p(yi=1|x=x1)), ..., p(yi=1|x=xn)(1-p(yi=1|x=xn)))
@@ -168,7 +181,6 @@ Using mean squared error:
 
 $$
 1/n \sum_i (click\_through\_rate_i -  predicted\_rate_i)^2
-
 $$
 
 6. What’s the formula for SVM? What is decision boundary?
@@ -178,10 +190,13 @@ formula of SVM is
 
 $$
 f(x) = w'x
-
+$$
+$$
 min_{w, xi_i} 1/2 ||w||_2^2 + C sum_i xi_i
+$$
 s.t. for any i:
-1 - y_i w' x_i <= xi, 0 <= xi.
+$$
+1 - y_i w' x_i <= x_i,  0 <= x_i ??
 $$
 
 decision boundary:
@@ -215,8 +230,10 @@ Bayesian rule,
 
 $$
 P(x|y) = P(x, y) / P(y) = P(y|x)P(x)/P(y)
+$$
+$$
 P(y)   = \sum_{x} P(x)P(y|x).
-
+$$
 P(unfair coin| observe head, head, tail)
 = 1- P(fair coin| observe head, head, tail)
 
@@ -236,7 +253,9 @@ P(fair coin| observe)
 = (9/10*(1/2)^3)/(9/10*(1/2)^3 + 1/10*(0.8532^2)* (1-0.8532))
 =  0.9132508
 
-所以P(unfair coin| observe)
+所以
+$$
+P(\text{unfair coin| observe})
 = 1 - 0.9132508
 = 0.0867492
 $$
@@ -269,8 +288,7 @@ For example, at day 1, item 1’s rate is 10/100=10%, day2, its (10+350)/(100
 If my threshold is 0.3, then at day 1, I don’t output. On day2 I output. On
 day3, I don’t output.
 
-11. Given a dictionary and a string. Write a function, if every word is in
-the dictionary return true, otherwise return false.
+11. Given a dictionary and a string. Write a function, if every word is in the dictionary return true, otherwise return false.
 
 12. Generate all the permutation of a string.
 For example, abc, acb, cba, …
@@ -293,13 +311,9 @@ Answer(attemp):
 Answer:
 Hypothesis testing?
 
-15. Design a function to calculate people’s interest to a place against the
-distance to the place.
+15. Design a function to calculate people’s interest to a place against the distance to the place.
 
-16. How to encourage people to write more reviews on Yelp? How to determine
-who are likely to write reviews? How to increase the registration rate of
-Yelp? What features to add for a better Yelp app? We are expanding to other
-countries. Which country we should enter first?
+16. How to encourage people to write more reviews on Yelp? How to determine who are likely to write reviews? How to increase the registration rate of Yelp? What features to add for a better Yelp app? We are expanding to other countries. Which country we should enter first?
 
 Answer:
 reward mechanism.
@@ -528,7 +542,6 @@ PageRank 的原理和公式推导
 
 
 ==============================================================================================
-==============================================================================================
 
 2. While it is often assumed that the probabilities of having a boy or a girl are the same, the actual probability of having a boy is slightly higher at 0.51. Suppose a couple plans to have 3 children. What is the probability that exactly 2 of them will be boys?
 
@@ -612,9 +625,8 @@ C. Neither Increasing nor Decreasing
 
 D. I'm not sure.
 
-==============================================================================================
-==============================================================================================
 
+==============================================================================================
 Field problems
 
 1. A jar has 1000 coins, of which 999 are fair and 1 is double headed. Pick a
@@ -664,8 +676,10 @@ p(t | o) = \sum_f p(t, f | o) = \sum_f p(f | o)p(t | f, o)
          = \sum_f p(f | o) p(t | f)
 $$
 So,
-p(head | O) = p(fair | O) * 0.5 + p(unfair | O) * 1
+$$
+p(head | O) = p(fair | O) * 0.5 + p(\text{unfair}| O) * 1
             = (999 / 2 + 1024) / (999 + 1024) = 0.7530894710825506
+$$
 
 2. Given a coin with unknown probability of flipping heads, toss the coin and get only
 1,000,000 heads, then what's the probability of flipping head of next toss.
@@ -719,7 +733,7 @@ If $\lambda$ is the expected times that you get spotted every hour, then $θ=1/�
 expected time between events. The number of events given in t can be modeled by a random 
 variable $N \sim Poisson(\lambda·t)$ where t is the amount of time (in hours) elapsed.
 
-So, the probability of getting nn tickets in $t$ hours, with an expected probability of $\lambda$ that you get a ticket in one hour is
+So, the probability of getting n tickets in $t$ hours, with an expected probability of $\lambda$ that you get a ticket in one hour is
 $$Pr\{N=n\ |\ \lambda, t\}=\frac{e^{-\lambda·t}·(\lambda·t)^{n}}{n!}$$
 
 $$
@@ -742,10 +756,10 @@ Proof:
 We can construct the process by applying following procedure. 
 choosing one number at each time, and repeat for k times. 
 Then the probability of not being chosen is:
-$ \Pr(not chosen for k times) 
+$\Pr(\text{not chosen for k times}) 
 = \frac{n - 1}{n}\frac{n-2}{n-1}\ldots \frac{n-k}{n-k+1} 
-= \frac{n-k}{n} $
-So, $\Pr(chosen) = 1 - \Pr(not chosen for k times) = 1 - (n-k)/n = k/n$
+= \frac{n-k}{n}$
+So, $\Pr(chosen) = 1 - \Pr(\text{not chosen for k times}) = 1 - (n-k)/n = k/n$
 
 We have 99 possible pairs: $\{(1,2),(2,3),\ldots,(99,100)\}$. Let's define $X_i$ as
 i-th pair is chosen:
@@ -760,9 +774,79 @@ $$
 That pair is chosen when the integer i is chosen, with probability 25/100, and the integer 
 i+1 is also chosen, with probability 24/99. Then,
 $E[X_i] = P(X_i = 1) = \frac{25}{100}\frac{24}{99}$,
-Using linearity of expectation, we have $E[X] &= E[X_1] + E[X_2] + \cdots +E[X_{99}]\\
-&= 99E[X_1]\\
-&= 99\frac{25}{100}\frac{24}{99} = 6
-$
+Using linearity of expectation, we have $E[X] = E[X_1] + E[X_2] + \cdots +E[X_{99}]
+= 99E[X_1]
+= 99\frac{25}{100}\frac{24}{99} = 6$
+
+Probability coding problems
+===========================
+Two core key ideas to problems simulating a probability distribution: 
+**BASE N NUMERAL SYSTEM**
+**CONDITIONAL PROBABILITY**
+
+1. Simulate the probability of 1/n with a fair coin
+
+SOLUTION
+--------
+
+Representation of integer n: **BASE N NUMERAL SYSTEM**(binary number here).
+Compute 1/n probability: **CONDITIONAL PROBABILITY**! $ p(1/n) = \dfrac{p(x = 1, x < n)}{p(x<n)} = \dfrac{p(x = 1)}{p(x<n)}$
+Reject sampling: reject the number obtained that's larger than n.
+
+2. [Expand a random range from 1–5 to 1–7](https://stackoverflow.com/questions/137783/expand-a-random-range-from-1-5-to-1-7)
+Given a function which produces a random integer in the range 1 to 5, write a function which produces a random integer in the range 1 to 7.
+1) What is a simple solution?
+2) What is an effective solution to reduce memory usage or run on a slower CPU?
+
+SOLUTION
+--------
+
+Use base 5 numeral system to represent numbers with in range [0, 24]: $x = (rand() - 1)\times 5 + rand() - 1$
+Use rejection sampling to sample in range [1, 21].
+
+But the problem with rejection sampling is, however, it obeys geometric distribution, which might loop for a long time, with extremely small probability.
+If the range is continuous, not discrete integers, then we can divide the space into 7 equal intervals(uniform distribution).
+
+3. 有一个GOD（）函数，能够以C的概率返回0，以1-C的概率返回1，C未知，让利用GOD（）构造P（x )实现以X的概率返回0,1-X的概率返回1，不能使用随机函数.
+
+SOLUTION
+--------
+Given the solution to the first question, we can simulate any float number probability with Bernoulli distribution of 1/2.
+
+Now the problem is we don't have a even Bernoulli distribution. 
+How to simulate Bernoulli(1/2) out of Bernoulli(C)?
+
+The key is use conditional probability with independent trial, a.w.a random process!
+Toss the coin, a.w.a call the function GOD, twice, if the outcome sequence {A₂} is in {00, 01, 10, 11}, of which 01 and 10 share the same probability!
+Then P(A=01 | A in {01, 10}) = (A=10 | A in {01, 10}) = 1/2.
+
+Now we have the even Bernoulli(1/2) distribution.
+
+Then the problem is reduced to simulate probability of y/10^n, given even Bernoulli distribution, where n = len(str(x - 2)), y = x * 10^n.
+
+
+Probability model
+=================
+
+Power law distribution
+----------------------
+
+1. [Talent vs luck](https://arxiv.org/pdf/1802.07068.pdf)
+Assumption: Talent distribution is Gaussian.
+
+Simulation conclusion: final capital/success distribution is power law, and randomness/luck plays more role.
+
+2. [Everyone in a room keeps giving dollars to random others](http://www.decisionsciencenews.com/2017/06/19/counterintuitive-problem-everyone-room-keeps-giving-dollars-random-others-youll-never-guess-happens-next/)
+Random walk on graph 
+
+Conclusion: final capital distribution is power law.
+Another interpretation is, to get much more richer than others is hard, with a small probability.
+
+Reference:
+[random walk](https://quomodocumque.wordpress.com/2017/06/27/when-random-people-give-money-to-random-other-people/)
+[Irreducible Markov chain](https://news.ycombinator.com/item?id=14729400).
+The second law of thermodynamics.
+
 
 <!--```-->
+
