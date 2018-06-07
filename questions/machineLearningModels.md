@@ -1,11 +1,11 @@
-# Aspects of machine learning models
+# How to ASSESS AN ALGORITHM/MODEL, such as machine learning models
 Questions about off-the-shelf machine learning can be generally categorized into several classes: 
 
-- IDEA: How does a model work? Probability model, loss function
-- MATHEMATICS: The mathematical derivation
-- CHARACTERISTICS: advantages vs disadvantages(pros vs cons)
+- IDEA: How does a model work? Does it make sense?
+- MATHEMATICS PRINCIPAL:  Probability/statistics model, loss function, ...
+- CAPABILITY: advantages vs disadvantages(pros vs cons)
+- IMPLEMENTATION & MAINTENANCE: 
 - RELATION: How does one model RELATE to another model
-- FEATURE ENGINEERING:
 
 - How does one model relate to another
 - Overfitting

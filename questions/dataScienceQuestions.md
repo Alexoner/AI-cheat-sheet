@@ -781,8 +781,8 @@ Using linearity of expectation, we have $E[X] = E[X_1] + E[X_2] + \cdots +E[X_{9
 Probability coding problems
 ===========================
 Two core key ideas to problems simulating a probability distribution: 
-**BASE N NUMERAL SYSTEM**
-**CONDITIONAL PROBABILITY**
+**$BASE N NUMERAL SYSTEM$**
+**$CONDITIONAL PROBABILITY$**
 
 1. Simulate the probability of 1/n with a fair coin
 
@@ -816,7 +816,7 @@ Given the solution to the first question, we can simulate any float number proba
 Now the problem is we don't have a even Bernoulli distribution. 
 How to simulate Bernoulli(1/2) out of Bernoulli(C)?
 
-The key is use conditional probability with independent trial, a.w.a random process!
+The key is use $conditional probability$ with independent trial, a.w.a random process!
 Toss the coin, a.w.a call the function GOD, twice, if the outcome sequence {A₂} is in {00, 01, 10, 11}, of which 01 and 10 share the same probability!
 Then P(A=01 | A in {01, 10}) = (A=10 | A in {01, 10}) = 1/2.
 
